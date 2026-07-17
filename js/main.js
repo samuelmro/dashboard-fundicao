@@ -14,7 +14,7 @@
     { from: 202002, to: 202006, label: 'Covid-19 2020' },
   ];
 
-  const state = { sector: '2451', lo: 2016, hi: 2026, uf: 'ALL', data: null };
+  const state = { sector: '2451', view: '2451', lo: 2016, hi: 2026, uf: 'ALL', data: null };
   const $ = (sel, root) => (root || document).querySelector(sel);
   const MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'com', 'para', 'a', 'o', 'no', 'na']);
   function titleCasePt(s) {
@@ -64,87 +64,6 @@
     return found ? found.nome : uf;
   }
 
-  function tileHTML(label, value, delta, deltaGood, context) {
-    const deltaCls = delta == null ? '' : (deltaGood ? 'up' : 'down');
-    return `<div class="stat-tile">
-      <div class="stat-label">${label}</div>
-      <div class="stat-value">${value}</div>
-      ${delta != null ? `<div class="stat-delta ${deltaCls}">${delta}</div>` : ''}
-      ${context ? `<div class="stat-context">${context}</div>` : ''}
-    </div>`;
-  }
-
-  // ---------------------------------------------------------------------
-  // Big numbers (sempre o dado mais recente disponível, não usam slider/UF)
-  // ---------------------------------------------------------------------
-  function renderBigNumbers() {
-    const s = csS(), sh = shared();
-    const el = $('#big-numbers');
-    let html = '';
-
-    {
-      const rows = sh.producao.aco_gusa;
-      const latest = last(rows), prev12 = findAt(rows, 12);
-      const growth = prev12 ? pctChange(latest.aco_bruto, prev12.aco_bruto) : null;
-      html += tileHTML(
-        'Produção de aço bruto',
-        fmt.compact(latest.aco_bruto) + ' t',
-        growth != null ? fmt.pct(growth, true) + ' em 12 meses' : null,
-        growth != null && growth >= 0,
-        monthLabel(latest.ano * 100 + latest.mes, true) + ' · dado nacional'
-      );
-    }
-    {
-      const rows = s.rais.uf_yearly_total;
-      const latest = last(rows), prev = findAt(rows, 1);
-      const growth = prev ? pctChange(latest.vinculos, prev.vinculos) : null;
-      html += tileHTML(
-        'Emprego no setor',
-        fmt.full(latest.vinculos) + ' vínculos',
-        growth != null ? fmt.pct(growth, true) + ' vs ' + prev.ano : null,
-        growth != null && growth >= 0,
-        latest.ano + ' · ' + fmt.full(latest.estabelecimentos) + ' estabelecimentos (RAIS)'
-      );
-    }
-    {
-      const rows = sh.financeiro.fundicao_24_5;
-      const latest = last(rows), prev = findAt(rows, 1);
-      const growth = prev ? pctChange(latest.receita_liquida_total, prev.receita_liquida_total) : null;
-      html += tileHTML(
-        'Receita líquida do setor',
-        fmt.brl(latest.receita_liquida_total * 1000),
-        growth != null ? fmt.pct(growth, true) + ' vs ' + prev.ano : null,
-        growth != null && growth >= 0,
-        latest.ano + ' · grupo Fundição (24.5), IBGE/PIA'
-      );
-    }
-    {
-      const anoRef = s.comex.top_paises_latest.ano;
-      const row = s.comex.yearly.find(r => r.ano === anoRef) || last(s.comex.yearly);
-      const saldo = row.exportacao_usd - row.importacao_usd;
-      html += tileHTML(
-        'Saldo comercial',
-        fmt.usd(Math.abs(saldo)),
-        (saldo >= 0 ? 'Superávit' : 'Déficit'),
-        saldo >= 0,
-        row.ano + ' · exportou ' + fmt.usd(row.exportacao_usd) + ', importou ' + fmt.usd(row.importacao_usd)
-      );
-    }
-    {
-      const rows = s.energia.exato_monthly;
-      const latest = last(rows), prev12 = findAt(rows, 12);
-      const growth = prev12 ? pctChange(latest.consumo_acl_mwh, prev12.consumo_acl_mwh) : null;
-      html += tileHTML(
-        'Consumo de energia (livre)',
-        fmt.mwh(latest.consumo_acl_mwh),
-        growth != null ? fmt.pct(growth, true) + ' em 12 meses' : null,
-        growth != null && growth <= 0,
-        monthLabel(latest.ano * 100 + latest.mes, true)
-      );
-    }
-    el.innerHTML = html;
-  }
-
   // ---------------------------------------------------------------------
   // 01 — Produção física
   // ---------------------------------------------------------------------
@@ -154,7 +73,7 @@
     const ag = filterMonthly(sh.producao.aco_gusa, state.lo, state.hi);
     const catAg = ag.map(r => r.ano * 100 + r.mes);
     lineChart($('#chart-producao-acogusa'), {
-      categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 220,
+      categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 290,
       series: [
         { label: 'Aço bruto', color: 'var(--series-1)', values: ag.map(r => r.aco_bruto), area: true },
         { label: 'Ferro-gusa', color: 'var(--series-5)', values: ag.map(r => r.ferro_gusa) },
@@ -165,7 +84,7 @@
     const dessaz = filterMonthly(sh.producao.aco_gusa_dessaz, state.lo, state.hi);
     const catDz = monthlyCategories([ag, dessaz]);
     lineChart($('#chart-producao-dessaz'), {
-      categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 200,
+      categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 270,
       series: [
         { label: 'Observado', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
         { label: 'Dessazonalizado', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
@@ -175,7 +94,7 @@
     const idx = filterMonthly(sh.producao.metalurgia_indice, state.lo, state.hi);
     const catIdx = idx.map(r => r.ano * 100 + r.mes);
     lineChart($('#chart-producao-indice'), {
-      categories: catIdx, formatX: monthLabel, formatY: fmt.full1, height: 220, bands: RECESSOES,
+      categories: catIdx, formatX: monthLabel, formatY: fmt.full1, height: 290, bands: RECESSOES,
       series: [
         { label: 'Índice bruto', color: 'var(--series-2)', values: idx.map(r => r.indice_bruto) },
         { label: 'Dessazonalizado', color: 'var(--series-3)', values: idx.map(r => r.indice_dessaz) }
@@ -184,7 +103,7 @@
 
     const razao = ag.map(r => (r.laminados != null && r.aco_bruto) ? (r.laminados / r.aco_bruto) * 100 : null);
     lineChart($('#chart-producao-razao'), {
-      categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 200,
+      categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 270,
       series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
     });
 
@@ -199,13 +118,16 @@
   // 02 — Financeiro
   // ---------------------------------------------------------------------
   function renderFinanceiro() {
+    // Série PIA é curta (2007–2023, ~17 pontos anuais) — sempre mostra o
+    // histórico completo, sem responder à régua de período (feita para
+    // séries longas: produção mensal, RAIS, CAGED, comex/comtrade).
     const sh = shared();
-    const finF = filterAnnual(sh.financeiro.fundicao_24_5, state.lo, state.hi);
-    const finM = filterAnnual(sh.financeiro.metalurgia_24, state.lo, state.hi);
+    const finF = sh.financeiro.fundicao_24_5;
+    const finM = sh.financeiro.metalurgia_24;
     const catFin = finF.map(r => r.ano);
 
     dualAxisLineChart($('#chart-financeiro-vbpi-vti'), {
-      categories: catFin, formatYLeft: fmt.brl, formatYRight: fmt.brl, height: 220,
+      categories: catFin, formatYLeft: fmt.brl, formatYRight: fmt.brl, height: 290,
       seriesLeft: { label: 'VBPI', color: 'var(--series-2)', values: finF.map(r => r.vbpi != null ? r.vbpi * 1000 : null) },
       seriesRight: { label: 'VTI', color: 'var(--series-3)', values: finF.map(r => r.vti != null ? r.vti * 1000 : null) },
     });
@@ -216,18 +138,18 @@
       return (f && m && m.receita_liquida_total) ? (f.receita_liquida_total / m.receita_liquida_total) * 100 : null;
     });
     lineChart($('#chart-financeiro-participacao'), {
-      categories: catsPart, formatY: n => fmt.pct(n), height: 200,
+      categories: catsPart, formatY: n => fmt.pct(n), height: 270,
       series: [{ label: '% da Metalurgia', color: 'var(--series-3)', values: participacao, area: true }]
     });
 
     const produtividade = finF.map(r => (r.vti != null && r.pessoal_ocupado) ? (r.vti * 1000) / r.pessoal_ocupado : null);
     lineChart($('#chart-financeiro-produtividade'), {
-      categories: catFin, formatY: fmt.brl, height: 200,
+      categories: catFin, formatY: fmt.brl, height: 270,
       series: [{ label: 'VTI / pessoal ocupado', color: 'var(--series-2)', values: produtividade }]
     });
 
     barChart($('#chart-financeiro-receita-custos'), {
-      categories: catFin, formatY: fmt.brl, height: 220,
+      categories: catFin, formatY: fmt.brl, height: 290,
       series: [
         { label: 'Receita líquida', color: 'var(--series-4)', values: finF.map(r => r.receita_liquida_total * 1000) },
         { label: 'Custos e despesas', color: 'var(--series-6)', values: finF.map(r => r.custos_despesas_totais * 1000) }
@@ -241,7 +163,7 @@
     const custoTotal = latestFin.custos_despesas_totais || 0;
     const outros = custoTotal - materiasPrimas - pessoal;
     waterfallChart($('#chart-financeiro-waterfall'), {
-      formatY: fmt.brl, height: 240,
+      formatY: fmt.brl, height: 320,
       items: [
         { label: 'Matérias-primas', value: materiasPrimas * 1000 },
         { label: 'Pessoal', value: pessoal * 1000 },
@@ -271,7 +193,7 @@
     }
     raisRows = filterAnnual(raisRows, state.lo, state.hi);
     lineChart($('#chart-emprego-rais'), {
-      categories: raisRows.map(r => r.ano), formatY: fmt.full, height: 200,
+      categories: raisRows.map(r => r.ano), formatY: fmt.full, height: 270,
       series: [{ label: raisLabel, color: 'var(--series-2)', values: raisRows.map(r => r.vinculos), area: true }]
     });
 
@@ -282,7 +204,7 @@
       label: faixa, color: CORES[i % CORES.length],
       values: catsTam.map(ano => { const row = tamRows.find(r => r.ano === ano && r.faixa === faixa); return row ? row.vinculos : 0; })
     }));
-    barChart($('#chart-emprego-tamanho'), { categories: catsTam, formatY: fmt.full, height: 220, stacked: true, series: seriesTam });
+    barChart($('#chart-emprego-tamanho'), { categories: catsTam, formatY: fmt.full, height: 290, stacked: true, series: seriesTam });
 
     const totalLatest = last(s.rais.uf_yearly_total);
     const ufRanking = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos).slice(0, 10);
@@ -293,7 +215,7 @@
 
     const razaoRows = filterAnnual(s.rais.uf_yearly_total, state.lo, state.hi);
     lineChart($('#chart-emprego-razao'), {
-      categories: razaoRows.map(r => r.ano), formatY: fmt.full1, height: 200,
+      categories: razaoRows.map(r => r.ano), formatY: fmt.full1, height: 270,
       series: [{ label: 'Vínculos por estabelecimento', color: 'var(--series-2)', values: razaoRows.map(r => r.estabelecimentos ? r.vinculos / r.estabelecimentos : null) }]
     });
 
@@ -304,7 +226,7 @@
       label: titleCasePt(cat), color: CORES[i % CORES.length],
       values: catEsc.map(ano => { const row = escRows.find(r => r.ano === ano && r.categoria === cat); return row ? row.frequencia : 0; })
     }));
-    lineChart($('#chart-emprego-escolaridade-evolucao'), { categories: catEsc, formatY: fmt.full, height: 220, stacked: true, series: seriesEsc });
+    lineChart($('#chart-emprego-escolaridade-evolucao'), { categories: catEsc, formatY: fmt.full, height: 290, stacked: true, series: seriesEsc });
 
     const esc = s.rais.escolaridade_latest;
     $('#emprego-escolaridade-sub').textContent = 'Retrato de ' + esc.ano;
@@ -334,7 +256,7 @@
     const tempo = s.rais.tempo_emprego_latest;
     const itemsTempo = ORDEM_TEMPO.map(cat => tempo.items.find(i => i.categoria === cat)).filter(Boolean);
     barChart($('#chart-emprego-tempo'), {
-      categories: itemsTempo.map(i => LABELS_TEMPO[i.categoria] || i.categoria), formatY: fmt.full, height: 220,
+      categories: itemsTempo.map(i => LABELS_TEMPO[i.categoria] || i.categoria), formatY: fmt.full, height: 290,
       series: [{ label: 'Vínculos', color: 'var(--series-2)', values: itemsTempo.map(i => CURTA.has(i.categoria) ? -i.frequencia : i.frequencia) }]
     });
 
@@ -351,7 +273,7 @@
       return (r.remuneracao_media_nominal != null && ipcaAno && ipcaRef) ? r.remuneracao_media_nominal * (ipcaRef / ipcaAno) : null;
     });
     lineChart($('#chart-emprego-remuneracao'), {
-      categories: massaRows.map(r => r.ano), formatY: fmt.brl, height: 220,
+      categories: massaRows.map(r => r.ano), formatY: fmt.brl, height: 290,
       series: [
         { label: 'Nominal', color: 'var(--series-2)', values: massaRows.map(r => r.remuneracao_media_nominal) },
         { label: 'Real (preços de ' + (anoRefMassa || '') + ')', color: 'var(--series-3)', values: remReal },
@@ -372,13 +294,13 @@
 
     const saldoRows = filterMonthly(s.caged.saldo_monthly_national, state.lo, state.hi);
     lineChart($('#chart-caged-saldo'), {
-      categories: saldoRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.full, height: 200,
+      categories: saldoRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.full, height: 270,
       series: [{ label: 'Saldo líquido', color: 'var(--series-2)', values: saldoRows.map(r => r.saldo), area: true }]
     });
 
     const tipoMonthly = filterMonthly(s.caged.tipo_movimentacao_monthly, state.lo, state.hi);
     lineChart($('#chart-caged-movimentacao'), {
-      categories: tipoMonthly.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.compact, height: 200, stacked: true,
+      categories: tipoMonthly.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.compact, height: 270, stacked: true,
       series: [
         { label: 'Admissões', color: 'var(--series-4)', values: tipoMonthly.map(r => r.admissoes) },
         { label: 'Desligamentos', color: 'var(--series-6)', values: tipoMonthly.map(r => r.desligamentos) },
@@ -387,13 +309,13 @@
 
     const tipoBreak = s.caged.tipo_movimentacao_breakdown_total.filter(t => /desligamento/i.test(t.tipo)).slice(0, 8);
     barChart($('#chart-caged-tipo'), {
-      categories: tipoBreak.map(t => t.tipo.replace(/^Desligamento\s*/i, '')), formatY: fmt.full, height: 220,
+      categories: tipoBreak.map(t => t.tipo.replace(/^Desligamento\s*/i, '')), formatY: fmt.full, height: 290,
       series: [{ label: 'Quantidade', color: 'var(--series-6)', values: tipoBreak.map(t => t.quantidade) }]
     });
 
     const salarioRows = filterMonthly(s.caged.salario_monthly_national, state.lo, state.hi);
     lineChart($('#chart-caged-massa-salarial'), {
-      categories: salarioRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 200,
+      categories: salarioRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 270,
       series: [{ label: 'Massa salarial', color: 'var(--series-3)', values: salarioRows.map(r => r.massa_salarial) }]
     });
 
@@ -435,7 +357,7 @@
     $('#comex-uf-note') && ($('#comex-uf-note').textContent = note);
     const cat = rows.map(r => r.ano);
     barChart($('#chart-comex-brasil'), {
-      categories: cat, formatY: fmt.usd, height: 220,
+      categories: cat, formatY: fmt.usd, height: 290,
       series: [
         { label: 'Exportação', color: 'var(--series-4)', values: rows.map(r => r.exportacao_usd) },
         { label: 'Importação', color: 'var(--series-6)', values: rows.map(r => -r.importacao_usd) }
@@ -444,7 +366,7 @@
 
     const rowsKg = filterAnnual(s.comex.yearly, state.lo, state.hi);
     barChart($('#chart-comex-brasil-kg'), {
-      categories: rowsKg.map(r => r.ano), formatY: n => fmt.compact(n) + ' kg', height: 200,
+      categories: rowsKg.map(r => r.ano), formatY: n => fmt.compact(n) + ' kg', height: 270,
       series: [
         { label: 'Exportação', color: 'var(--series-4)', values: rowsKg.map(r => r.exportacao_kg) },
         { label: 'Importação', color: 'var(--series-6)', values: rowsKg.map(r => -r.importacao_kg) }
@@ -458,14 +380,14 @@
     }));
     seriesTopPaises.push({ label: 'Outros', color: 'var(--baseline)', values: filteredYearly.map(r => r.Outros || 0) });
     barChart($('#chart-comex-top-paises-tempo'), {
-      categories: filteredYearly.map(r => r.ano), formatY: fmt.usd, height: 220, stacked: true, series: seriesTopPaises
+      categories: filteredYearly.map(r => r.ano), formatY: fmt.usd, height: 290, stacked: true, series: seriesTopPaises
     });
 
     const ctBr = filterAnnual(s.comtrade.brazil_yearly, state.lo, state.hi);
     const ctWorld = filterAnnual(s.comtrade.world_yearly, state.lo, state.hi);
     const catCt = annualCategories([ctBr, ctWorld]);
     lineChart($('#chart-comex-mundo'), {
-      categories: catCt, formatY: fmt.usd, height: 220,
+      categories: catCt, formatY: fmt.usd, height: 290,
       series: [
         { label: 'Exportação do Brasil', color: 'var(--series-1)', values: seriesAnnual(ctBr, 'export_usd', catCt) },
         { label: 'Exportação mundial (contexto)', color: 'var(--series-8)', values: seriesAnnual(ctWorld, 'export_usd', catCt) }
@@ -477,7 +399,7 @@
       return (b && w && w.export_usd) ? (b.export_usd / w.export_usd) * 100 : null;
     });
     lineChart($('#chart-comex-participacao-mundial'), {
-      categories: catCt, formatY: n => fmt.pct(n), height: 200,
+      categories: catCt, formatY: n => fmt.pct(n), height: 270,
       series: [{ label: 'Participação do Brasil', color: 'var(--series-4)', values: participacaoMundo, area: true }]
     });
 
@@ -506,7 +428,7 @@
     const aprox = filterMonthly(sh.energia_metalurgia_aproximado, state.lo, state.hi);
     const cat = monthlyCategories([exato, aprox]);
     lineChart($('#chart-energia'), {
-      categories: cat, formatX: monthLabel, formatY: fmt.mwh, height: 240,
+      categories: cat, formatX: monthLabel, formatY: fmt.mwh, height: 320,
       series: [
         { label: 'Consumo do setor (ACL)', color: 'var(--series-5)', values: seriesMonthly(exato, 'consumo_acl_mwh', cat), area: true },
         { label: 'Metalurgia (contexto, categoria mais ampla)', color: 'var(--series-8)', values: seriesMonthly(aprox, 'consumo_livre_acl', cat) }
@@ -514,7 +436,7 @@
     });
 
     lineChart($('#chart-energia-livre-autoprodutor'), {
-      categories: aprox.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 220, stacked: true,
+      categories: aprox.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 290, stacked: true,
       series: [
         { label: 'Livre (ACL)', color: 'var(--series-5)', values: aprox.map(r => r.consumo_livre_acl) },
         { label: 'Autoprodutor', color: 'var(--series-7)', values: aprox.map(r => r.consumo_autoprodutor_acl) },
@@ -536,7 +458,7 @@
     const s = csS();
     const bndesY = filterAnnual(s.bndes.yearly, state.lo, state.hi);
     barChart($('#chart-bndes-ano'), {
-      categories: bndesY.map(r => r.ano), formatY: fmt.brl, height: 200,
+      categories: bndesY.map(r => r.ano), formatY: fmt.brl, height: 270,
       series: [{ label: 'Desembolsado', color: 'var(--series-8)', values: bndesY.map(r => r.valor_desembolsado) }]
     });
 
@@ -689,18 +611,40 @@
       opt.value = u.uf; opt.textContent = u.nome;
       sel.appendChild(opt);
     });
-    sel.addEventListener('change', () => { state.uf = sel.value; renderAll(false); });
+    sel.addEventListener('change', () => { state.uf = sel.value; renderAll(); });
   }
 
-  function setupSectorSwitch() {
-    const btns = document.querySelectorAll('#sector-switch button');
+  // 4 abas mutuamente exclusivas: 2451 e 2452 mostram o painel de dados
+  // (trocando o setor); PD&I e Referências trocam para uma página estática,
+  // escondendo o painel de dados e a barra de filtros (não fazem sentido ali).
+  function setupViewTabs() {
+    const btns = document.querySelectorAll('#view-tabs button');
+    const dataView = $('#data-view');
+    const filterRow = $('#filter-row');
+    const pdiView = $('#pdi-view');
+    const referenciasView = $('#referencias-view');
+
+    function applyVisibility() {
+      const isData = state.view === '2451' || state.view === '2452';
+      dataView.hidden = !isData;
+      filterRow.hidden = !isData;
+      pdiView.hidden = state.view !== 'pdi';
+      referenciasView.hidden = state.view !== 'referencias';
+    }
+
     btns.forEach(b => b.addEventListener('click', () => {
-      if (b.dataset.sector === state.sector) return;
+      if (b.dataset.view === state.view) return;
       btns.forEach(x => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
       b.classList.add('active'); b.setAttribute('aria-selected', 'true');
-      state.sector = b.dataset.sector;
-      renderAll(true);
+      state.view = b.dataset.view;
+      if (state.view === '2451' || state.view === '2452') {
+        state.sector = state.view;
+        renderAll();
+      }
+      applyVisibility();
     }));
+
+    applyVisibility();
   }
 
   function setupPeriodSlider() {
@@ -723,8 +667,7 @@
     renderProducao(); renderFinanceiro(); renderEmprego(); renderCaged();
     renderComex(); renderEnergia(); renderBndes(); renderDecom();
   }
-  function renderAll(includeBigNumbers) {
-    if (includeBigNumbers) renderBigNumbers();
+  function renderAll() {
     renderCharts();
     renderGargalos();
   }
@@ -737,10 +680,9 @@
     .then(data => {
       state.data = data;
       populateUfSelect();
-      setupSectorSwitch();
+      setupViewTabs();
       setupPeriodSlider();
       renderPdi(data);
-      renderBigNumbers();
       renderCharts();
       renderGargalos();
     })
