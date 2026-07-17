@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #FDFFFF; }
+    a { color: #8B040D; }
+    a:hover { color: #E30615; }
+  </style>
+</helmet>
+
+<div style="font-family:Arial, sans-serif;background:#FDFFFF;min-height:100vh">
+
+  <!-- ===================== HEADER ===================== -->
+  <header style="background:#1E2329">
+    <div style="max-width:1280px;margin:0 auto;padding:28px 40px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:8px">
+            <h1 style="font-family:Arial, sans-serif;font-size:1.85rem;font-weight:700;color:#FDFFFF;margin:0;letter-spacing:-0.01em">Painel do Setor de Fundição</h1>
+            <span style="font-size:11.5px;letter-spacing:0.06em;color:#8D99AE;white-space:nowrap">CNAE 2451 / 2452</span>
+          </div>
+          <p style="font-size:13.5px;color:#8D99AE;margin:0 0 16px;max-width:46em;line-height:1.5">Produção, emprego, financeiro, comércio exterior e energia — leitura executiva do setor a partir de dados públicos consolidados.</p>
+          <div style="display:flex;gap:8px">
+            <button type="button" onClick="{{ onSelectSector2451 }}" style="background:{{ sector2451Bg }};border:1px solid {{ sector2451BorderColor }};color:{{ sector2451Color }};font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border-radius:3px;cursor:pointer">Ferro e aço (2451)</button>
+            <button type="button" onClick="{{ onSelectSector2452 }}" style="background:{{ sector2452Bg }};border:1px solid {{ sector2452BorderColor }};color:{{ sector2452Color }};font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border-radius:3px;cursor:pointer">Não ferrosos (2452)</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;background:#FDFFFF;border-radius:4px;padding:12px 18px;margin-top:2px">
+          <span style="font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;color:#8D99AE;font-weight:700;margin-right:6px">Realização</span>
+          <img src="assets/logos/fiesp-logo-trim.png" alt="FIESP" style="height:26px;width:auto;display:block" />
+          <div style="width:1px;height:22px;background:#E1E4E8"></div>
+          <img src="assets/logos/senai-logo-trim.png" alt="SENAI" style="height:26px;width:auto;display:block" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== FILTER ROW ===================== -->
+  <div style="position:sticky;top:0;z-index:20;background:#FDFFFF;border-bottom:1px solid #E7E9EC">
+    <div style="max-width:1280px;margin:0 auto;padding:10px 40px;display:flex;flex-wrap:wrap;align-items:center;gap:32px">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#8D99AE">Período</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#8D99AE">De</span>
+          <input type="range" min="1980" max="{{ periodMax }}" value="{{ periodLo }}" onChange="{{ onPeriodLoChange }}" style="width:110px;accent-color:#E30615" />
+          <span style="font-family:Arial, sans-serif;font-size:12.5px;color:#1E2329;min-width:30px;font-weight:600">{{ periodLo }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#8D99AE">Até</span>
+          <input type="range" min="1980" max="{{ periodMax }}" value="{{ periodHi }}" onChange="{{ onPeriodHiChange }}" style="width:110px;accent-color:#E30615" />
+          <span style="font-family:Arial, sans-serif;font-size:12.5px;color:#1E2329;min-width:30px;font-weight:600">{{ periodHi }}</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#8D99AE">Estado</span>
+        <select value="{{ uf }}" onChange="{{ onUfChange }}" style="font:inherit;font-size:13px;padding:5px 8px;border-radius:2px;border:1px solid #D7DBE0;background:#FDFFFF;color:#1E2329">
+          <option value="ALL">Brasil (todos os estados)</option>
+          <sc-for list="{{ ufOptions }}" as="u" hint-placeholder-count="5">
+            <option value="{{ u.uf }}">{{ u.nome }}</option>
+          </sc-for>
+        </select>
+        <span style="font-size:12px;color:#8D99AE;font-style:italic">{{ ufFilterNote }}</span>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:100px 40px;text-align:center;color:#8D99AE;font-size:14px">Carregando dados…</div>
+  </sc-if>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+
+    <!-- ===================== KEY FIGURES ===================== -->
+    <div style="background:#F7F8F9;border-bottom:1px solid #E7E9EC">
+      <div style="max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:repeat(5,1fr)">
+        <sc-for list="{{ bigNumbers }}" as="tile" hint-placeholder-count="5">
+          <div style="padding:28px 26px;border-left:1px solid {{ tile.borderColor }}">
+            <div style="font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8D99AE;margin-bottom:12px">{{ tile.label }}</div>
+            <div style="font-family:Arial, sans-serif;font-size:1.7rem;font-weight:700;color:#1E2329;line-height:1.1;margin-bottom:6px">{{ tile.value }}</div>
+            <sc-if value="{{ tile.hasDelta }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:12.5px;font-weight:600;font-family:Arial, sans-serif;color:{{ tile.deltaColor }}">{{ tile.delta }}</div>
+            </sc-if>
+            <div style="font-size:12px;color:#34495E;margin-top:8px;line-height:1.45">{{ tile.context }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px 80px">
+
+    <!-- ===================== 01 PRODUÇÃO ===================== -->
+    <section style="padding:56px 0 0">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:12px">
+            <span style="font-family:Arial, sans-serif;font-size:13px;color:#E30615;font-weight:700">01</span>
+            <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0">Produção física</h2>
+          </div>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">{{ producaoNarrative }}</p>
+          <p style="font-size:12px;color:#8D99AE;font-style:italic;margin:12px 0 0;line-height:1.5">Dado nacional (IBGE/PIM-PF), sem abertura por estado — vale para os dois segmentos.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px">
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 1</div>
+            <dc-import name="SvgChart" vm="{{ chartProducaoIndice }}" hint-size="100%,220px"></dc-import>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Índice de produção da metalurgia</div>
+              <div style="font-size:12px;color:#8D99AE">Base 100, ajustado sazonalmente</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 2</div>
+            <dc-import name="SvgChart" vm="{{ chartProducaoAcoGusa }}" hint-size="100%,220px"></dc-import>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Produção física — aço e ferro-gusa</div>
+              <div style="font-size:12px;color:#8D99AE">Mil toneladas / mês</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 02 EMPREGO ===================== -->
+    <section style="padding:56px 0 0;border-top:1px solid #E7E9EC;margin-top:56px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:12px">
+            <span style="font-family:Arial, sans-serif;font-size:13px;color:#E30615;font-weight:700">02</span>
+            <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0">Emprego e salários</h2>
+          </div>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">{{ empregoNarrative }}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px 40px">
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 3</div>
+            <dc-import name="SvgChart" vm="{{ chartEmpregoRais }}" hint-size="100%,200px"></dc-import>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Vínculos empregatícios por ano</div>
+              <div style="font-size:12px;color:#8D99AE">RAIS — 2006–2025</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 4</div>
+            <dc-import name="SvgChart" vm="{{ chartEmpregoCaged }}" hint-size="100%,200px"></dc-import>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Admissões x desligamentos por mês</div>
+              <div style="font-size:12px;color:#8D99AE">CAGED — jan/2008 a dez/2019</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 5</div>
+            <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Escolaridade da mão de obra</div>
+            <div style="font-size:12px;color:#8D99AE;margin-bottom:14px">{{ empregoEscolaridadeSub }}</div>
+            <dc-import name="RankList" items="{{ rankEscolaridade }}" is-empty="{{ rankEscolaridadeEmpty }}" hint-size="100%,180px"></dc-import>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 6</div>
+            <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Principais ocupações</div>
+            <div style="font-size:12px;color:#8D99AE;margin-bottom:14px">{{ empregoOcupacaoSub }}</div>
+            <dc-import name="RankList" items="{{ rankOcupacao }}" is-empty="{{ rankOcupacaoEmpty }}" hint-size="100%,180px"></dc-import>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 03 FINANCEIRO ===================== -->
+    <section style="padding:56px 0 0;border-top:1px solid #E7E9EC;margin-top:56px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:12px">
+            <span style="font-family:Arial, sans-serif;font-size:13px;color:#E30615;font-weight:700">03</span>
+            <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0">Financeiro</h2>
+          </div>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">{{ financeiroNarrative }}</p>
+          <p style="font-size:12px;color:#8D99AE;font-style:italic;margin:12px 0 0;line-height:1.5">Receita e custos cobrem o grupo Fundição (24.5) inteiro; BNDES já é específico do segmento.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px">
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 7</div>
+            <dc-import name="SvgChart" vm="{{ chartFinanceiroPia }}" hint-size="100%,220px"></dc-import>
+            <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Receita líquida x custos totais</div>
+              <div style="font-size:12px;color:#8D99AE">Grupo Fundição (24.5) — anual</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 8</div>
+            <dc-import name="SvgChart" vm="{{ chartFinanceiroBndes }}" hint-size="100%,170px"></dc-import>
+            <div style="margin:12px 0 16px;padding-top:10px;border-top:1px solid #E7E9EC">
+              <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Desembolsos do BNDES</div>
+              <div style="font-size:12px;color:#8D99AE">Total nacional por ano</div>
+            </div>
+            <div style="font-size:11.5px;color:#8D99AE;margin-bottom:6px">Ranking por estado (acumulado no período)</div>
+            <dc-import name="RankList" items="{{ rankBndesUf }}" is-empty="{{ rankBndesUfEmpty }}" hint-size="100%,170px"></dc-import>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 04 COMÉRCIO EXTERIOR ===================== -->
+    <section style="padding:56px 0 0;border-top:1px solid #E7E9EC;margin-top:56px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:12px">
+            <span style="font-family:Arial, sans-serif;font-size:13px;color:#E30615;font-weight:700">04</span>
+            <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0">Comércio exterior</h2>
+          </div>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">{{ comexNarrative }}</p>
+        </div>
+        <div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px">
+            <div>
+              <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 9</div>
+              <dc-import name="SvgChart" vm="{{ chartComexBrasil }}" hint-size="100%,220px"></dc-import>
+              <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+                <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Exportação x importação</div>
+                <div style="font-size:12px;color:#8D99AE">Brasil — US$ FOB por ano</div>
+              </div>
+              <p style="font-size:12px;color:#8D99AE;font-style:italic;margin:8px 0 0">{{ comexUfNote }}</p>
+            </div>
+            <div>
+              <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 10</div>
+              <dc-import name="SvgChart" vm="{{ chartComexMundo }}" hint-size="100%,220px"></dc-import>
+              <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+                <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Brasil no comércio mundial</div>
+                <div style="font-size:12px;color:#8D99AE">Contexto global — sem abertura por estado</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:40px">
+            <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 11</div>
+            <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Principais países parceiros</div>
+            <div style="font-size:12px;color:#8D99AE;margin-bottom:14px">{{ comexPaisesSub }}</div>
+            <dc-import name="RankList" items="{{ rankComexPaises }}" is-empty="{{ rankComexPaisesEmpty }}" hint-size="100%,200px"></dc-import>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 05 ENERGIA ===================== -->
+    <section style="padding:56px 0 0;border-top:1px solid #E7E9EC;margin-top:56px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:12px">
+            <span style="font-family:Arial, sans-serif;font-size:13px;color:#E30615;font-weight:700">05</span>
+            <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0">Energia</h2>
+          </div>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">{{ energiaNarrative }}</p>
+          <p style="font-size:12px;color:#8D99AE;font-style:italic;margin:12px 0 0;line-height:1.5">Consumo no mercado livre (CCEE), disponível a partir de abr/2024.</p>
+        </div>
+        <div>
+          <div style="font-size:10.5px;letter-spacing:0.08em;color:#8D99AE;text-transform:uppercase;margin-bottom:12px">Exhibit 12</div>
+          <dc-import name="SvgChart" vm="{{ chartEnergia }}" hint-size="100%,240px"></dc-import>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px solid #E7E9EC">
+            <div style="font-size:13px;font-weight:600;color:#1E2329;margin-bottom:2px">Consumo de energia no mercado livre</div>
+            <div style="font-size:12px;color:#8D99AE">MWh / mês</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GARGALOS ===================== -->
+    <section style="padding:56px 0 0;border-top:1px solid #E7E9EC;margin-top:56px">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:start">
+        <div style="position:sticky;top:90px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#E30615;margin-bottom:12px">Pontos de atenção</div>
+          <h2 style="font-family:Arial, sans-serif;font-size:1.5rem;font-weight:700;color:#1E2329;margin:0 0 12px">Gargalos do setor</h2>
+          <p style="font-size:13.5px;color:#34495E;line-height:1.65;margin:0">Pontos identificados a partir dos dados, com a evidência por trás de cada um.</p>
+        </div>
+        <div>
+          <sc-for list="{{ gargalos }}" as="g" hint-placeholder-count="4">
+            <div style="display:flex;gap:22px;padding:26px 0;border-top:1px solid #E7E9EC">
+              <div style="font-family:Arial, sans-serif;font-size:1.3rem;font-weight:700;color:#C7CDD5;flex-shrink:0;width:32px">{{ g.num }}</div>
+              <div>
+                <h3 style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1E2329">{{ g.title }}</h3>
+                <p style="margin:0 0 10px;font-size:13.5px;color:#34495E;line-height:1.6">{{ g.text }}</p>
+                <div style="font-size:12.5px;color:#8D99AE;line-height:1.55" dangerouslysetinnerhtml="{{ g.evidenceHtml }}"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== METODOLOGIA ===================== -->
+    <details style="margin-top:56px;border-top:1px solid #E7E9EC;padding-top:8px">
+      <summary style="cursor:pointer;list-style:none;padding:14px 0;font-weight:600;font-size:14px;color:#1E2329;font-family:'IBM Plex Sans',sans-serif;display:flex;align-items:center;gap:10px">
+        <span style="font-size:0.75em;color:#8D99AE">▶</span> Pesquisa, Desenvolvimento &amp; Inovação — fontes e metodologia
+      </summary>
+      <div style="padding:4px 0 26px">
+        <p style="color:#34495E;font-size:13.5px;line-height:1.65">Esta seção documenta a origem de cada indicador, o período coberto e limitações técnicas relevantes.</p>
+        <h4 style="font-size:12px;margin:24px 0 12px;color:#1E2329;text-transform:uppercase;letter-spacing:0.06em">Fontes por bloco</h4>
+        <div style="overflow-x:auto">
+          <table style="border-collapse:collapse;width:100%;font-size:12.5px">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:8px 10px;border-bottom:1px solid #E7E9EC;color:#8D99AE;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em">Bloco</th>
+                <th style="text-align:left;padding:8px 10px;border-bottom:1px solid #E7E9EC;color:#8D99AE;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em">Base de dados</th>
+                <th style="text-align:left;padding:8px 10px;border-bottom:1px solid #E7E9EC;color:#8D99AE;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em">Cobertura</th>
+                <th style="text-align:left;padding:8px 10px;border-bottom:1px solid #E7E9EC;color:#8D99AE;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em">Observação técnica</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ pdiRows }}" as="r" hint-placeholder-count="8">
+                <tr>
+                  <td style="padding:9px 10px;border-bottom:1px solid #F0F1F3;color:#34495E;vertical-align:top">{{ r.bloco }}</td>
+                  <td style="padding:9px 10px;border-bottom:1px solid #F0F1F3;color:#34495E;vertical-align:top">{{ r.base }}</td>
+                  <td style="padding:9px 10px;border-bottom:1px solid #F0F1F3;color:#34495E;vertical-align:top;white-space:nowrap;font-family:Arial, sans-serif;font-size:12px">{{ r.cobertura }}</td>
+                  <td style="padding:9px 10px;border-bottom:1px solid #F0F1F3;color:#34495E;vertical-align:top">{{ r.obs }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <h4 style="font-size:12px;margin:24px 0 12px;color:#1E2329;text-transform:uppercase;letter-spacing:0.06em">Limitações gerais</h4>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0 0 8px">• RAIS: a partir de 2022 a metodologia de coleta mudou (base eSocial); os perfis detalhados têm quebra de série entre 2021 e 2022, por isso são tratados como retrato do último ano.</p>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0 0 8px">• CAGED: a série mensal por UF/CNAE disponível cobre apenas jan/2008 a dez/2019 (Novo CAGED pós-2020 não incluído).</p>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0 0 8px">• Comtrade: classificação por código HS como proxy do CNAE, usado apenas para contexto (Brasil x Mundo).</p>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0 0 8px">• Dados financeiros (PIA/IBGE): a base "Fundição 24.5" reúne 2451 e 2452 sem abertura entre eles.</p>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0 0 8px">• Energia (CCEE): consumo exato por CNAE disponível a partir de abr/2024.</p>
+        <p style="color:#34495E;font-size:13px;line-height:1.65;margin:0">• Todos os valores monetários estão em valores correntes (nominais), sem correção por inflação.</p>
+      </div>
+    </details>
+
+    <footer style="margin-top:44px;padding-top:22px;border-top:1px solid #E7E9EC;color:#8D99AE;font-size:12px;line-height:1.6">
+      <p style="margin:0">Dados consolidados de fontes públicas (IBGE, RAIS/CAGED, MDIC/Comex Stat, UN Comtrade, CCEE, BNDES, DECOM/GECEX). Painel elaborado em parceria com FIESP e SENAI.</p>
+    </footer>
+
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasTooltip }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;z-index:100;pointer-events:none;background:#1E2329;border-radius:3px;padding:10px 12px;font-size:12.5px;color:#FDFFFF;max-width:250px;left:{{ tooltipLeft }};top:{{ tooltipTop }};box-shadow:0 4px 16px rgba(30,35,41,0.35)">
+      <div style="font-weight:700;margin-bottom:5px;font-variant-numeric:tabular-nums;font-family:Arial, sans-serif;font-size:12px">{{ tooltipTitle }}</div>
+      <sc-for list="{{ tooltipRows }}" as="row" hint-placeholder-count="2">
+        <div style="display:flex;align-items:center;gap:6px;white-space:nowrap;margin-top:2px">
+          <span style="width:9px;height:9px;border-radius:2px;flex-shrink:0;background:{{ row.color }}"></span>
+          <span style="color:#C7CDD5">{{ row.label }}</span>
+          <span style="font-weight:700;margin-left:auto;padding-left:10px;font-family:Arial, sans-serif;color:#FDFFFF">{{ row.value }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+
+class Component extends DCLogic {
+  state = {
+    data: null, sector: '2451', uf: 'ALL',
+    lo: 2016, hi: 2026, tooltip: null,
+  };
+
+  componentDidMount() {
+    fetch('data/data.json').then(r => r.json()).then(data => {
+      const def = data.meta.periodo_slider_padrao || { inicio: 2016, fim: 2026 };
+      this.setState({ data, lo: def.inicio, hi: def.fim });
+    }).catch(err => { console.error(err); this.setState({ error: err.message }); });
+  }
+
+  // ---------- formatting ----------
+  fmtCompact(n) { return n == null || isNaN(n) ? '—' : new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }).format(n); }
+  fmtFull(n) { return n == null || isNaN(n) ? '—' : new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 }).format(n); }
+  fmtFull1(n) { return n == null || isNaN(n) ? '—' : new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(n); }
+  fmtUsd(n) { return n == null || isNaN(n) ? '—' : 'US$ ' + this.fmtCompact(n); }
+  fmtBrl(n) { return n == null || isNaN(n) ? '—' : 'R$ ' + this.fmtCompact(n); }
+  fmtMwh(n) { return n == null || isNaN(n) ? '—' : this.fmtCompact(n) + ' MWh'; }
+  fmtPct(n, signed) { if (n == null || isNaN(n)) return '—'; return (signed && n > 0 ? '+' : '') + this.fmtFull1(n) + '%'; }
+
+  MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'com', 'para', 'a', 'o', 'no', 'na']);
+  titleCasePt(s) { return s.toLowerCase().split(' ').map((w, i) => (i > 0 && this.MINUSC.has(w)) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' '); }
+  monthLabel(k, long) { const ano = Math.floor(k / 100), mes = k % 100; return long ? this.MESES[mes - 1] + ' de ' + ano : this.MESES[mes - 1] + '/' + String(ano).slice(2); }
+
+  pctChange(now, before) { if (now == null || before == null || before === 0) return null; return ((now - before) / Math.abs(before)) * 100; }
+  filterAnnual(rows, lo, hi) { return rows.filter(r => r.ano >= lo && r.ano <= hi); }
+  filterMonthly(rows, lo, hi) { return rows.filter(r => r.ano >= lo && r.ano <= hi); }
+  annualCategories(rowsArrays) { const keys = new Set(); rowsArrays.forEach(rows => rows.forEach(r => keys.add(r.ano))); return Array.from(keys).sort((a, b) => a - b); }
+  monthlyCategories(rowsArrays) { const keys = new Set(); rowsArrays.forEach(rows => rows.forEach(r => keys.add(r.ano * 100 + r.mes))); return Array.from(keys).sort((a, b) => a - b); }
+  seriesAnnual(rows, field, categories) { const map = new Map(rows.map(r => [r.ano, r[field]])); return categories.map(k => map.has(k) ? map.get(k) : null); }
+  seriesMonthly(rows, field, categories) { const map = new Map(rows.map(r => [r.ano * 100 + r.mes, r[field]])); return categories.map(k => map.has(k) ? map.get(k) : null); }
+  last(arr) { return arr.length ? arr[arr.length - 1] : null; }
+  findAt(arr, idxFromEnd) { return arr.length > idxFromEnd ? arr[arr.length - 1 - idxFromEnd] : null; }
+
+  showTooltip(evt, title, rows) { this.setState({ tooltip: { x: evt.clientX, y: evt.clientY, title, rows } }); }
+  hideTooltip() { this.setState({ tooltip: null }); }
+
+  niceTicks(min, max, count) {
+    if (min === max) { min -= 1; max += 1; }
+    const span = max - min, step0 = span / count, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const norm = step0 / mag;
+    let step; if (norm < 1.5) step = 1 * mag; else if (norm < 3) step = 2 * mag; else if (norm < 7) step = 5 * mag; else step = 10 * mag;
+    const niceMin = Math.floor(min / step) * step, niceMax = Math.ceil(max / step) * step;
+    const ticks = []; for (let v = niceMin; v <= niceMax + step * 0.001; v += step) ticks.push(Math.round(v * 1e6) / 1e6);
+    return ticks;
+  }
+  roundedBarPath(x, w, yBase, yVal, r) {
+    const up = yVal <= yBase, top = up ? yVal : yBase, bottom = up ? yBase : yVal;
+    r = Math.min(r, w / 2, Math.max(0, bottom - top));
+    if (r <= 0.6 || bottom - top <= 1) return `M${x},${top} H${x + w} V${bottom} H${x} Z`;
+    if (up) return `M${x},${bottom} V${top + r} A${r},${r} 0 0 1 ${x + r},${top} H${x + w - r} A${r},${r} 0 0 1 ${x + w},${top + r} V${bottom} Z`;
+    return `M${x},${top} H${x + w} V${bottom - r} A${r},${r} 0 0 1 ${x + w - r},${bottom} H${x + r} A${r},${r} 0 0 1 ${x},${bottom - r} V${top} Z`;
+  }
+
+  buildLineChart(opts) {
+    const { series, categories, formatX = (s => s), formatY = (n => this.fmtCompact(n)), height = 220, yMin0 } = opts;
+    const n = categories.length;
+    if (!n || !series.some(s => s.values.some(v => v != null))) return { empty: true, notEmpty: false };
+    const width = 600, margin = { top: 14, right: 14, bottom: 26, left: 52 };
+    const innerW = width - margin.left - margin.right, innerH = height - margin.top - margin.bottom;
+    let vmin = Infinity, vmax = -Infinity;
+    series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
+    if (yMin0) vmin = Math.min(0, vmin);
+    if (!isFinite(vmin)) { vmin = 0; vmax = 1; }
+    const ticksArr = this.niceTicks(vmin, vmax, 4);
+    const yLo = ticksArr[0], yHi = ticksArr[ticksArr.length - 1];
+    const yScale = v => margin.top + innerH - ((v - yLo) / (yHi - yLo || 1)) * innerH;
+    const xScale = i => n === 1 ? margin.left + innerW / 2 : margin.left + (i * innerW) / (n - 1);
+
+    const ticks = ticksArr.map(t => ({ y: yScale(t), ty: yScale(t) + 3, label: formatY(t), stroke: t === 0 ? '#C7CDD5' : '#F0F1F3' }));
+    const maxLabels = Math.max(2, Math.floor(innerW / 56)), step = Math.max(1, Math.ceil(n / maxLabels));
+    const xLabels = [];
+    for (let i = 0; i < n; i += step) xLabels.push({ x: xScale(i), label: formatX(categories[i]) });
+
+    const marks = [];
+    series.forEach(s => {
+      if (s.area) {
+        const pts = []; s.values.forEach((v, i) => { if (v != null) pts.push([xScale(i), yScale(v)]); });
+        if (pts.length > 1) {
+          const areaD = 'M' + pts[0][0] + ',' + yScale(yLo) + ' ' + pts.map(p => 'L' + p[0] + ',' + p[1]).join(' ') + ' L' + pts[pts.length - 1][0] + ',' + yScale(yLo) + ' Z';
+          marks.push({ isArea: true, d: areaD, color: s.color });
+        }
+      }
+      let segStart = null, d = '';
+      s.values.forEach((v, i) => { if (v == null) { segStart = null; return; } const x = xScale(i), y = yScale(v); d += (segStart === null ? 'M' : 'L') + x + ',' + y + ' '; segStart = i; });
+      marks.push({ isLine: true, d: d.trim(), color: s.color });
+      for (let i = s.values.length - 1; i >= 0; i--) { if (s.values[i] != null) { marks.push({ isPoint: true, cx: xScale(i), cy: yScale(s.values[i]), color: s.color }); break; } }
+    });
+
+    const colW = innerW / n, hitCols = [];
+    for (let i = 0; i < n; i++) {
+      const rows = series.filter(s => s.values[i] != null).map(s => ({ label: s.label, color: s.color, value: formatY(s.values[i]) }));
+      const title = formatX(categories[i], true);
+      hitCols.push({
+        x: margin.left + i * colW, width: Math.max(colW, 4),
+        onEnter: (evt) => { if (rows.length) this.showTooltip(evt, title, rows); },
+        onLeave: () => this.hideTooltip(),
+      });
+    }
+    const legend = series.length > 1 ? series.map(s => ({ label: s.label, color: s.color })) : [];
+    return { notEmpty: true, empty: false, height, innerH, xLabelY: height - 6, ticks, xLabels, marks, hitCols, legend, hasLegend: legend.length > 0 };
+  }
+
+  buildBarChart(opts) {
+    const { series, categories, formatX = (s => s), formatY = (n => this.fmtCompact(n)), height = 220 } = opts;
+    const n = categories.length;
+    if (!n || !series.some(s => s.values.some(v => v != null))) return { empty: true, notEmpty: false };
+    const width = 600, margin = { top: 14, right: 14, bottom: 26, left: 52 };
+    const innerW = width - margin.left - margin.right, innerH = height - margin.top - margin.bottom;
+    let vmin = 0, vmax = -Infinity;
+    series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
+    if (!isFinite(vmax)) vmax = 1;
+    const ticksArr = this.niceTicks(vmin, vmax, 4);
+    const yLo = ticksArr[0], yHi = ticksArr[ticksArr.length - 1];
+    const yScale = v => margin.top + innerH - ((v - yLo) / (yHi - yLo || 1)) * innerH;
+    const yBase = yScale(0);
+    const ticks = ticksArr.map(t => ({ y: yScale(t), ty: yScale(t) + 3, label: formatY(t), stroke: t === 0 ? '#C7CDD5' : '#F0F1F3' }));
+
+    const maxLabels = Math.max(2, Math.floor(innerW / 56)), catStep = Math.max(1, Math.ceil(n / maxLabels));
+    const slotW = innerW / n, nSeries = series.length, gap = 2;
+    const barW = Math.min(24, (slotW - gap * (nSeries + 1)) / nSeries);
+    const xLabels = [], marks = [], hitCols = [];
+    for (let i = 0; i < n; i++) {
+      const slotX = margin.left + i * slotW;
+      if (i % catStep === 0) xLabels.push({ x: slotX + slotW / 2, label: formatX(categories[i]) });
+      const groupW = nSeries * barW + (nSeries - 1) * gap;
+      let bx = slotX + (slotW - groupW) / 2;
+      const rows = [];
+      series.forEach(s => {
+        const v = s.values[i];
+        if (v != null) { marks.push({ isBar: true, d: this.roundedBarPath(bx, barW, yBase, yScale(v), 4), color: s.color }); rows.push({ label: s.label, color: s.color, value: formatY(v) }); }
+        bx += barW + gap;
+      });
+      const title = formatX(categories[i], true);
+      hitCols.push({ x: slotX, width: slotW, onEnter: (evt) => { if (rows.length) this.showTooltip(evt, title, rows); }, onLeave: () => this.hideTooltip() });
+    }
+    const legend = series.length > 1 ? series.map(s => ({ label: s.label, color: s.color })) : [];
+    return { notEmpty: true, empty: false, height, innerH, xLabelY: height - 6, ticks, xLabels, marks, hitCols, legend, hasLegend: legend.length > 0 };
+  }
+
+  buildRank(items, formatVal, defaultColor) {
+    if (!items.length) return { items: [], isEmpty: true };
+    const max = Math.max(...items.map(i => Math.abs(i.value || 0)), 1);
+    return { isEmpty: false, items: items.map(i => ({ label: i.label, formattedValue: formatVal(i.value), pct: Math.max(2, (Math.abs(i.value || 0) / max) * 100) + '%', color: i.color || defaultColor })) };
+  }
+
+  csS(data, sector) { return data.sectors[sector]; }
+
+  renderVals() {
+    const { data, sector, uf, lo, hi, tooltip } = this.state;
+    const RED = '#E30615', MAROON = '#8B040D', SLATE = '#34495E', GRAY = '#8D99AE', GREEN = '#2E6E49', CHARCOAL = '#1E2329';
+
+    if (!data) {
+      return { loading: true, ready: false, periodMax: new Date().getFullYear(), periodLo: lo, periodHi: hi,
+        onSelectSector2451: () => {}, onSelectSector2452: () => {}, onPeriodLoChange: () => {}, onPeriodHiChange: () => {}, onUfChange: () => {},
+        sector2451Color: '#FDFFFF', sector2451BorderColor: RED, sector2451Bg: RED, sector2452Color: GRAY, sector2452BorderColor: 'rgba(255,255,255,0.18)', sector2452Bg: 'transparent',
+        ufOptions: [], ufFilterNote: '', hasTooltip: false };
+    }
+
+    const s = this.csS(data, sector), sh = data.shared;
+    const CURRENT_YEAR = new Date().getFullYear();
+
+    // ---- big numbers ----
+    const bigNumbers = [];
+    {
+      const rows = sh.producao.aco_gusa, latest = this.last(rows), prev12 = this.findAt(rows, 12);
+      const growth = prev12 ? this.pctChange(latest.aco_bruto, prev12.aco_bruto) : null;
+      bigNumbers.push({ label: 'Produção de aço bruto', value: this.fmtCompact(latest.aco_bruto) + ' t', hasDelta: growth != null, delta: growth != null ? this.fmtPct(growth, true) + ' em 12 meses' : '', deltaColor: growth >= 0 ? GREEN : RED, context: this.monthLabel(latest.ano * 100 + latest.mes, true) + ' · dado nacional' });
+    }
+    {
+      const rows = s.rais.uf_yearly_total, latest = this.last(rows), prev = this.findAt(rows, 1);
+      const growth = prev ? this.pctChange(latest.vinculos, prev.vinculos) : null;
+      bigNumbers.push({ label: 'Emprego no setor', value: this.fmtFull(latest.vinculos) + ' vínculos', hasDelta: growth != null, delta: growth != null ? this.fmtPct(growth, true) + ' vs ' + prev.ano : '', deltaColor: growth >= 0 ? GREEN : RED, context: latest.ano + ' · ' + this.fmtFull(latest.estabelecimentos) + ' estabelecimentos (RAIS)' });
+    }
+    {
+      const rows = sh.financeiro.fundicao_24_5, latest = this.last(rows), prev = this.findAt(rows, 1);
+      const growth = prev ? this.pctChange(latest.receita_liquida_total, prev.receita_liquida_total) : null;
+      bigNumbers.push({ label: 'Receita líquida do setor', value: this.fmtBrl(latest.receita_liquida_total * 1000), hasDelta: growth != null, delta: growth != null ? this.fmtPct(growth, true) + ' vs ' + prev.ano : '', deltaColor: growth >= 0 ? GREEN : RED, context: latest.ano + ' · grupo Fundição (24.5), IBGE/PIA' });
+    }
+    {
+      const anoRef = s.comex.top_paises_latest.ano;
+      const row = s.comex.yearly.find(r => r.ano === anoRef) || this.last(s.comex.yearly);
+      const saldo = row.exportacao_usd - row.importacao_usd;
+      bigNumbers.push({ label: 'Saldo comercial', value: this.fmtUsd(Math.abs(saldo)), hasDelta: true, delta: saldo >= 0 ? 'Superávit' : 'Déficit', deltaColor: saldo >= 0 ? GREEN : RED, context: row.ano + ' · exportou ' + this.fmtUsd(row.exportacao_usd) + ', importou ' + this.fmtUsd(row.importacao_usd) });
+    }
+    {
+      const rows = s.energia.exato_monthly, latest = this.last(rows), prev12 = this.findAt(rows, 12);
+      const growth = prev12 ? this.pctChange(latest.consumo_acl_mwh, prev12.consumo_acl_mwh) : null;
+      bigNumbers.push({ label: 'Consumo de energia (livre)', value: this.fmtMwh(latest.consumo_acl_mwh), hasDelta: growth != null, delta: growth != null ? this.fmtPct(growth, true) + ' em 12 meses' : '', deltaColor: growth <= 0 ? GREEN : RED, context: this.monthLabel(latest.ano * 100 + latest.mes, true) });
+    }
+
+    // ---- 01 producao ----
+    const idx = this.filterMonthly(sh.producao.metalurgia_indice, lo, hi);
+    const catIdx = idx.map(r => r.ano * 100 + r.mes);
+    const chartProducaoIndice = this.buildLineChart({ categories: catIdx, formatX: (k, long) => this.monthLabel(k, long), formatY: n => this.fmtFull1(n), height: 220, series: [
+      { label: 'Índice bruto', color: SLATE, values: idx.map(r => r.indice_bruto) },
+      { label: 'Dessazonalizado', color: RED, values: idx.map(r => r.indice_dessaz) },
+    ] });
+    const ag = this.filterMonthly(sh.producao.aco_gusa, lo, hi);
+    const catAg = ag.map(r => r.ano * 100 + r.mes);
+    const chartProducaoAcoGusa = this.buildLineChart({ categories: catAg, formatX: (k, long) => this.monthLabel(k, long), formatY: n => this.fmtCompact(n), height: 220, series: [
+      { label: 'Aço bruto', color: CHARCOAL, values: ag.map(r => r.aco_bruto), area: true },
+      { label: 'Ferro-gusa', color: SLATE, values: ag.map(r => r.ferro_gusa) },
+    ] });
+    const latestAg = this.last(sh.producao.aco_gusa), prevAg12 = this.findAt(sh.producao.aco_gusa, 12);
+    const growthAg = prevAg12 ? this.pctChange(latestAg.aco_bruto, prevAg12.aco_bruto) : null;
+    const producaoNarrative = growthAg == null ? 'Acompanhe abaixo a evolução mensal da produção física de aço, ferro-gusa e do índice geral da metalurgia no Brasil.' :
+      `Nos últimos 12 meses, a produção de aço bruto no Brasil ${growthAg >= 0 ? 'cresceu' : 'caiu'} ${this.fmtFull1(Math.abs(growthAg))}%. O índice geral da metalurgia acompanha o mesmo ritmo da atividade industrial nacional.`;
+
+    // ---- 02 emprego ----
+    let raisRows, raisLabel;
+    if (uf === 'ALL') { raisRows = s.rais.uf_yearly_total; raisLabel = 'Vínculos (Brasil)'; }
+    else { raisRows = s.rais.uf_yearly.filter(r => r.uf === uf).map(r => ({ ano: r.ano, vinculos: r.vinculos })); raisLabel = 'Vínculos (' + uf + ')'; }
+    raisRows = this.filterAnnual(raisRows, lo, hi);
+    const chartEmpregoRais = this.buildLineChart({ categories: raisRows.map(r => r.ano), formatY: n => this.fmtFull(n), height: 200, series: [{ label: raisLabel, color: SLATE, values: raisRows.map(r => r.vinculos), area: true }] });
+
+    const cagedRows = this.filterMonthly(s.caged.tipo_movimentacao_monthly, lo, hi);
+    const chartEmpregoCaged = this.buildBarChart({ categories: cagedRows.map(r => r.ano * 100 + r.mes), formatX: (k, long) => this.monthLabel(k, long), formatY: n => this.fmtCompact(n), height: 200, series: [
+      { label: 'Admissões', color: SLATE, values: cagedRows.map(r => r.admissoes) },
+      { label: 'Desligamentos', color: MAROON, values: cagedRows.map(r => -r.desligamentos) },
+    ] });
+
+    const esc = s.rais.escolaridade_latest;
+    const empregoEscolaridadeSub = 'Retrato de ' + esc.ano;
+    const rankEscolaridadeVm = this.buildRank(esc.items.slice(0, 8).map(i => ({ label: this.titleCasePt(i.categoria), value: i.frequencia })), n => this.fmtFull(n), SLATE);
+    const ocup = s.rais.ocupacao_agrupada_latest;
+    const empregoOcupacaoSub = 'Retrato de ' + ocup.ano;
+    const rankOcupacaoVm = this.buildRank(ocup.items.slice(0, 8).map(i => ({ label: this.titleCasePt(i.categoria), value: i.frequencia })), n => this.fmtFull(n), SLATE);
+
+    const totalLatest = this.last(s.rais.uf_yearly_total);
+    const ufCount = new Set(s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano && r.estabelecimentos > 0).map(r => r.uf)).size;
+    const empregoNarrative = `Em ${totalLatest.ano}, o setor empregava ${this.fmtFull(totalLatest.vinculos)} pessoas, distribuídas por ${ufCount} estados. Entre 2008 e 2019 (janela coberta pelo CAGED), é possível ver o ritmo mensal de contratações e desligamentos.`;
+
+    // ---- 03 financeiro ----
+    const pia = this.filterAnnual(sh.financeiro.fundicao_24_5, lo, hi);
+    const chartFinanceiroPia = this.buildLineChart({ categories: pia.map(r => r.ano), formatY: n => this.fmtBrl(n), height: 220, series: [
+      { label: 'Receita líquida', color: CHARCOAL, values: pia.map(r => r.receita_liquida_total * 1000) },
+      { label: 'Custos e despesas', color: MAROON, values: pia.map(r => r.custos_despesas_totais * 1000) },
+    ] });
+    const bndesY = this.filterAnnual(s.bndes.yearly, lo, hi);
+    const chartFinanceiroBndes = this.buildBarChart({ categories: bndesY.map(r => r.ano), formatY: n => this.fmtBrl(n), height: 170, series: [{ label: 'Desembolsado', color: RED, values: bndesY.map(r => r.valor_desembolsado) }] });
+    const rankBndesUfVm = this.buildRank(s.bndes.uf_total.slice(0, 8).map(i => ({ label: i.nome_uf, value: i.valor_desembolsado, color: i.uf === uf ? RED : SLATE })), n => this.fmtBrl(n), SLATE);
+
+    const latestPia = this.last(sh.financeiro.fundicao_24_5), prevPia = this.findAt(sh.financeiro.fundicao_24_5, 1);
+    const growthPia = prevPia ? this.pctChange(latestPia.receita_liquida_total, prevPia.receita_liquida_total) : null;
+    const financeiroNarrative = `Em ${latestPia.ano}, o grupo Fundição faturou ${this.fmtBrl(latestPia.receita_liquida_total * 1000)}${growthPia != null ? ' (' + this.fmtPct(growthPia, true) + ' vs ' + prevPia.ano + ')' : ''}. A distância entre receita e custos no gráfico mostra a margem operacional do setor.`;
+
+    // ---- 04 comex ----
+    const ufAvailable = new Set(s.comex.uf_yearly.map(r => r.uf));
+    let comexRows, comexUfNote = '';
+    if (uf === 'ALL' || !ufAvailable.has(uf)) {
+      comexRows = this.filterAnnual(s.comex.yearly, lo, hi);
+      if (uf !== 'ALL') comexUfNote = 'Estado sem dado detalhado nesta base — mostrando total nacional do setor.';
+    } else {
+      const ufRows = s.comex.uf_yearly.filter(r => r.uf === uf);
+      const years = this.annualCategories([ufRows]);
+      comexRows = years.map(ano => { const exp = ufRows.find(r => r.ano === ano && r.fluxo === 'Exportação'); const imp = ufRows.find(r => r.ano === ano && r.fluxo === 'Importação'); return { ano, exportacao_usd: exp ? exp.valor_usd : 0, importacao_usd: imp ? imp.valor_usd : 0 }; });
+      comexRows = this.filterAnnual(comexRows, lo, hi);
+    }
+    const chartComexBrasil = this.buildBarChart({ categories: comexRows.map(r => r.ano), formatY: n => this.fmtUsd(n), height: 220, series: [
+      { label: 'Exportação', color: SLATE, values: comexRows.map(r => r.exportacao_usd) },
+      { label: 'Importação', color: MAROON, values: comexRows.map(r => -r.importacao_usd) },
+    ] });
+
+    const ctBr = this.filterAnnual(s.comtrade.brazil_yearly, lo, hi), ctWorld = this.filterAnnual(s.comtrade.world_yearly, lo, hi);
+    const catCt = this.annualCategories([ctBr, ctWorld]);
+    const chartComexMundo = this.buildLineChart({ categories: catCt, formatY: n => this.fmtUsd(n), height: 220, series: [
+      { label: 'Exportação do Brasil', color: CHARCOAL, values: this.seriesAnnual(ctBr, 'export_usd', catCt) },
+      { label: 'Exportação mundial (contexto)', color: GRAY, values: this.seriesAnnual(ctWorld, 'export_usd', catCt) },
+    ] });
+
+    const top = s.comex.top_paises_latest;
+    const comexPaisesSub = 'Exportação — ' + top.ano;
+    const rankComexPaisesVm = this.buildRank(top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), n => this.fmtUsd(n), SLATE);
+
+    const anoRef = top.ano, rowRef = s.comex.yearly.find(r => r.ano === anoRef);
+    const saldoRef = rowRef ? rowRef.exportacao_usd - rowRef.importacao_usd : null;
+    const ctRefBr = s.comtrade.brazil_yearly.find(r => r.ano === s.comtrade.top_partners_latest.ano);
+    const ctRefWorld = s.comtrade.world_yearly.find(r => r.ano === s.comtrade.top_partners_latest.ano);
+    const share = ctRefBr && ctRefWorld && ctRefWorld.export_usd ? (ctRefBr.export_usd / ctRefWorld.export_usd) * 100 : null;
+    const comexNarrative = rowRef ? `Em ${anoRef}, o setor exportou ${this.fmtUsd(rowRef.exportacao_usd)} e importou ${this.fmtUsd(rowRef.importacao_usd)} — ${saldoRef >= 0 ? 'superávit' : 'déficit'} de ${this.fmtUsd(Math.abs(saldoRef))}.` + (share != null ? ` No comércio mundial desses produtos, o Brasil responde por cerca de ${this.fmtFull1(share)}%.` : '') : 'Explore a evolução do comércio exterior do setor abaixo.';
+
+    // ---- 05 energia ----
+    const exato = this.filterMonthly(s.energia.exato_monthly, lo, hi), aprox = this.filterMonthly(sh.energia_metalurgia_aproximado, lo, hi);
+    const catEn = this.monthlyCategories([exato, aprox]);
+    const chartEnergia = this.buildLineChart({ categories: catEn, formatX: (k, long) => this.monthLabel(k, long), formatY: n => this.fmtMwh(n), height: 240, series: [
+      { label: 'Consumo do setor (ACL)', color: CHARCOAL, values: this.seriesMonthly(exato, 'consumo_acl_mwh', catEn), area: true },
+      { label: 'Metalurgia (contexto)', color: GRAY, values: this.seriesMonthly(aprox, 'consumo_livre_acl', catEn) },
+    ] });
+    const rowsEn = s.energia.exato_monthly, latestEn = this.last(rowsEn), prevEn12 = this.findAt(rowsEn, 12);
+    const growthEn = prevEn12 ? this.pctChange(latestEn.consumo_acl_mwh, prevEn12.consumo_acl_mwh) : null;
+    const energiaNarrative = growthEn == null ? `O consumo de energia no mercado livre do setor foi de ${this.fmtMwh(latestEn.consumo_acl_mwh)} em ${this.monthLabel(latestEn.ano * 100 + latestEn.mes, true)}.` :
+      `O consumo de energia no mercado livre do setor foi de ${this.fmtMwh(latestEn.consumo_acl_mwh)} em ${this.monthLabel(latestEn.ano * 100 + latestEn.mes, true)}, variação de ${this.fmtPct(growthEn, true)} em 12 meses.`;
+
+    // ---- gargalos ----
+    const gargalos = [];
+    {
+      const total = esc.items.reduce((a, i) => a + i.frequencia, 0);
+      const baixaEsc = esc.items.filter(i => /analfabeto|fundamental|5ª/i.test(i.categoria)).reduce((a, i) => a + i.frequencia, 0);
+      const pct = total ? (baixaEsc / total) * 100 : null;
+      gargalos.push({ title: 'Mão de obra qualificada é escassa', text: 'Boa parte da força de trabalho do setor ainda não completou o ensino médio, o que limita a adoção de processos mais técnicos e automatizados.', evidenceHtml: { __html: pct != null ? `<strong>${this.fmtFull1(pct)}%</strong> dos trabalhadores (${esc.ano}) têm no máximo o ensino fundamental completo.` : '' } });
+    }
+    {
+      const items = s.caged.tipo_movimentacao_breakdown_total;
+      const total = items.reduce((a, i) => a + i.quantidade, 0);
+      const rot = items.filter(i => /reemprego|a pedido|prazo det/i.test(i.tipo)).reduce((a, i) => a + i.quantidade, 0);
+      const pct = total ? (rot / total) * 100 : null;
+      gargalos.push({ title: 'Alta rotatividade de mão de obra', text: 'Muitas contratações e desligamentos são de curto prazo ou por decisão do próprio trabalhador — sinal de dificuldade em reter equipe treinada.', evidenceHtml: { __html: pct != null ? `<strong>${this.fmtFull1(pct)}%</strong> das movimentações registradas entre 2008–2019 foram reempregos, contratos por prazo determinado ou pedidos de desligamento.` : '' } });
+    }
+    {
+      const portes = s.bndes.porte_total, total = portes.reduce((a, i) => a + i.valor_desembolsado, 0);
+      const grande = portes.find(i => i.porte === 'GRANDE'); const pct = grande && total ? (grande.valor_desembolsado / total) * 100 : null;
+      const top3 = s.bndes.uf_total.slice(0, 3).reduce((a, i) => a + i.valor_desembolsado, 0); const pctUf = total ? (top3 / total) * 100 : null;
+      gargalos.push({ title: 'Acesso a crédito concentrado', text: 'O crédito do BNDES para o setor está concentrado em poucas empresas e estados, deixando fabricantes menores e de outras regiões com menos acesso a financiamento.', evidenceHtml: { __html: (pct != null ? `<strong>${this.fmtFull1(pct)}%</strong> dos desembolsos do BNDES (2002–2026) foram para empresas de grande porte. ` : '') + (pctUf != null ? `Os 3 principais estados concentram <strong>${this.fmtFull1(pctUf)}%</strong> do total.` : '') } });
+    }
+    {
+      const row = s.comex.yearly.find(r => r.ano === top.ano); const saldoG = row ? row.exportacao_usd - row.importacao_usd : null;
+      const medidas = sh.decom.filter(d => /medida compensat|antidumping|prorrogad/i.test(d.status)).length;
+      gargalos.push({ title: 'Concorrência com produtos importados', text: saldoG != null && saldoG < 0 ? 'O Brasil compra mais desse tipo de produto do exterior do que vende, o que pressiona os preços e a competitividade da produção nacional.' : 'Mesmo com saldo comercial favorável, o setor convive com medidas de defesa comercial contra práticas desleais de importação.', evidenceHtml: { __html: (saldoG != null ? `Saldo comercial de <strong>${this.fmtUsd(Math.abs(saldoG))}</strong> (${saldoG < 0 ? 'déficit' : 'superávit'}) em ${top.ano}. ` : '') + (medidas > 0 ? `Há <strong>${medidas}</strong> medida(s) de defesa comercial ativa(s) contra importados (fonte: DECOM/GECEX).` : 'Não há medidas de defesa comercial ativas registradas nesta base.') } });
+    }
+
+    bigNumbers.forEach((t, i) => { t.borderColor = i === 0 ? 'transparent' : '#E7E9EC'; });
+    gargalos.forEach((g, i) => { g.num = String(i + 1).padStart(2, '0'); });
+
+    const pdiRows = [
+      { bloco: 'Produção física', base: 'IBGE — PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', cobertura: '1980–2026 (mensal)', obs: 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.' },
+      { bloco: 'Emprego e salários', base: 'RAIS (vínculos, escolaridade, ocupação)', cobertura: '2006–2025 (anual)', obs: 'Quebra metodológica em 2022 (eSocial).' },
+      { bloco: 'Emprego e salários', base: 'CAGED (saldo, tipo de movimentação por UF/CNAE)', cobertura: '2008–2019 (mensal)', obs: 'Não inclui o Novo CAGED (pós-2020).' },
+      { bloco: 'Financeiro', base: 'IBGE — PIA-Empresa (Fundição 24.5)', cobertura: '2007–2023 (anual)', obs: 'Fundição 24.5 combina 2451+2452.' },
+      { bloco: 'Financeiro', base: 'BNDES — desembolsos por UF/porte/instrumento', cobertura: '2002–2026 (anual)', obs: 'Específico por CNAE.' },
+      { bloco: 'Comércio exterior', base: 'MDIC — Comex Stat', cobertura: '2016–2026 (anual)', obs: 'Dado oficial brasileiro, específico por CNAE.' },
+      { bloco: 'Comércio exterior', base: 'UN Comtrade (código HS)', cobertura: '2015–2024 (anual)', obs: 'Proxy por HS, usado só para contexto.' },
+      { bloco: 'Energia', base: 'CCEE — consumo no mercado livre', cobertura: 'abr/2024–mai/2026 (mensal)', obs: 'Janela curta.' },
+      { bloco: 'Contexto/gargalos', base: 'DECOM/GECEX', cobertura: 'Histórico', obs: 'Tabela estática de medidas de defesa comercial.' },
+    ];
+
+    return {
+      loading: false, ready: true,
+      periodMax: CURRENT_YEAR, periodLo: lo, periodHi: hi,
+      onPeriodLoChange: (e) => { const v = Math.min(+e.target.value, this.state.hi); this.setState({ lo: v }); },
+      onPeriodHiChange: (e) => { const v = Math.max(+e.target.value, this.state.lo); this.setState({ hi: v }); },
+      onUfChange: (e) => this.setState({ uf: e.target.value }),
+      ufOptions: data.meta.uf_lista, uf,
+      ufFilterNote: '',
+      onSelectSector2451: () => this.setState({ sector: '2451' }),
+      onSelectSector2452: () => this.setState({ sector: '2452' }),
+      sector2451Color: sector === '2451' ? '#FDFFFF' : GRAY, sector2451BorderColor: sector === '2451' ? RED : 'rgba(255,255,255,0.18)', sector2451Bg: sector === '2451' ? RED : 'transparent',
+      sector2452Color: sector === '2452' ? '#FDFFFF' : GRAY, sector2452BorderColor: sector === '2452' ? RED : 'rgba(255,255,255,0.18)', sector2452Bg: sector === '2452' ? RED : 'transparent',
+      bigNumbers,
+      producaoNarrative, chartProducaoIndice, chartProducaoAcoGusa,
+      empregoNarrative, chartEmpregoRais, chartEmpregoCaged, empregoEscolaridadeSub, empregoOcupacaoSub,
+      rankEscolaridade: rankEscolaridadeVm.items, rankEscolaridadeEmpty: rankEscolaridadeVm.isEmpty,
+      rankOcupacao: rankOcupacaoVm.items, rankOcupacaoEmpty: rankOcupacaoVm.isEmpty,
+      financeiroNarrative, chartFinanceiroPia, chartFinanceiroBndes,
+      rankBndesUf: rankBndesUfVm.items, rankBndesUfEmpty: rankBndesUfVm.isEmpty,
+      comexNarrative, chartComexBrasil, chartComexMundo, comexPaisesSub, comexUfNote,
+      rankComexPaises: rankComexPaisesVm.items, rankComexPaisesEmpty: rankComexPaisesVm.isEmpty,
+      energiaNarrative, chartEnergia,
+      gargalos, pdiRows,
+      hasTooltip: !!tooltip,
+      tooltipTitle: tooltip ? tooltip.title : '', tooltipRows: tooltip ? tooltip.rows : [],
+      tooltipLeft: tooltip ? (tooltip.x + 14) + 'px' : '0px', tooltipTop: tooltip ? (tooltip.y + 14) + 'px' : '0px',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<div style="width:100%">
+  <sc-if value="{{ vm.empty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:34px 4px;text-align:center;font-size:13px;color:#8D99AE;font-style:italic;font-family:Arial, sans-serif">Sem dados disponíveis para o período selecionado.</div>
+  </sc-if>
+  <sc-if value="{{ vm.notEmpty }}" hint-placeholder-val="{{ true }}">
+    <svg viewBox="0 0 600 {{ vm.height }}" style="display:block;width:100%;height:auto;overflow:visible" role="img">
+      <sc-for list="{{ vm.ticks }}" as="t" hint-placeholder-count="4">
+        <line x1="52" x2="586" y1="{{ t.y }}" y2="{{ t.y }}" stroke="{{ t.stroke }}" stroke-width="1"></line>
+        <text x="46" y="{{ t.ty }}" text-anchor="end" style="fill:#A7AEB8;font-size:10px;font-family:Arial, sans-serif">{{ t.label }}</text>
+      </sc-for>
+      <sc-for list="{{ vm.xLabels }}" as="xl" hint-placeholder-count="4">
+        <text x="{{ xl.x }}" y="{{ vm.xLabelY }}" text-anchor="middle" style="fill:#8D99AE;font-size:10px;font-family:Arial, sans-serif">{{ xl.label }}</text>
+      </sc-for>
+      <sc-for list="{{ vm.marks }}" as="m" hint-placeholder-count="3">
+        <sc-if value="{{ m.isArea }}" hint-placeholder-val="{{ false }}">
+          <path d="{{ m.d }}" fill="{{ m.color }}" opacity="0.08" stroke="none"></path>
+        </sc-if>
+        <sc-if value="{{ m.isLine }}" hint-placeholder-val="{{ false }}">
+          <path d="{{ m.d }}" fill="none" stroke="{{ m.color }}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+        </sc-if>
+        <sc-if value="{{ m.isBar }}" hint-placeholder-val="{{ false }}">
+          <path d="{{ m.d }}" fill="{{ m.color }}"></path>
+        </sc-if>
+        <sc-if value="{{ m.isPoint }}" hint-placeholder-val="{{ false }}">
+          <circle cx="{{ m.cx }}" cy="{{ m.cy }}" r="3.5" fill="{{ m.color }}" stroke="#FDFFFF" stroke-width="2"></circle>
+        </sc-if>
+      </sc-for>
+      <sc-for list="{{ vm.hitCols }}" as="h" hint-placeholder-count="4">
+        <rect x="{{ h.x }}" y="14" width="{{ h.width }}" height="{{ vm.innerH }}" fill="transparent" style="cursor:crosshair" onMouseEnter="{{ h.onEnter }}" onMouseMove="{{ h.onEnter }}" onMouseLeave="{{ h.onLeave }}" onFocus="{{ h.onEnter }}" onBlur="{{ h.onLeave }}" tabindex="0"></rect>
+      </sc-for>
+    </svg>
+    <sc-if value="{{ vm.hasLegend }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:10px;font-family:Arial, sans-serif">
+        <sc-for list="{{ vm.legend }}" as="lg" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="width:14px;height:2px;display:inline-block;flex-shrink:0;background:{{ lg.color }}"></span>
+            <span style="font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:#34495E">{{ lg.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:240},&quot;vm&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;}}"></script>
+</body>
+</html>

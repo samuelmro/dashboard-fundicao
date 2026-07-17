@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do Setor de Fundição — CNAE 2451/2452</title>
+<meta name="description" content="Painel executivo do setor de fundição no Brasil: produção, emprego, financeiro, comércio exterior e energia.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-title">
+      <h1>Painel do Setor de Fundição</h1>
+      <p>Um raio-x do setor em números simples: produção, emprego, finanças, comércio exterior e energia. Use o seletor ao lado para trocar de segmento.</p>
+    </div>
+    <div class="sector-switch" id="sector-switch" role="tablist" aria-label="Segmento">
+      <button type="button" data-sector="2451" class="active" role="tab" aria-selected="true">Ferro e aço (2451)</button>
+      <button type="button" data-sector="2452" role="tab" aria-selected="false">Não ferrosos (2452)</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="big-numbers" class="big-numbers" aria-label="Resumo executivo"></section>
+
+  <div class="filter-row">
+    <div class="filter-group">
+      <label for="period-lo">Período</label>
+      <span id="period-slider-mount"></span>
+      <span class="range-labels" id="period-labels">2016 – 2026</span>
+    </div>
+    <div class="filter-group">
+      <label for="uf-select">Estado</label>
+      <select id="uf-select">
+        <option value="ALL">Brasil (todos os estados)</option>
+      </select>
+      <span class="filter-note" id="uf-filter-note"></span>
+    </div>
+  </div>
+
+  <!-- ============ 1. PRODUÇÃO FÍSICA ============ -->
+  <section class="block" id="block-producao">
+    <div class="block-head">
+      <h2>🏭 Produção física</h2>
+      <p class="narrative" id="producao-narrative">Carregando...</p>
+      <p class="block-note">Dado nacional (IBGE/PIM-PF) — não há abertura por estado, e vale igualmente para os dois segmentos (2451/2452).</p>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Índice de produção da metalurgia</h3>
+        <p class="card-sub">Base 100, ajustado sazonalmente</p>
+        <div id="chart-producao-indice"></div>
+      </div>
+      <div class="card">
+        <h3>Produção física — aço e ferro-gusa</h3>
+        <p class="card-sub">Mil toneladas / mês</p>
+        <div id="chart-producao-acogusa"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. EMPREGO E SALÁRIOS ============ -->
+  <section class="block" id="block-emprego">
+    <div class="block-head">
+      <h2>👷 Emprego e salários</h2>
+      <p class="narrative" id="emprego-narrative">Carregando...</p>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Vínculos empregatícios por ano</h3>
+        <p class="card-sub">RAIS — 2006–2025</p>
+        <div id="chart-emprego-rais"></div>
+      </div>
+      <div class="card">
+        <h3>Admissões x desligamentos por mês</h3>
+        <p class="card-sub">CAGED — jan/2008 a dez/2019 (não continua até hoje)</p>
+        <div id="chart-emprego-caged"></div>
+      </div>
+      <div class="card">
+        <h3>Escolaridade da mão de obra</h3>
+        <p class="card-sub" id="emprego-escolaridade-sub">Retrato do último ano</p>
+        <div id="chart-emprego-escolaridade"></div>
+      </div>
+      <div class="card">
+        <h3>Principais ocupações</h3>
+        <p class="card-sub" id="emprego-ocupacao-sub">Retrato do último ano</p>
+        <div id="chart-emprego-ocupacao"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FINANCEIRO ============ -->
+  <section class="block" id="block-financeiro">
+    <div class="block-head">
+      <h2>💰 Financeiro</h2>
+      <p class="narrative" id="financeiro-narrative">Carregando...</p>
+      <p class="block-note">Receita e custos cobrem o grupo Fundição (24.5) inteiro — a fonte não permite separar 2451 de 2452 nessa parte. Os desembolsos do BNDES abaixo já são específicos do segmento selecionado.</p>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Receita líquida x custos totais</h3>
+        <p class="card-sub">Grupo Fundição (24.5) — anual</p>
+        <div id="chart-financeiro-pia"></div>
+      </div>
+      <div class="card">
+        <h3>Desembolsos do BNDES</h3>
+        <p class="card-sub">Total nacional por ano</p>
+        <div id="chart-financeiro-bndes"></div>
+        <p class="filter-note">Ranking por estado (acumulado no período todo):</p>
+        <div id="rank-financeiro-bndes-uf"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. COMÉRCIO EXTERIOR ============ -->
+  <section class="block" id="block-comex">
+    <div class="block-head">
+      <h2>🌎 Comércio exterior</h2>
+      <p class="narrative" id="comex-narrative">Carregando...</p>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Exportação x importação</h3>
+        <p class="card-sub">Brasil — US$ FOB por ano</p>
+        <div id="chart-comex-brasil"></div>
+        <p class="filter-note" id="comex-uf-note"></p>
+      </div>
+      <div class="card">
+        <h3>Brasil no comércio mundial</h3>
+        <p class="card-sub">Contexto global — sem abertura por estado</p>
+        <div id="chart-comex-mundo"></div>
+      </div>
+      <div class="card chart-grid-span">
+        <h3>Principais países parceiros</h3>
+        <p class="card-sub" id="comex-paises-sub">Exportação — último ano completo</p>
+        <div id="rank-comex-paises"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. ENERGIA ============ -->
+  <section class="block" id="block-energia">
+    <div class="block-head">
+      <h2>⚡ Energia</h2>
+      <p class="narrative" id="energia-narrative">Carregando...</p>
+      <p class="block-note">Consumo no mercado livre (CCEE) — dado nacional, sem abertura por estado, disponível só a partir de abr/2024.</p>
+    </div>
+    <div class="chart-grid single">
+      <div class="card">
+        <h3>Consumo de energia no mercado livre</h3>
+        <p class="card-sub">MWh / mês</p>
+        <div id="chart-energia"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GARGALOS ============ -->
+  <section class="block" id="block-gargalos">
+    <div class="block-head">
+      <h2>🚧 Gargalos do setor</h2>
+      <p class="narrative">Pontos de atenção identificados a partir dos dados, com a evidência por trás de cada um.</p>
+    </div>
+    <div class="gargalos-grid" id="gargalos-grid"></div>
+  </section>
+
+  <!-- ============ P&D / METODOLOGIA ============ -->
+  <details class="pdi-section" id="pdi">
+    <summary><span class="chevron">▶</span> Pesquisa, Desenvolvimento &amp; Inovação — fontes e metodologia</summary>
+    <div class="pdi-body">
+      <p>Esta seção documenta a origem de cada indicador, o período coberto e limitações técnicas relevantes. O conteúdo acima foi escrito para leitura rápida; aqui está o detalhe por trás dos números.</p>
+      <h4>Fontes por bloco</h4>
+      <div class="pdi-table-wrap">
+        <table class="pdi-table" id="pdi-table">
+          <thead><tr><th>Bloco</th><th>Base de dados</th><th>Cobertura</th><th>Observação técnica</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <h4>Limitações gerais</h4>
+      <p>• RAIS: a partir de 2022 a metodologia de coleta mudou (base eSocial); os perfis detalhados (escolaridade, ocupação, tempo de emprego, massa salarial) têm uma quebra de série entre 2021 e 2022, por isso são tratados como retrato do último ano, não como série longa comparável.</p>
+      <p>• CAGED: a série mensal por UF/CNAE disponível cobre apenas jan/2008 a dez/2019 (Novo CAGED pós-2020 não incluído nesta base). Por isso aparece como painel à parte, sem tentar emendar com RAIS.</p>
+      <p>• Comtrade (comércio mundial): classificação por código HS como proxy do CNAE, já que o Comtrade não reporta por CNAE. Usado apenas para contexto (Brasil x Mundo), não como número oficial de comércio exterior do Brasil — para isso, ver Comex (MDIC).</p>
+      <p>• Dados financeiros (PIA/IBGE): a base "Fundição 24.5" reúne 2451 e 2452 sem abertura entre eles; é usada nos dois segmentos com a mesma ressalva.</p>
+      <p>• Energia (CCEE): consumo exato por CNAE só está disponível a partir de abr/2024; a série "Metalurgia e Produtos de Metal" é uma categoria mais ampla usada como contexto adicional.</p>
+      <p>• Todos os valores monetários estão em valores correntes (nominais), sem correção por inflação.</p>
+    </div>
+  </details>
+
+  <footer class="site-footer">
+    <p id="footer-generated">Dados consolidados de fontes públicas (IBGE, RAIS/CAGED, MDIC/Comex Stat, UN Comtrade, CCEE, BNDES, DECOM/GECEX).</p>
+  </footer>
+
+</div>
+
+<script src="js/charts.js"></script>
+<script src="js/range-slider.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

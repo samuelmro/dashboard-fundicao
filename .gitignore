@@ -1,0 +1,13 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS / editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store

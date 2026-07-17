@@ -1,0 +1,386 @@
+"Ano";"UF";"Porte";"Instrumento";"tipo_operacao";"cnae_subclasse";"Valor_Contratado";"Valor_Desembolsado"
+2026;" RS";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";102900;0
+2026;" SC";"MÉDIA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";216500;0
+2026;" SC";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";1000000;0
+2026;" SP";"PEQUENA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";100000;0
+2025;" MG";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO  ÔNIBUS E CAMINHÃO";"Automáticas (Indiretas)";"2452";384000;384000
+2025;" PR";"MÉDIA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";115000;115000
+2025;" SC";"GRANDE";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";10000000;10000000
+2025;" SC";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";271500;271500
+2025;" SP";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";4584587;4584587
+2025;" SP";"PEQUENA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";139000;139000
+2024;" AL";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO  ÔNIBUS E CAMINHÃO";"Automáticas (Indiretas)";"2452";570000;570000
+2024;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";340000;340000
+2024;" MG";"PEQUENA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";400000;400000
+2024;" PR";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";5020000;5020000
+2024;" PR";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";130000;130000
+2024;" SC";"GRANDE";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";18000000;18000000
+2024;" SC";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";240000;240000
+2024;" SC";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";600000;600000
+2024;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";600000;600000
+2024;" SP";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";1247400;1247400
+2024;" SP";"PEQUENA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";700000;700000
+2024;"SC";"GRANDE";"PROGRAMA BNDES MAIS INOVAÇÃO";"Não Automáticas";"2452";46000000;0
+2023;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";154000;154000
+2023;" MG";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";6200000;6198909
+2023;" RS";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";128000;128000
+2023;" SC";"GRANDE";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";12000000;12000000
+2023;" SC";"MÉDIA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";696270;696270
+2023;" SC";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";2000000;2000000
+2023;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";708000;708000
+2023;" SP";"GRANDE";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";4500000;4500000
+2023;" SP";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";500000;479339
+2022;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";537750;537750
+2022;" RJ";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";700000;700000
+2022;" SC";"MÉDIA";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";2600000;2552892
+2022;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";926250;926250
+2022;" SP";"GRANDE";"MATERIAIS INDUSTRIALIZADOS";"Automáticas (Indiretas)";"2452";10000000;10000000
+2022;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO  ÔNIBUS E CAMINHÃO";"Automáticas (Indiretas)";"2452";520000;520000
+2022;" SP";"MÉDIA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";895710;894957
+2022;" SP";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";70000;70000
+2021;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";638250;638250
+2021;" RS";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";367503;367503
+2021;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";431250;431250
+2021;" SP";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";799316;799316
+2020;" GO";"MÉDIA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";200000;200000
+2020;" MG";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";150000;150000
+2020;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";322500;322500
+2020;" PR";"MICRO";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";22918;22918
+2020;" RS";"MICRO";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";100000;100000
+2020;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";100040;100040
+2020;" SC";"MICRO";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";250000;250000
+2020;" SC";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";100000;100000
+2020;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";442500;442500
+2020;" SP";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";225000;225000
+2020;"SP";"MÉDIA";"CAPACIDADE PRODUTIVA - DEMAIS INDÚSTRIA E SERVIÇOS";"Não Automáticas";"2452";25808000;25808000
+2019;" GO";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";352000;352000
+2019;" PR";"MICRO";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";500000;500000
+2019;" RJ";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";363750;363750
+2019;" RJ";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";494700;494700
+2019;" RS";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";280000;280000
+2019;" SC";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1045967;941967
+2019;" SC";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";460000;460000
+2019;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";262500;262500
+2019;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";125000;125000
+2019;" SP";"PEQUENA";"LINHA CRÉDITO PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";375000;375000
+2018;" MG";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";270000;270000
+2018;" RS";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";220500;220500
+2018;" SC";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";280000;280000
+2018;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";380000;380000
+2018;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1809800;1809800
+2018;" SP";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";262779;262779
+2017;" CE";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";110000;110000
+2017;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";3576962;3576902
+2017;" MG";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";5000000;5000000
+2017;" MG";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";81277;81182
+2017;" RS";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";252000;252000
+2017;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";420000;420000
+2017;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";45000;45000
+2017;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";151260;151007
+2017;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO  ÔNIBUS E CAMINHÃO";"Automáticas (Indiretas)";"2452";164800;164800
+2017;" SP";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";1300000;1300000
+2017;" SP";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";145000;145000
+2016;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";3825205;3825205
+2016;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";155000;155000
+2016;" PR";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";95000;95000
+2016;" RJ";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";577500;577500
+2016;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";1500000;1500000
+2016;" SC";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";95994;95890
+2016;" SC";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";500000;500000
+2016;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";427500;427500
+2015;" MG";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";2130672;2130672
+2015;" PR";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";200000;200000
+2015;" RS";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";150000;150000
+2015;" RS";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";140000;140000
+2015;" RS";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";106050;106050
+2015;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";726892;726892
+2015;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";130000;130000
+2015;" SP";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";181510;181510
+2015;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";181800;181800
+2015;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";930340;930340
+2014;" AM";"GRANDE";"INDÚSTRIA, AGROPECUÁRIA E INFRAESTRUTURA";"Automáticas (Indiretas)";"2452";1073237;766423
+2014;" AM";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";94000;94000
+2014;" AM";"GRANDE";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";107550;107550
+2014;" GO";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";291993;291993
+2014;" MG";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";25226771;13923671
+2014;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";61700;61700
+2014;" MG";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";260400;260400
+2014;" PR";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";195000;195000
+2014;" RO";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";396002;396002
+2014;" RS";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";384190;384190
+2014;" RS";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";145000;145000
+2014;" RS";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1150800;1150800
+2014;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";500000;500000
+2014;" RS";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";135000;135000
+2014;" SC";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";518300;518300
+2014;" SC";"GRANDE";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";499200;499200
+2014;" SC";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";89600;89600
+2014;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1098555;1098555
+2014;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";130252;130252
+2014;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1309632;1309632
+2014;" SP";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";577601;577601
+2014;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";504400;504400
+2014;" SP";"MÉDIA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";291870;291870
+2014;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";79000;79000
+2014;" SP";"PEQUENA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";252500;252500
+2014;"MG";"GRANDE";"INDÚSTRIA E SERVIÇOS DIFUSORES DE TECNOLOGIA";"Não Automáticas";"2452";24661412;22834616
+2014;"MG";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";650000;657364,65
+2014;"MG";"GRANDE";"LINHA DE APOIO À INDÚSTRIA 1";"Não Automáticas";"2452";46850000;49766736,49
+2014;"MG";"GRANDE";"MEIO AMBIENTE";"Não Automáticas";"2452";619000;628370,34
+2014;"MG";"GRANDE";"PSI - BK - Demais Itens";"Não Automáticas";"2452";41840588;22240000
+2013;" GO";"PEQUENA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";402000;402000
+2013;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";500000;500000
+2013;" MG";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1166668;1166668
+2013;" MG";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";117000;117000
+2013;" MG";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";366077;366077
+2013;" MG";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";607507;607507
+2013;" PR";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";670000;670000
+2013;" PR";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";188000;188000
+2013;" PR";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";786507;785793
+2013;" PR";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";59200;59200
+2013;" RJ";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";178500;178500
+2013;" RJ";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";3710980;3710980
+2013;" RS";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";100000;100000
+2013;" RS";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";9300;9300
+2013;" RS";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";2000000;2000000
+2013;" RS";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";516780;516780
+2013;" SC";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";210000;210000
+2013;" SC";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";217900;217900
+2013;" SC";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";400000;160000
+2013;" SC";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";808470;808470
+2013;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1902180;1902180
+2013;" SP";"GRANDE";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";539685;539685
+2013;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";145000;145000
+2013;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";338582;338582
+2013;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";21444920;21444920
+2013;" SP";"MÉDIA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";292400;292400
+2013;" SP";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";708000;708000
+2013;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";4622850;4622850
+2013;" SP";"PEQUENA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";189000;189000
+2012;" CE";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";312000;312000
+2012;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";522000;522000
+2012;" MG";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";125800;125800
+2012;" MG";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";279000;279000
+2012;" MG";"PEQUENA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";112000;112000
+2012;" PE";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";1500000;1500000
+2012;" PR";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";466382;466382
+2012;" RJ";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";301750;301750
+2012;" RO";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";185344;185344
+2012;" RS";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";266000;266000
+2012;" RS";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";140000;140000
+2012;" RS";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";298310;298310
+2012;" RS";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";132201;132201
+2012;" RS";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";900000;900000
+2012;" RS";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";172720;172720
+2012;" RS";"MÉDIA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";195000;195000
+2012;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";500000;500000
+2012;" RS";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";172400;172400
+2012;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";51244;51244
+2012;" SC";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";179345;179345
+2012;" SC";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";160000;160000
+2012;" SC";"MICRO";"MICRO, PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";221923;221923
+2012;" SC";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";45000;45000
+2012;" SC";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1696500;1696500
+2012;" SC";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1168800;1168800
+2012;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";5546398;5491798
+2012;" SP";"MICRO";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";124200;124200
+2012;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";366000;366000
+2012;" SP";"MICRO";"PROCAPCRED";"Automáticas (Indiretas)";"2452";10000;10000
+2012;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";598516;598516
+2012;" SP";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";212000;212000
+2012;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";50000;50000
+2012;" SP";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";560000;560000
+2012;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";599362;599362
+2012;" SP";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";1350000;1350000
+2012;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1700797;1700797
+2012;"IE";"GRANDE";"CAPACIDADE PRODUTIVA - Demais Indústrias e Agropecuária";"Não Automáticas";"2452";188926000,01;147423627,57
+2012;"IE";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";1848000;1634277,09
+2012;"IE";"GRANDE";"MEIO AMBIENTE";"Não Automáticas";"2452";5160000;5160000
+2011;" GO";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";248000;248000
+2011;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";150000;150000
+2011;" MG";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";167920;167920
+2011;" PR";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";5609758;5609758
+2011;" PR";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";200000;200000
+2011;" PR";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1085745;1085745
+2011;" RJ";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";110500;110500
+2011;" RJ";"MICRO";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";504000;504000
+2011;" RJ";"MICRO";"BNDES PER BR - Equalizado";"Automáticas (Indiretas)";"2452";704588;704672
+2011;" RS";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";486509;486509
+2011;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";200000;200000
+2011;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";370355;370355
+2011;" SC";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1362686;1362686
+2011;" SC";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";243000;243000
+2011;" SC";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";990000;990000
+2011;" SC";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";6315152;6315152
+2011;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";22608;22608
+2011;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";2658164;2658164
+2011;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";200000;200000
+2011;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1753200;1753200
+2011;" SP";"MICRO";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";94400;94400
+2011;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1799700;1799700
+2011;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";450000;450000
+2011;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";80100;80100
+2010;" GO";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";225250;225250
+2010;" MG";"PEQUENA";"PROCAPCRED";"Automáticas (Indiretas)";"2452";10000;10000
+2010;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";956434;956434
+2010;" PR";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";6728220;6728220
+2010;" PR";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";92500;92500
+2010;" PR";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";760000;760000
+2010;" PR";"PEQUENA";"MICRO, PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";301000;301000
+2010;" RS";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";158974;158974
+2010;" RS";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";550000;550000
+2010;" RS";"MÉDIA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";103500;103500
+2010;" RS";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";377476;376347
+2010;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";675259;652733
+2010;" SC";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";3927994;3769940
+2010;" SC";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";347800;347800
+2010;" SC";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";450000;450000
+2010;" SC";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";694460;694460
+2010;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";220619;220619
+2010;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1690750;1690750
+2010;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";400678;400678
+2010;" SP";"MÉDIA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";1000000;1000000
+2010;" SP";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";5527132;5527132
+2010;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";2668145;2668145
+2010;" SP";"PEQUENA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";10500;10500
+2010;"RJ";"GRANDE";"CAPACIDADE PRODUTIVA - Demais Indústrias e Agropecuária";"Não Automáticas";"2452";629903400,01;604283172,19
+2010;"RJ";"GRANDE";"CONCORRÊNCIA INTERNACIONAL -  Equipamentos e Serviços";"Não Automáticas";"2452";246754000;160000000
+2009;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";133124;133124
+2009;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";7030842;4200145
+2009;" PR";"GRANDE";"INDÚSTRIA, AGROPECUÁRIA E INFRAESTRUTURA";"Automáticas (Indiretas)";"2452";6689740;6689740
+2009;" PR";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";727016;727016
+2009;" PR";"MÉDIA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";14021058;14021058
+2009;" PR";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";147635;147635
+2009;" RS";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";355573;355573
+2009;" RS";"MICRO";"PROCAPCRED";"Automáticas (Indiretas)";"2452";10000;10000
+2009;" RS";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";40500;40500
+2009;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1228053;1228053
+2009;" SC";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";220800;220800
+2009;" SC";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";5224017;5224017
+2009;" SC";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";46080;46080
+2009;" SC";"PEQUENA";"MICRO, PEQUENAS E MÉDIAS EMPRESAS";"Automáticas (Indiretas)";"2452";801210;585000
+2009;" SC";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";1067377;1064958
+2009;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1743453;1743453
+2009;" SP";"GRANDE";"INDÚSTRIA, AGROPECUÁRIA E INFRAESTRUTURA";"Automáticas (Indiretas)";"2452";4038749;4038749
+2009;" SP";"GRANDE";"PEC BNDES";"Automáticas (Indiretas)";"2452";6000000;6000000
+2009;" SP";"GRANDE";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";5414114;5414114
+2009;" SP";"MICRO";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";50000;50000
+2009;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";244000;244000
+2009;" SP";"MÉDIA";"PEC BNDES";"Automáticas (Indiretas)";"2452";3000000;3000000
+2009;" SP";"MÉDIA";"PSI - BK - Ônibus e Caminhão";"Automáticas (Indiretas)";"2452";140000;140000
+2009;" SP";"PEQUENA";"PEC BNDES";"Automáticas (Indiretas)";"2452";500000;0
+2009;" SP";"PEQUENA";"PSI - BK - Demais Itens";"Automáticas (Indiretas)";"2452";70000;70000
+2009;"IE";"GRANDE";"CAPACIDADE PRODUTIVA - Demais Indústrias e Agropecuária";"Não Automáticas";"2452";304937000,01;298240816,33
+2009;"IE";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";2453000;2453258,48
+2009;"MG";"GRANDE";"CAPACIDADE PRODUTIVA - Demais Indústrias e Agropecuária";"Não Automáticas";"2452";28347000,01;27588619,8
+2009;"MG";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";256000;256000
+2009;"MG";"GRANDE";"PSI - BK - Demais Itens";"Não Automáticas";"2452";3228000;3228000
+2009;"RS";"GRANDE";"CAPACIDADE PRODUTIVA - Demais Indústrias e Agropecuária";"Não Automáticas";"2452";8353975,35;8270403
+2009;"RS";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";100000;99999,99
+2009;"SP";"GRANDE";"FUNTEC";"Não Automáticas";"2452";11608240,61;11608240,61
+2008;" AM";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";83200;83200
+2008;" BA";"MICRO";"MODERMAQ";"Automáticas (Indiretas)";"2452";164000;164000
+2008;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";156006;156006
+2008;" MG";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";321000;321000
+2008;" MG";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";141000;141000
+2008;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1639025;1638768
+2008;" PR";"MICRO";"CAPACIDADE PRODUTIVA NA INDÚSTRIA,AGRICULTURA,COMÉRCIO E SERVIÇOS";"Automáticas (Indiretas)";"2452";65032;65032
+2008;" RJ";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1948260;1948260
+2008;" RJ";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";42000;42000
+2008;" RS";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";134100;134100
+2008;" RS";"MICRO";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";268672;268672
+2008;" RS";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";183000;183000
+2008;" RS";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";100000;100000
+2008;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";95572;94780
+2008;" SC";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";6316834;6316834
+2008;" SC";"MICRO";"CAPACIDADE PRODUTIVA NA INDÚSTRIA,AGRICULTURA,COMÉRCIO E SERVIÇOS";"Automáticas (Indiretas)";"2452";100000;100000
+2008;" SC";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";3520000;3520000
+2008;" SC";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1406050;1406050
+2008;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1751419;1750555
+2008;" SP";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";4514826;4514826
+2008;" SP";"MICRO";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";14400;14400
+2008;" SP";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";527280;527280
+2008;" SP";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";350400;350400
+2008;" SP";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";165000;165000
+2008;"RS";"GRANDE";"CAPACIDADE PRODUTIVA NA INDÚSTRIA,AGRICULTURA,COMÉRCIO E SERVIÇOS";"Não Automáticas";"2452";83000000,01;84200603,97
+2007;" AM";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";56936;56936
+2007;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";207337;207337
+2007;" PR";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";216616;216616
+2007;" PR";"MÉDIA";"MODERMAQ";"Automáticas (Indiretas)";"2452";752253;752253
+2007;" PR";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";521879;521879
+2007;" RJ";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";504832;504832
+2007;" RJ";"MÉDIA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1816472;1816472
+2007;" RS";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";333000;333000
+2007;" RS";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";1149779;1149779
+2007;" SC";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";217800;217800
+2007;" SC";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";2138093;2138093
+2007;" SC";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";250000;250000
+2007;" SC";"PEQUENA";"CAPACIDADE PRODUTIVA NA INDÚSTRIA,AGRICULTURA,COMÉRCIO E SERVIÇOS";"Automáticas (Indiretas)";"2452";850000;850000
+2007;" SC";"PEQUENA";"MODERMAQ";"Automáticas (Indiretas)";"2452";136800;136800
+2007;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";2635730;2635100
+2007;" SP";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";1911624;1911624
+2007;" SP";"MÉDIA";"MODERMAQ";"Automáticas (Indiretas)";"2452";914400;914400
+2007;" SP";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";502000;502000
+2007;"RJ";"GRANDE";"CONCORRÊNCIA INTERNACIONAL -  Equipamentos e Serviços";"Não Automáticas";"2452";1477033586,01;1468885633,68
+2007;"RJ";"GRANDE";"INVESTIMENTO SOCIAL DE EMPRESAS (ISE)";"Não Automáticas";"2452";10500000;10548291,13
+2006;" AM";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";162180;162180
+2006;" MG";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";230400;230400
+2006;" MG";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";672535;672535
+2006;" MG";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";98000;98000
+2006;" MG";"PEQUENA";"BNDES GIRO";"Automáticas (Indiretas)";"2452";180000;180000
+2006;" RJ";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";72900;72900
+2006;" RS";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";130500;130500
+2006;" RS";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";95000;95000
+2006;" SC";"GRANDE";"MODERMAQ";"Automáticas (Indiretas)";"2452";627614;627614
+2006;" SC";"PEQUENA";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";377820;166500
+2006;" SC";"PEQUENA";"MODERMAQ";"Automáticas (Indiretas)";"2452";139410;139410
+2006;" SP";"GRANDE";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";2018887;2018887
+2006;" SP";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";9978236;9978236
+2006;" SP";"MICRO";"BK AQUISIÇÃO E COMERCIALIZAÇÃO - DEMAIS";"Automáticas (Indiretas)";"2452";341600;341600
+2006;" SP";"MICRO";"BNDES GIRO";"Automáticas (Indiretas)";"2452";42000;42000
+2006;" SP";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";40000;40000
+2006;" SP";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";431100;431100
+2006;" SP";"PEQUENA";"AQUISIÇÃO DE BENS DE CAPITAL: INDÚSTRIA, COMÉRCIO E SERVIÇOS";"Automáticas (Indiretas)";"2452";76800;76800
+2006;" SP";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";765600;765600
+2006;"RS";"GRANDE";"OUTROS";"Não Automáticas";"2452";29577738;0
+2005;" MG";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";361200;361200
+2005;" PR";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";99000;99000
+2005;" RJ";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";120000;120000
+2005;" RS";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";100960;100960
+2005;" RS";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";655441;655230
+2005;" SC";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";2711907;2628355
+2005;" SC";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";86856;86856
+2005;" SP";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";6892658;6892658
+2005;" SP";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";703100;678800
+2005;" SP";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";1032357;1032356
+2005;" SP";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";509175;509175
+2004;" ES";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";112759;112759
+2004;" MG";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";410400;410400
+2004;" MG";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";166164;166164
+2004;" MG";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";63000;63000
+2004;" PR";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";237675;237675
+2004;" RS";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";189033;189033
+2004;" RS";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";33648;33167
+2004;" RS";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";1382005;1382005
+2004;" SC";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";1975250;1975250
+2004;" SC";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";561100;531978
+2004;" SP";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";482246;482246
+2004;" SP";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";173448;173448
+2004;" SP";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";2094754;2094754
+2003;" AM";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";79984;79984
+2003;" CE";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";65040;65040
+2003;" RS";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";397183;397183
+2003;" RS";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";33000;33000
+2003;" SP";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";183600;183600
+2003;" SP";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";215800;215800
+2003;" SP";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";317520;317520
+2002;" CE";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";57000;57000
+2002;" RS";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";133112;133112
+2002;" RS";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";80400;80400
+2002;" RS";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";1120000;1120000
+2002;" RS";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";117491;117491
+2002;" SC";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";156405;156405
+2002;" SP";"GRANDE";"OUTROS";"Automáticas (Indiretas)";"2452";88000;88000
+2002;" SP";"MICRO";"OUTROS";"Automáticas (Indiretas)";"2452";270029;270029
+2002;" SP";"MÉDIA";"OUTROS";"Automáticas (Indiretas)";"2452";100000;100000
+2002;" SP";"PEQUENA";"OUTROS";"Automáticas (Indiretas)";"2452";538785;538785
