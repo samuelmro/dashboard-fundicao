@@ -105,6 +105,24 @@
     return ticks;
   }
 
+  // Acha a posição (em índice, possivelmente fracionário) de um valor de
+  // categoria dentro do array de categorias — usado para posicionar faixas
+  // (bands) que não caem exatamente sobre uma categoria existente.
+  function catIndexFloor(categories, val) {
+    if (val <= categories[0]) return 0;
+    for (let i = 0; i < categories.length - 1; i++) {
+      if (categories[i] <= val && val <= categories[i + 1]) return i;
+    }
+    return categories.length - 1;
+  }
+  function catIndexCeil(categories, val) {
+    if (val >= categories[categories.length - 1]) return categories.length - 1;
+    for (let i = 0; i < categories.length - 1; i++) {
+      if (categories[i] <= val && val <= categories[i + 1]) return i + 1;
+    }
+    return 0;
+  }
+
   function roundedBarPath(x, w, yBase, yVal, r) {
     const up = yVal <= yBase;
     const top = up ? yVal : yBase;
@@ -148,7 +166,7 @@
   // ---------------------------------------------------------------------
   function lineChart(container, opts) {
     container.innerHTML = '';
-    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220 } = opts;
+    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, bands = [] } = opts;
     const n = categories.length;
     if (!n || !series.some(s => s.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
@@ -160,15 +178,32 @@
     const innerH = height - margin.top - margin.bottom;
 
     let vmin = Infinity, vmax = -Infinity;
-    series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
-    if (opts.yMin0) vmin = Math.min(0, vmin);
-    if (!isFinite(vmin)) { vmin = 0; vmax = 1; }
+    if (stacked) {
+      vmin = 0;
+      for (let i = 0; i < n; i++) {
+        let sum = 0;
+        series.forEach(s => { sum += (s.values[i] != null ? s.values[i] : 0); });
+        vmax = Math.max(vmax, sum);
+      }
+      if (!isFinite(vmax)) vmax = 1;
+    } else {
+      series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
+      if (opts.yMin0) vmin = Math.min(0, vmin);
+      if (!isFinite(vmin)) { vmin = 0; vmax = 1; }
+    }
     const ticks = niceTicks(vmin, vmax, 4);
     const yLo = ticks[0], yHi = ticks[ticks.length - 1];
     const yScale = v => margin.top + innerH - ((v - yLo) / (yHi - yLo || 1)) * innerH;
     const xScale = i => n === 1 ? margin.left + innerW / 2 : margin.left + (i * innerW) / (n - 1);
 
     const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg', role: 'img' });
+
+    // faixas de contexto (ex.: recessões), desenhadas atrás de tudo
+    bands.forEach(b => {
+      const i0 = catIndexFloor(categories, b.from), i1 = catIndexCeil(categories, b.to);
+      const x1 = xScale(i0), x2 = xScale(i1);
+      svg.appendChild(svgEl('rect', { x: Math.min(x1, x2), y: margin.top, width: Math.max(2, Math.abs(x2 - x1)), height: innerH, fill: 'var(--text-muted)', opacity: 0.1 }));
+    });
 
     // gridlines + y labels
     ticks.forEach(t => {
@@ -192,35 +227,52 @@
     const crosshair = svgEl('line', { x1: 0, x2: 0, y1: margin.top, y2: margin.top + innerH, class: 'gridline', style: 'display:none' });
     svg.appendChild(crosshair);
 
-    series.forEach(s => {
-      // build segments split by nulls
-      let segStart = null;
-      let d = '';
-      s.values.forEach((v, i) => {
-        if (v == null) { segStart = null; return; }
-        const x = xScale(i), y = yScale(v);
-        d += (segStart === null ? 'M' : 'L') + x + ',' + y + ' ';
-        segStart = i;
+    if (stacked) {
+      const cum = new Array(n).fill(0);
+      series.forEach(s => {
+        const floor = cum.slice();
+        for (let i = 0; i < n; i++) cum[i] += (s.values[i] != null ? s.values[i] : 0);
+        const ceil = cum.slice();
+        let d = 'M' + xScale(0) + ',' + yScale(floor[0]);
+        for (let i = 1; i < n; i++) d += ' L' + xScale(i) + ',' + yScale(floor[i]);
+        for (let i = n - 1; i >= 0; i--) d += ' L' + xScale(i) + ',' + yScale(ceil[i]);
+        d += ' Z';
+        svg.appendChild(svgEl('path', { d, fill: s.color, opacity: 0.85, stroke: 'none' }));
+        let ld = 'M' + xScale(0) + ',' + yScale(ceil[0]);
+        for (let i = 1; i < n; i++) ld += ' L' + xScale(i) + ',' + yScale(ceil[i]);
+        svg.appendChild(svgEl('path', { d: ld, fill: 'none', stroke: 'var(--surface-card)', 'stroke-width': 1 }));
       });
-      if (s.area) {
-        // fill area under line (only contiguous run supported simply)
-        const pts = [];
-        s.values.forEach((v, i) => { if (v != null) pts.push([xScale(i), yScale(v)]); });
-        if (pts.length > 1) {
-          const areaD = 'M' + pts[0][0] + ',' + yScale(yLo) + ' ' + pts.map(p => 'L' + p[0] + ',' + p[1]).join(' ') + ' L' + pts[pts.length - 1][0] + ',' + yScale(yLo) + ' Z';
-          svg.appendChild(svgEl('path', { d: areaD, fill: s.color, opacity: 0.1, stroke: 'none' }));
+    } else {
+      series.forEach(s => {
+        // build segments split by nulls
+        let segStart = null;
+        let d = '';
+        s.values.forEach((v, i) => {
+          if (v == null) { segStart = null; return; }
+          const x = xScale(i), y = yScale(v);
+          d += (segStart === null ? 'M' : 'L') + x + ',' + y + ' ';
+          segStart = i;
+        });
+        if (s.area) {
+          // fill area under line (only contiguous run supported simply)
+          const pts = [];
+          s.values.forEach((v, i) => { if (v != null) pts.push([xScale(i), yScale(v)]); });
+          if (pts.length > 1) {
+            const areaD = 'M' + pts[0][0] + ',' + yScale(yLo) + ' ' + pts.map(p => 'L' + p[0] + ',' + p[1]).join(' ') + ' L' + pts[pts.length - 1][0] + ',' + yScale(yLo) + ' Z';
+            svg.appendChild(svgEl('path', { d: areaD, fill: s.color, opacity: 0.1, stroke: 'none' }));
+          }
         }
-      }
-      svg.appendChild(svgEl('path', { d: d.trim(), fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+        svg.appendChild(svgEl('path', { d: d.trim(), fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
 
-      // end marker on last non-null point
-      for (let i = s.values.length - 1; i >= 0; i--) {
-        if (s.values[i] != null) {
-          svg.appendChild(svgEl('circle', { cx: xScale(i), cy: yScale(s.values[i]), r: 4, fill: s.color, stroke: 'var(--surface-card)', 'stroke-width': 2 }));
-          break;
+        // end marker on last non-null point
+        for (let i = s.values.length - 1; i >= 0; i--) {
+          if (s.values[i] != null) {
+            svg.appendChild(svgEl('circle', { cx: xScale(i), cy: yScale(s.values[i]), r: 4, fill: s.color, stroke: 'var(--surface-card)', 'stroke-width': 2 }));
+            break;
+          }
         }
-      }
-    });
+      });
+    }
 
     // hit columns
     const colW = innerW / n;
@@ -264,7 +316,7 @@
   // ---------------------------------------------------------------------
   function barChart(container, opts) {
     container.innerHTML = '';
-    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220 } = opts;
+    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false } = opts;
     const n = categories.length;
     if (!n || !series.some(s => s.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
@@ -276,7 +328,15 @@
     const innerH = height - margin.top - margin.bottom;
 
     let vmin = 0, vmax = -Infinity;
-    series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
+    if (stacked) {
+      for (let i = 0; i < n; i++) {
+        let sum = 0;
+        series.forEach(s => { sum += Math.max(0, s.values[i] || 0); });
+        vmax = Math.max(vmax, sum);
+      }
+    } else {
+      series.forEach(s => s.values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } }));
+    }
     if (!isFinite(vmax)) vmax = 1;
     const ticks = niceTicks(vmin, vmax, 4);
     const yLo = ticks[0], yHi = ticks[ticks.length - 1];
@@ -298,7 +358,7 @@
     const slotW = innerW / n;
     const nSeries = series.length;
     const gap = 2;
-    const barW = Math.min(24, (slotW - gap * (nSeries + 1)) / nSeries);
+    const barW = stacked ? Math.min(36, slotW * 0.6) : Math.min(24, (slotW - gap * (nSeries + 1)) / nSeries);
 
     for (let i = 0; i < n; i++) {
       const slotX = margin.left + i * slotW;
@@ -307,19 +367,34 @@
         lbl.textContent = formatX(categories[i]);
         svg.appendChild(lbl);
       }
-      const groupW = nSeries * barW + (nSeries - 1) * gap;
-      let bx = slotX + (slotW - groupW) / 2;
       const rows = [];
-      series.forEach(s => {
-        const v = s.values[i];
-        if (v != null) {
-          const y = yScale(v);
-          const path = svgEl('path', { d: roundedBarPath(bx, barW, yBase, y, 4), fill: s.color, class: 'bar-mark' });
-          svg.appendChild(path);
-          rows.push({ label: s.label, color: s.color, value: formatY(v) });
-        }
-        bx += barW + gap;
-      });
+      if (stacked) {
+        const bx = slotX + (slotW - barW) / 2;
+        let cum = 0;
+        series.forEach(s => {
+          const v = s.values[i] || 0;
+          if (s.values[i] != null && v !== 0) {
+            const y0 = yScale(cum);
+            cum += v;
+            const y1 = yScale(cum);
+            svg.appendChild(svgEl('rect', { x: bx, y: Math.min(y0, y1), width: barW, height: Math.max(1, Math.abs(y0 - y1)), fill: s.color, class: 'bar-mark' }));
+            rows.push({ label: s.label, color: s.color, value: formatY(v) });
+          }
+        });
+      } else {
+        const groupW = nSeries * barW + (nSeries - 1) * gap;
+        let bx = slotX + (slotW - groupW) / 2;
+        series.forEach(s => {
+          const v = s.values[i];
+          if (v != null) {
+            const y = yScale(v);
+            const path = svgEl('path', { d: roundedBarPath(bx, barW, yBase, y, 4), fill: s.color, class: 'bar-mark' });
+            svg.appendChild(path);
+            rows.push({ label: s.label, color: s.color, value: formatY(v) });
+          }
+          bx += barW + gap;
+        });
+      }
       // hit area spans whole slot
       const hit = svgEl('rect', { x: slotX, y: margin.top, width: slotW, height: innerH, class: 'hit-area', tabindex: 0 });
       hit.style.cursor = 'pointer';
@@ -338,6 +413,283 @@
 
     container.appendChild(svg);
     renderLegend(container, series.map(s => ({ label: s.label, color: s.color })));
+  }
+
+  // ---------------------------------------------------------------------
+  // Linha com dois eixos Y (esquerda/direita) — ex.: VBPI x VTI
+  // opts: { seriesLeft:{label,color,values}, seriesRight:{label,color,values},
+  //         categories, formatYLeft, formatYRight, formatX, height }
+  // ---------------------------------------------------------------------
+  function dualAxisLineChart(container, opts) {
+    container.innerHTML = '';
+    const { seriesLeft, seriesRight, categories, formatYLeft = fmt.compact, formatYRight = fmt.compact, formatX = (s => s), height = 220 } = opts;
+    const n = categories.length;
+    if (!n || (!seriesLeft.values.some(v => v != null) && !seriesRight.values.some(v => v != null))) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
+      return;
+    }
+    const width = 600;
+    const margin = { top: 14, right: 48, bottom: 26, left: 48 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+
+    function domain(values) {
+      let vmin = Infinity, vmax = -Infinity;
+      values.forEach(v => { if (v != null) { vmin = Math.min(vmin, v); vmax = Math.max(vmax, v); } });
+      if (!isFinite(vmin)) { vmin = 0; vmax = 1; }
+      return niceTicks(vmin, vmax, 4);
+    }
+    const ticksL = domain(seriesLeft.values), ticksR = domain(seriesRight.values);
+    const yLoL = ticksL[0], yHiL = ticksL[ticksL.length - 1];
+    const yLoR = ticksR[0], yHiR = ticksR[ticksR.length - 1];
+    const yScaleL = v => margin.top + innerH - ((v - yLoL) / (yHiL - yLoL || 1)) * innerH;
+    const yScaleR = v => margin.top + innerH - ((v - yLoR) / (yHiR - yLoR || 1)) * innerH;
+    const xScale = i => n === 1 ? margin.left + innerW / 2 : margin.left + (i * innerW) / (n - 1);
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg', role: 'img' });
+
+    ticksL.forEach(t => {
+      const y = yScaleL(t);
+      svg.appendChild(svgEl('line', { x1: margin.left, x2: width - margin.right, y1: y, y2: y, class: t === 0 ? 'baseline' : 'gridline' }));
+      const lbl = svgEl('text', { x: margin.left - 6, y: y + 3, 'text-anchor': 'end', class: 'axis-label', style: 'fill:' + seriesLeft.color });
+      lbl.textContent = formatYLeft(t);
+      svg.appendChild(lbl);
+    });
+    ticksR.forEach(t => {
+      const y = yScaleR(t);
+      const lbl = svgEl('text', { x: width - margin.right + 6, y: y + 3, 'text-anchor': 'start', class: 'axis-label', style: 'fill:' + seriesRight.color });
+      lbl.textContent = formatYRight(t);
+      svg.appendChild(lbl);
+    });
+
+    const maxLabels = Math.max(2, Math.floor(innerW / 56));
+    const step = Math.max(1, Math.ceil(n / maxLabels));
+    for (let i = 0; i < n; i += step) {
+      const lbl = svgEl('text', { x: xScale(i), y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
+      lbl.textContent = formatX(categories[i]);
+      svg.appendChild(lbl);
+    }
+
+    function drawLine(s, yScale) {
+      let segStart = null, d = '';
+      s.values.forEach((v, i) => {
+        if (v == null) { segStart = null; return; }
+        const x = xScale(i), y = yScale(v);
+        d += (segStart === null ? 'M' : 'L') + x + ',' + y + ' ';
+        segStart = i;
+      });
+      svg.appendChild(svgEl('path', { d: d.trim(), fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+      for (let i = s.values.length - 1; i >= 0; i--) {
+        if (s.values[i] != null) {
+          svg.appendChild(svgEl('circle', { cx: xScale(i), cy: yScale(s.values[i]), r: 4, fill: s.color, stroke: 'var(--surface-card)', 'stroke-width': 2 }));
+          break;
+        }
+      }
+    }
+    drawLine(seriesLeft, yScaleL);
+    drawLine(seriesRight, yScaleR);
+
+    const colW = innerW / n;
+    for (let i = 0; i < n; i++) {
+      const hit = svgEl('rect', { x: margin.left + i * colW, y: margin.top, width: Math.max(colW, 4), height: innerH, class: 'hit-area', tabindex: 0 });
+      hit.style.cursor = 'crosshair';
+      const rows = [];
+      if (seriesLeft.values[i] != null) rows.push({ label: seriesLeft.label, color: seriesLeft.color, value: formatYLeft(seriesLeft.values[i]) });
+      if (seriesRight.values[i] != null) rows.push({ label: seriesRight.label, color: seriesRight.color, value: formatYRight(seriesRight.values[i]) });
+      const onEnter = (evt) => {
+        if (!rows.length) return;
+        const pos = clientPosFromEvent(evt, hit);
+        showTooltip(pos.x, pos.y, formatX(categories[i], true), rows);
+      };
+      hit.addEventListener('pointerenter', onEnter);
+      hit.addEventListener('pointermove', onEnter);
+      hit.addEventListener('pointerleave', hideTooltip);
+      hit.addEventListener('focus', onEnter);
+      hit.addEventListener('blur', hideTooltip);
+      svg.appendChild(hit);
+    }
+
+    container.appendChild(svg);
+    renderLegend(container, [{ label: seriesLeft.label, color: seriesLeft.color }, { label: seriesRight.label, color: seriesRight.color }]);
+  }
+
+  // ---------------------------------------------------------------------
+  // Waterfall — decomposição de um total em parcelas (ex.: custos)
+  // opts: { items:[{label,value,isTotal?}], formatY, height }
+  // ---------------------------------------------------------------------
+  function waterfallChart(container, opts) {
+    container.innerHTML = '';
+    const { items, formatY = fmt.brl, height = 240 } = opts;
+    if (!items || !items.length) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    const width = 600;
+    const margin = { top: 14, right: 14, bottom: 42, left: 52 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+    const n = items.length;
+
+    let running = 0;
+    const bars = items.map(it => {
+      if (it.isTotal) { running = it.value; return { from: 0, to: it.value, label: it.label, value: it.value, isTotal: true }; }
+      const from = running;
+      running += it.value;
+      return { from, to: running, label: it.label, value: it.value, isTotal: false };
+    });
+
+    let vmin = 0, vmax = -Infinity;
+    bars.forEach(b => { vmin = Math.min(vmin, b.from, b.to); vmax = Math.max(vmax, b.from, b.to); });
+    const ticks = niceTicks(vmin, vmax, 4);
+    const yLo = ticks[0], yHi = ticks[ticks.length - 1];
+    const yScale = v => margin.top + innerH - ((v - yLo) / (yHi - yLo || 1)) * innerH;
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg', role: 'img' });
+    ticks.forEach(t => {
+      const y = yScale(t);
+      svg.appendChild(svgEl('line', { x1: margin.left, x2: width - margin.right, y1: y, y2: y, class: t === 0 ? 'baseline' : 'gridline' }));
+      const lbl = svgEl('text', { x: margin.left - 6, y: y + 3, 'text-anchor': 'end', class: 'axis-label' });
+      lbl.textContent = formatY(t);
+      svg.appendChild(lbl);
+    });
+
+    const slotW = innerW / n;
+    const barW = Math.min(56, slotW * 0.6);
+    bars.forEach((b, i) => {
+      const slotX = margin.left + i * slotW + (slotW - barW) / 2;
+      const y0 = yScale(b.from), y1 = yScale(b.to);
+      const color = b.isTotal ? 'var(--text-secondary)' : (b.value >= 0 ? 'var(--good)' : 'var(--bad)');
+      svg.appendChild(svgEl('path', { d: roundedBarPath(slotX, barW, y0, y1, 3), fill: color, class: 'bar-mark' }));
+      if (i < n - 1 && !bars[i + 1].isTotal) {
+        const nextSlotX = margin.left + (i + 1) * slotW + (slotW - barW) / 2;
+        svg.appendChild(svgEl('line', { x1: slotX + barW, x2: nextSlotX, y1, y2: y1, class: 'gridline' }));
+      }
+      const lbl = svgEl('text', { x: slotX + barW / 2, y: height - 24, 'text-anchor': 'middle', class: 'axis-label' });
+      lbl.textContent = b.label;
+      svg.appendChild(lbl);
+      const vlbl = svgEl('text', { x: slotX + barW / 2, y: height - 8, 'text-anchor': 'middle', class: 'axis-label' });
+      vlbl.textContent = formatY(b.value);
+      svg.appendChild(vlbl);
+
+      const hit = svgEl('rect', { x: margin.left + i * slotW, y: margin.top, width: slotW, height: innerH, class: 'hit-area', tabindex: 0 });
+      hit.style.cursor = 'pointer';
+      const onEnter = (evt) => {
+        const pos = clientPosFromEvent(evt, hit);
+        showTooltip(pos.x, pos.y, b.label, [{ color, label: b.isTotal ? 'Total' : 'Valor', value: formatY(b.value) }]);
+      };
+      hit.addEventListener('pointerenter', onEnter);
+      hit.addEventListener('pointermove', onEnter);
+      hit.addEventListener('pointerleave', hideTooltip);
+      hit.addEventListener('focus', onEnter);
+      hit.addEventListener('blur', hideTooltip);
+      svg.appendChild(hit);
+    });
+
+    container.appendChild(svg);
+  }
+
+  // ---------------------------------------------------------------------
+  // Donut — composição (ex.: top ocupações + "Outras")
+  // opts: { items:[{label,value,color}], formatVal, size }
+  // ---------------------------------------------------------------------
+  function donutChart(container, opts) {
+    container.innerHTML = '';
+    const { items, formatVal = fmt.full, size = 200 } = opts;
+    if (!items || !items.length || !items.some(i => i.value > 0)) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    const total = items.reduce((a, i) => a + (i.value || 0), 0);
+    const cx = size / 2, cy = size / 2, r = size * 0.34, strokeW = size * 0.16;
+    const circumference = 2 * Math.PI * r;
+    const svg = svgEl('svg', { viewBox: `0 0 ${size} ${size}`, class: 'chart-svg', role: 'img' });
+    let offset = 0;
+    items.forEach(it => {
+      const frac = total ? (it.value || 0) / total : 0;
+      const dash = frac * circumference;
+      const circle = svgEl('circle', {
+        cx, cy, r, fill: 'none', stroke: it.color, 'stroke-width': strokeW,
+        'stroke-dasharray': `${dash} ${circumference - dash}`,
+        'stroke-dashoffset': -offset,
+        transform: `rotate(-90 ${cx} ${cy})`,
+      });
+      circle.style.cursor = 'pointer';
+      svg.appendChild(circle);
+      offset += dash;
+      const onEnter = (evt) => {
+        const pos = clientPosFromEvent(evt, circle);
+        showTooltip(pos.x, pos.y, it.label, [{ color: it.color, label: 'Participação', value: fmt.pct(frac * 100) }]);
+      };
+      circle.addEventListener('pointerenter', onEnter);
+      circle.addEventListener('pointermove', onEnter);
+      circle.addEventListener('pointerleave', hideTooltip);
+    });
+    const centerLbl = svgEl('text', { x: cx, y: cy - 4, 'text-anchor': 'middle', style: 'font-size:14px;font-weight:700', fill: 'var(--text-primary)' });
+    centerLbl.textContent = formatVal(total);
+    svg.appendChild(centerLbl);
+    const centerSub = svgEl('text', { x: cx, y: cy + 13, 'text-anchor': 'middle', class: 'axis-label' });
+    centerSub.textContent = 'total';
+    svg.appendChild(centerSub);
+
+    container.appendChild(svg);
+    renderLegend(container, items.map(i => ({ label: i.label, color: i.color })));
+  }
+
+  // ---------------------------------------------------------------------
+  // Tabela genérica (HTML), com ordenação por coluna — BNDES, DECOM
+  // opts: { columns:[{key,label,align,format}], rows:[{...}] }
+  // ---------------------------------------------------------------------
+  function dataTable(container, opts) {
+    const { columns, rows } = opts;
+    if (!rows || !rows.length) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    let sortKey = null, sortDir = 1;
+    function render() {
+      const sorted = sortKey ? [...rows].sort((a, b) => {
+        const av = a[sortKey], bv = b[sortKey];
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (typeof av === 'number') return (av - bv) * sortDir;
+        return String(av).localeCompare(String(bv)) * sortDir;
+      }) : rows;
+      const wrap = document.createElement('div');
+      wrap.className = 'data-table-wrap';
+      const table = document.createElement('table');
+      table.className = 'data-table';
+      const thead = document.createElement('thead');
+      const trh = document.createElement('tr');
+      columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col.label + (sortKey === col.key ? (sortDir === 1 ? ' ▲' : ' ▼') : '');
+        if (col.align) th.style.textAlign = col.align;
+        th.addEventListener('click', () => {
+          if (sortKey === col.key) sortDir = -sortDir; else { sortKey = col.key; sortDir = -1; }
+          render();
+        });
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      sorted.forEach(r => {
+        const tr = document.createElement('tr');
+        columns.forEach(col => {
+          const td = document.createElement('td');
+          const raw = r[col.key];
+          td.textContent = col.format ? col.format(raw) : (raw == null ? '—' : raw);
+          if (col.align) td.style.textAlign = col.align;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+      container.innerHTML = '';
+      container.appendChild(wrap);
+    }
+    render();
   }
 
   // ---------------------------------------------------------------------
@@ -375,5 +727,5 @@
     container.appendChild(ul);
   }
 
-  window.Charts = { lineChart, barChart, rankList, fmt, hideTooltip };
+  window.Charts = { lineChart, barChart, dualAxisLineChart, waterfallChart, donutChart, dataTable, rankList, fmt, hideTooltip };
 })();
