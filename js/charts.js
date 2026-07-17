@@ -14,14 +14,14 @@
   const fmtFull1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 
   const fmt = {
-    compact(n) { return n == null || isNaN(n) ? '—' : fmtCompact.format(n); },
-    full(n) { return n == null || isNaN(n) ? '—' : fmtFull.format(n); },
-    full1(n) { return n == null || isNaN(n) ? '—' : fmtFull1.format(n); },
-    usd(n) { return n == null || isNaN(n) ? '—' : 'US$ ' + fmtCompact.format(n); },
-    brl(n) { return n == null || isNaN(n) ? '—' : 'R$ ' + fmtCompact.format(n); },
-    mwh(n) { return n == null || isNaN(n) ? '—' : fmtCompact.format(n) + ' MWh'; },
+    compact(n) { return n == null || isNaN(n) ? '-' : fmtCompact.format(n); },
+    full(n) { return n == null || isNaN(n) ? '-' : fmtFull.format(n); },
+    full1(n) { return n == null || isNaN(n) ? '-' : fmtFull1.format(n); },
+    usd(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtCompact.format(n); },
+    brl(n) { return n == null || isNaN(n) ? '-' : 'R$ ' + fmtCompact.format(n); },
+    mwh(n) { return n == null || isNaN(n) ? '-' : fmtCompact.format(n) + ' MWh'; },
     pct(n, signed) {
-      if (n == null || isNaN(n)) return '—';
+      if (n == null || isNaN(n)) return '-';
       const s = (signed && n > 0 ? '+' : '') + fmtFull1.format(n) + '%';
       return s;
     }
@@ -594,6 +594,7 @@
   // ---------------------------------------------------------------------
   function donutChart(container, opts) {
     container.innerHTML = '';
+    container.className = 'donut-chart-wrap';
     const { items, formatVal = fmt.full, size = 200 } = opts;
     if (!items || !items.length || !items.some(i => i.value > 0)) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
@@ -602,7 +603,7 @@
     const total = items.reduce((a, i) => a + (i.value || 0), 0);
     const cx = size / 2, cy = size / 2, r = size * 0.34, strokeW = size * 0.16;
     const circumference = 2 * Math.PI * r;
-    const svg = svgEl('svg', { viewBox: `0 0 ${size} ${size}`, class: 'chart-svg', role: 'img' });
+    const svg = svgEl('svg', { viewBox: `0 0 ${size} ${size}`, class: 'chart-svg donut-svg', role: 'img' });
     let offset = 0;
     items.forEach(it => {
       const frac = total ? (it.value || 0) / total : 0;
@@ -682,7 +683,7 @@
         columns.forEach(col => {
           const td = document.createElement('td');
           const raw = r[col.key];
-          td.textContent = col.format ? col.format(raw) : (raw == null ? '—' : raw);
+          td.textContent = col.format ? col.format(raw) : (raw == null ? '-' : raw);
           if (col.align) td.style.textAlign = col.align;
           tr.appendChild(td);
         });

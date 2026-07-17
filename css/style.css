@@ -61,12 +61,18 @@ a:hover { color: var(--accent); }
 .header-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 26px 40px 18px;
+  height: 132px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
+}
+.header-title {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .header-title-row {
   display: flex;
@@ -76,7 +82,7 @@ a:hover { color: var(--accent); }
   margin-bottom: 8px;
 }
 .header-title-row h1 {
-  font-size: 1.7rem;
+  font-size: 1.65rem;
   margin: 0;
   color: #fdffff;
   letter-spacing: -0.01em;
@@ -92,30 +98,63 @@ a:hover { color: var(--accent); }
   margin: 0;
   color: var(--text-muted);
   font-size: 0.82rem;
-  max-width: 46em;
+  max-width: 42em;
   line-height: 1.5;
 }
 
-.header-realizacao {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
+/* Faixa de foto (P&B) à direita, com degradê pro navy nas bordas e o
+   crédito de realização sobreposto no canto inferior direito. */
+.header-media {
+  position: relative;
+  width: 240px;
   flex-shrink: 0;
-  padding-top: 2px;
+  overflow: hidden;
 }
-.header-realizacao .realizacao-label {
-  font-size: 9.5px;
+.header-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 22%;
+  filter: grayscale(1) contrast(1.1) brightness(0.82);
+  display: block;
+}
+.header-media::before,
+.header-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.header-media::before {
+  background: linear-gradient(90deg, var(--navy) 0%, rgba(30, 35, 41, 0) 40%);
+}
+.header-media::after {
+  background: linear-gradient(0deg, rgba(30, 35, 41, 0.9) 0%, rgba(30, 35, 41, 0) 60%);
+}
+.header-media-credit {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  z-index: 2;
+  text-align: right;
+}
+.header-media-credit .realizacao-label {
+  display: block;
+  font-size: 8.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(253, 255, 255, 0.7);
   font-weight: 700;
 }
-.header-realizacao .realizacao-orgs {
-  font-size: 0.86rem;
+.header-media-credit .realizacao-orgs {
+  display: block;
+  font-size: 0.78rem;
   letter-spacing: 0.02em;
   color: #fdffff;
   font-weight: 600;
+}
+@media (max-width: 700px) {
+  .header-media { display: none; }
 }
 
 /* ---------- View tabs (2451 / 2452 / PD&I / Referências) ---------- */
@@ -282,6 +321,13 @@ a:hover { color: var(--accent); }
 .legend-item { display: flex; align-items: center; gap: 6px; }
 .legend-swatch { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
 .legend-swatch.area { width: 10px; height: 10px; border-radius: 3px; }
+
+/* Donut: SVG é quadrado (viewBox 1:1) e não pode herdar o width:100% de
+   .chart-svg, senão estica até a largura do container (grave em blocos
+   full-width). Layout donut + legenda lado a lado, usando o espaço extra. */
+.donut-chart-wrap { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.donut-chart-wrap .chart-svg.donut-svg { width: 180px; height: 180px; flex-shrink: 0; }
+.donut-chart-wrap .legend { margin-top: 0; flex: 1; min-width: 200px; }
 
 /* chart svg */
 .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }

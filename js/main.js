@@ -73,7 +73,7 @@
     const ag = filterMonthly(sh.producao.aco_gusa, state.lo, state.hi);
     const catAg = ag.map(r => r.ano * 100 + r.mes);
     lineChart($('#chart-producao-acogusa'), {
-      categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 290,
+      categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 280,
       series: [
         { label: 'Aço bruto', color: 'var(--series-1)', values: ag.map(r => r.aco_bruto), area: true },
         { label: 'Ferro-gusa', color: 'var(--series-5)', values: ag.map(r => r.ferro_gusa) },
@@ -84,7 +84,7 @@
     const dessaz = filterMonthly(sh.producao.aco_gusa_dessaz, state.lo, state.hi);
     const catDz = monthlyCategories([ag, dessaz]);
     lineChart($('#chart-producao-dessaz'), {
-      categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 270,
+      categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 280,
       series: [
         { label: 'Observado', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
         { label: 'Dessazonalizado', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
@@ -94,7 +94,7 @@
     const idx = filterMonthly(sh.producao.metalurgia_indice, state.lo, state.hi);
     const catIdx = idx.map(r => r.ano * 100 + r.mes);
     lineChart($('#chart-producao-indice'), {
-      categories: catIdx, formatX: monthLabel, formatY: fmt.full1, height: 290, bands: RECESSOES,
+      categories: catIdx, formatX: monthLabel, formatY: fmt.full1, height: 280, bands: RECESSOES,
       series: [
         { label: 'Índice bruto', color: 'var(--series-2)', values: idx.map(r => r.indice_bruto) },
         { label: 'Dessazonalizado', color: 'var(--series-3)', values: idx.map(r => r.indice_dessaz) }
@@ -103,7 +103,7 @@
 
     const razao = ag.map(r => (r.laminados != null && r.aco_bruto) ? (r.laminados / r.aco_bruto) * 100 : null);
     lineChart($('#chart-producao-razao'), {
-      categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 270,
+      categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
       series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
     });
 
@@ -127,7 +127,7 @@
     const catFin = finF.map(r => r.ano);
 
     dualAxisLineChart($('#chart-financeiro-vbpi-vti'), {
-      categories: catFin, formatYLeft: fmt.brl, formatYRight: fmt.brl, height: 290,
+      categories: catFin, formatYLeft: fmt.brl, formatYRight: fmt.brl, height: 280,
       seriesLeft: { label: 'VBPI', color: 'var(--series-2)', values: finF.map(r => r.vbpi != null ? r.vbpi * 1000 : null) },
       seriesRight: { label: 'VTI', color: 'var(--series-3)', values: finF.map(r => r.vti != null ? r.vti * 1000 : null) },
     });
@@ -138,18 +138,18 @@
       return (f && m && m.receita_liquida_total) ? (f.receita_liquida_total / m.receita_liquida_total) * 100 : null;
     });
     lineChart($('#chart-financeiro-participacao'), {
-      categories: catsPart, formatY: n => fmt.pct(n), height: 270,
+      categories: catsPart, formatY: n => fmt.pct(n), height: 280,
       series: [{ label: '% da Metalurgia', color: 'var(--series-3)', values: participacao, area: true }]
     });
 
     const produtividade = finF.map(r => (r.vti != null && r.pessoal_ocupado) ? (r.vti * 1000) / r.pessoal_ocupado : null);
     lineChart($('#chart-financeiro-produtividade'), {
-      categories: catFin, formatY: fmt.brl, height: 270,
+      categories: catFin, formatY: fmt.brl, height: 280,
       series: [{ label: 'VTI / pessoal ocupado', color: 'var(--series-2)', values: produtividade }]
     });
 
     barChart($('#chart-financeiro-receita-custos'), {
-      categories: catFin, formatY: fmt.brl, height: 290,
+      categories: catFin, formatY: fmt.brl, height: 280,
       series: [
         { label: 'Receita líquida', color: 'var(--series-4)', values: finF.map(r => r.receita_liquida_total * 1000) },
         { label: 'Custos e despesas', color: 'var(--series-6)', values: finF.map(r => r.custos_despesas_totais * 1000) }
@@ -157,13 +157,13 @@
     });
 
     const latestFin = last(sh.financeiro.fundicao_24_5);
-    $('#financeiro-waterfall-title').textContent = 'Decomposição de custos — ' + latestFin.ano;
+    $('#financeiro-waterfall-title').textContent = 'Decomposição de custos de ' + latestFin.ano;
     const materiasPrimas = latestFin.consumo_materias_primas || 0;
     const pessoal = latestFin.gastos_pessoal_total || 0;
     const custoTotal = latestFin.custos_despesas_totais || 0;
     const outros = custoTotal - materiasPrimas - pessoal;
     waterfallChart($('#chart-financeiro-waterfall'), {
-      formatY: fmt.brl, height: 320,
+      formatY: fmt.brl, height: 280,
       items: [
         { label: 'Matérias-primas', value: materiasPrimas * 1000 },
         { label: 'Pessoal', value: pessoal * 1000 },
@@ -193,7 +193,7 @@
     }
     raisRows = filterAnnual(raisRows, state.lo, state.hi);
     lineChart($('#chart-emprego-rais'), {
-      categories: raisRows.map(r => r.ano), formatY: fmt.full, height: 270,
+      categories: raisRows.map(r => r.ano), formatY: fmt.full, height: 280,
       series: [{ label: raisLabel, color: 'var(--series-2)', values: raisRows.map(r => r.vinculos), area: true }]
     });
 
@@ -204,10 +204,10 @@
       label: faixa, color: CORES[i % CORES.length],
       values: catsTam.map(ano => { const row = tamRows.find(r => r.ano === ano && r.faixa === faixa); return row ? row.vinculos : 0; })
     }));
-    barChart($('#chart-emprego-tamanho'), { categories: catsTam, formatY: fmt.full, height: 290, stacked: true, series: seriesTam });
+    barChart($('#chart-emprego-tamanho'), { categories: catsTam, formatY: fmt.full, height: 280, stacked: true, series: seriesTam });
 
     const totalLatest = last(s.rais.uf_yearly_total);
-    const ufRanking = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos).slice(0, 10);
+    const ufRanking = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos).slice(0, 8);
     $('#emprego-uf-sub').textContent = 'Ano de ' + totalLatest.ano;
     rankList($('#rank-emprego-uf'), ufRanking.map(r => ({
       label: r.nome_uf, value: r.vinculos, color: r.uf === state.uf ? 'var(--series-3)' : 'var(--series-2)'
@@ -215,7 +215,7 @@
 
     const razaoRows = filterAnnual(s.rais.uf_yearly_total, state.lo, state.hi);
     lineChart($('#chart-emprego-razao'), {
-      categories: razaoRows.map(r => r.ano), formatY: fmt.full1, height: 270,
+      categories: razaoRows.map(r => r.ano), formatY: fmt.full1, height: 280,
       series: [{ label: 'Vínculos por estabelecimento', color: 'var(--series-2)', values: razaoRows.map(r => r.estabelecimentos ? r.vinculos / r.estabelecimentos : null) }]
     });
 
@@ -226,7 +226,7 @@
       label: titleCasePt(cat), color: CORES[i % CORES.length],
       values: catEsc.map(ano => { const row = escRows.find(r => r.ano === ano && r.categoria === cat); return row ? row.frequencia : 0; })
     }));
-    lineChart($('#chart-emprego-escolaridade-evolucao'), { categories: catEsc, formatY: fmt.full, height: 290, stacked: true, series: seriesEsc });
+    lineChart($('#chart-emprego-escolaridade-evolucao'), { categories: catEsc, formatY: fmt.full, height: 280, stacked: true, series: seriesEsc });
 
     const esc = s.rais.escolaridade_latest;
     $('#emprego-escolaridade-sub').textContent = 'Retrato de ' + esc.ano;
@@ -234,7 +234,7 @@
 
     const ocup = s.rais.ocupacao_agrupada_latest;
     $('#emprego-ocupacao-sub').textContent = 'Retrato de ' + ocup.ano;
-    rankList($('#rank-emprego-ocupacao'), ocup.items.slice(0, 15).map(i => ({ label: titleCasePt(i.categoria), value: i.frequencia })), { formatVal: fmt.full, color: 'var(--series-2)' });
+    rankList($('#rank-emprego-ocupacao'), ocup.items.slice(0, 8).map(i => ({ label: titleCasePt(i.categoria), value: i.frequencia })), { formatVal: fmt.full, color: 'var(--series-2)' });
 
     const top8 = ocup.items.slice(0, 8);
     const totalOcup = ocup.items.reduce((a, i) => a + i.frequencia, 0);
@@ -256,7 +256,7 @@
     const tempo = s.rais.tempo_emprego_latest;
     const itemsTempo = ORDEM_TEMPO.map(cat => tempo.items.find(i => i.categoria === cat)).filter(Boolean);
     barChart($('#chart-emprego-tempo'), {
-      categories: itemsTempo.map(i => LABELS_TEMPO[i.categoria] || i.categoria), formatY: fmt.full, height: 290,
+      categories: itemsTempo.map(i => LABELS_TEMPO[i.categoria] || i.categoria), formatY: fmt.full, height: 280,
       series: [{ label: 'Vínculos', color: 'var(--series-2)', values: itemsTempo.map(i => CURTA.has(i.categoria) ? -i.frequencia : i.frequencia) }]
     });
 
@@ -273,7 +273,7 @@
       return (r.remuneracao_media_nominal != null && ipcaAno && ipcaRef) ? r.remuneracao_media_nominal * (ipcaRef / ipcaAno) : null;
     });
     lineChart($('#chart-emprego-remuneracao'), {
-      categories: massaRows.map(r => r.ano), formatY: fmt.brl, height: 290,
+      categories: massaRows.map(r => r.ano), formatY: fmt.brl, height: 280,
       series: [
         { label: 'Nominal', color: 'var(--series-2)', values: massaRows.map(r => r.remuneracao_media_nominal) },
         { label: 'Real (preços de ' + (anoRefMassa || '') + ')', color: 'var(--series-3)', values: remReal },
@@ -290,17 +290,17 @@
   function renderCaged() {
     const s = csS();
 
-    $('#caged-coverage-note').textContent = `Granularidade mensal (admissões/desligamentos), que a RAIS não oferece — cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}.`;
+    $('#caged-coverage-note').textContent = `Granularidade mensal (admissões/desligamentos), que a RAIS não oferece. Cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}.`;
 
     const saldoRows = filterMonthly(s.caged.saldo_monthly_national, state.lo, state.hi);
     lineChart($('#chart-caged-saldo'), {
-      categories: saldoRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.full, height: 270,
+      categories: saldoRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.full, height: 280,
       series: [{ label: 'Saldo líquido', color: 'var(--series-2)', values: saldoRows.map(r => r.saldo), area: true }]
     });
 
     const tipoMonthly = filterMonthly(s.caged.tipo_movimentacao_monthly, state.lo, state.hi);
     lineChart($('#chart-caged-movimentacao'), {
-      categories: tipoMonthly.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.compact, height: 270, stacked: true,
+      categories: tipoMonthly.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.compact, height: 280, stacked: true,
       series: [
         { label: 'Admissões', color: 'var(--series-4)', values: tipoMonthly.map(r => r.admissoes) },
         { label: 'Desligamentos', color: 'var(--series-6)', values: tipoMonthly.map(r => r.desligamentos) },
@@ -309,13 +309,13 @@
 
     const tipoBreak = s.caged.tipo_movimentacao_breakdown_total.filter(t => /desligamento/i.test(t.tipo)).slice(0, 8);
     barChart($('#chart-caged-tipo'), {
-      categories: tipoBreak.map(t => t.tipo.replace(/^Desligamento\s*/i, '')), formatY: fmt.full, height: 290,
+      categories: tipoBreak.map(t => t.tipo.replace(/^Desligamento\s*/i, '')), formatY: fmt.full, height: 280,
       series: [{ label: 'Quantidade', color: 'var(--series-6)', values: tipoBreak.map(t => t.quantidade) }]
     });
 
     const salarioRows = filterMonthly(s.caged.salario_monthly_national, state.lo, state.hi);
     lineChart($('#chart-caged-massa-salarial'), {
-      categories: salarioRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 270,
+      categories: salarioRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 280,
       series: [{ label: 'Massa salarial', color: 'var(--series-3)', values: salarioRows.map(r => r.massa_salarial) }]
     });
 
@@ -323,7 +323,7 @@
     const saldoPorUf = {};
     saldoUfRows.forEach(r => { saldoPorUf[r.uf] = (saldoPorUf[r.uf] || 0) + r.saldo; });
     const rankSaldoUf = Object.entries(saldoPorUf).map(([uf, saldo]) => ({ uf, saldo }))
-      .sort((a, b) => Math.abs(b.saldo) - Math.abs(a.saldo)).slice(0, 10);
+      .sort((a, b) => Math.abs(b.saldo) - Math.abs(a.saldo)).slice(0, 8);
     rankList($('#rank-caged-saldo-uf'), rankSaldoUf.map(r => ({
       label: ufName(r.uf), value: r.saldo, color: r.saldo >= 0 ? 'var(--series-4)' : 'var(--series-6)'
     })), { formatVal: fmt.full });
@@ -343,7 +343,7 @@
     let rows, note = '';
     if (state.uf === 'ALL' || !ufAvailable.has(state.uf)) {
       rows = filterAnnual(s.comex.yearly, state.lo, state.hi);
-      if (state.uf !== 'ALL') note = 'Estado sem dado detalhado nesta base — mostrando total nacional do setor.';
+      if (state.uf !== 'ALL') note = 'Estado sem dado detalhado nesta base; mostrando total nacional do setor.';
     } else {
       const ufRows = s.comex.uf_yearly.filter(r => r.uf === state.uf);
       const years = annualCategories([ufRows]);
@@ -357,7 +357,7 @@
     $('#comex-uf-note') && ($('#comex-uf-note').textContent = note);
     const cat = rows.map(r => r.ano);
     barChart($('#chart-comex-brasil'), {
-      categories: cat, formatY: fmt.usd, height: 290,
+      categories: cat, formatY: fmt.usd, height: 280,
       series: [
         { label: 'Exportação', color: 'var(--series-4)', values: rows.map(r => r.exportacao_usd) },
         { label: 'Importação', color: 'var(--series-6)', values: rows.map(r => -r.importacao_usd) }
@@ -366,7 +366,7 @@
 
     const rowsKg = filterAnnual(s.comex.yearly, state.lo, state.hi);
     barChart($('#chart-comex-brasil-kg'), {
-      categories: rowsKg.map(r => r.ano), formatY: n => fmt.compact(n) + ' kg', height: 270,
+      categories: rowsKg.map(r => r.ano), formatY: n => fmt.compact(n) + ' kg', height: 280,
       series: [
         { label: 'Exportação', color: 'var(--series-4)', values: rowsKg.map(r => r.exportacao_kg) },
         { label: 'Importação', color: 'var(--series-6)', values: rowsKg.map(r => -r.importacao_kg) }
@@ -380,14 +380,14 @@
     }));
     seriesTopPaises.push({ label: 'Outros', color: 'var(--baseline)', values: filteredYearly.map(r => r.Outros || 0) });
     barChart($('#chart-comex-top-paises-tempo'), {
-      categories: filteredYearly.map(r => r.ano), formatY: fmt.usd, height: 290, stacked: true, series: seriesTopPaises
+      categories: filteredYearly.map(r => r.ano), formatY: fmt.usd, height: 280, stacked: true, series: seriesTopPaises
     });
 
     const ctBr = filterAnnual(s.comtrade.brazil_yearly, state.lo, state.hi);
     const ctWorld = filterAnnual(s.comtrade.world_yearly, state.lo, state.hi);
     const catCt = annualCategories([ctBr, ctWorld]);
     lineChart($('#chart-comex-mundo'), {
-      categories: catCt, formatY: fmt.usd, height: 290,
+      categories: catCt, formatY: fmt.usd, height: 280,
       series: [
         { label: 'Exportação do Brasil', color: 'var(--series-1)', values: seriesAnnual(ctBr, 'export_usd', catCt) },
         { label: 'Exportação mundial (contexto)', color: 'var(--series-8)', values: seriesAnnual(ctWorld, 'export_usd', catCt) }
@@ -399,12 +399,12 @@
       return (b && w && w.export_usd) ? (b.export_usd / w.export_usd) * 100 : null;
     });
     lineChart($('#chart-comex-participacao-mundial'), {
-      categories: catCt, formatY: n => fmt.pct(n), height: 270,
+      categories: catCt, formatY: n => fmt.pct(n), height: 280,
       series: [{ label: 'Participação do Brasil', color: 'var(--series-4)', values: participacaoMundo, area: true }]
     });
 
     const top = s.comex.top_paises_latest;
-    $('#comex-paises-sub').textContent = 'Exportação — ' + top.ano;
+    $('#comex-paises-sub').textContent = 'Exportação de ' + top.ano;
     rankList($('#rank-comex-paises'), top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-4)' });
 
     const anoRef = top.ano;
@@ -414,7 +414,7 @@
     const ctRefWorld = s.comtrade.world_yearly.find(r => r.ano === s.comtrade.top_partners_latest.ano);
     const share = ctRefBr && ctRefWorld && ctRefWorld.export_usd ? (ctRefBr.export_usd / ctRefWorld.export_usd) * 100 : null;
     $('#comex-narrative').textContent = rowRef
-      ? `Em ${anoRef}, o setor exportou ${fmt.usd(rowRef.exportacao_usd)} e importou ${fmt.usd(rowRef.importacao_usd)} — ${saldo >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldo))}.` +
+      ? `Em ${anoRef}, o setor exportou ${fmt.usd(rowRef.exportacao_usd)} e importou ${fmt.usd(rowRef.importacao_usd)}: ${saldo >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldo))}.` +
         (share != null ? ` No comércio mundial desses produtos, o Brasil responde por cerca de ${fmt.full1(share)}%.` : '')
       : 'Explore a evolução do comércio exterior do setor abaixo.';
   }
@@ -428,7 +428,7 @@
     const aprox = filterMonthly(sh.energia_metalurgia_aproximado, state.lo, state.hi);
     const cat = monthlyCategories([exato, aprox]);
     lineChart($('#chart-energia'), {
-      categories: cat, formatX: monthLabel, formatY: fmt.mwh, height: 320,
+      categories: cat, formatX: monthLabel, formatY: fmt.mwh, height: 280,
       series: [
         { label: 'Consumo do setor (ACL)', color: 'var(--series-5)', values: seriesMonthly(exato, 'consumo_acl_mwh', cat), area: true },
         { label: 'Metalurgia (contexto, categoria mais ampla)', color: 'var(--series-8)', values: seriesMonthly(aprox, 'consumo_livre_acl', cat) }
@@ -436,7 +436,7 @@
     });
 
     lineChart($('#chart-energia-livre-autoprodutor'), {
-      categories: aprox.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 290, stacked: true,
+      categories: aprox.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 280, stacked: true,
       series: [
         { label: 'Livre (ACL)', color: 'var(--series-5)', values: aprox.map(r => r.consumo_livre_acl) },
         { label: 'Autoprodutor', color: 'var(--series-7)', values: aprox.map(r => r.consumo_autoprodutor_acl) },
@@ -461,7 +461,7 @@
     const s = csS();
     const bndesY = filterAnnual(s.bndes.yearly, state.lo, state.hi);
     barChart($('#chart-bndes-ano'), {
-      categories: bndesY.map(r => r.ano), formatY: fmt.brl, height: 270,
+      categories: bndesY.map(r => r.ano), formatY: fmt.brl, height: 280,
       series: [{ label: 'Desembolsado', color: 'var(--series-8)', values: bndesY.map(r => r.valor_desembolsado) }]
     });
 
@@ -479,7 +479,7 @@
         .filter(r => r.ano === ano && r.porte === porte)
         .reduce((a, r) => a + (r.valor_desembolsado || 0), 0))
     }));
-    barChart($('#chart-bndes-porte'), { categories: catsPorte, formatY: fmt.brl, height: 270, stacked: true, series: seriesPorte });
+    barChart($('#chart-bndes-porte'), { categories: catsPorte, formatY: fmt.brl, height: 280, stacked: true, series: seriesPorte });
 
     const totalPorte = {};
     bndesTableFiltrado.forEach(r => { totalPorte[r.porte] = (totalPorte[r.porte] || 0) + (r.valor_desembolsado || 0); });
@@ -572,7 +572,7 @@
       const pct = total ? (rotatividade / total) * 100 : null;
       cards.push({
         title: 'Alta rotatividade de mão de obra',
-        text: 'Muitas contratações e desligamentos são de curto prazo ou por decisão do próprio trabalhador — sinal de dificuldade em reter equipe treinada.',
+        text: 'Muitas contratações e desligamentos são de curto prazo ou por decisão do próprio trabalhador, sinal de dificuldade em reter equipe treinada.',
         evidence: pct != null ? `<strong>${fmt.full1(pct)}%</strong> das movimentações registradas (${s.caged.coverage.inicio} a ${s.caged.coverage.fim}) foram reempregos, contratos por prazo determinado ou pedidos de desligamento.` : ''
       });
     }
@@ -626,16 +626,16 @@
     const cagedCov = data.sectors['2451'].caged.coverage;
     const energiaCov = data.sectors['2451'].energia.coverage;
     const rows = [
-      ['Produção física', 'Instituto Aço Brasil (IBS) + IBGE — PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', '1980–2026 (mensal)', 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.'],
+      ['Produção física', 'Instituto Aço Brasil (IBS) + IBGE, PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', '1980–2026 (mensal)', 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.'],
       ['Emprego formal', 'RAIS (vínculos, faixa de tamanho, escolaridade, ocupação, tempo de emprego, massa salarial)', '2006–2025 (anual)', 'Quebra metodológica em 2022 (eSocial) nos perfis detalhados.'],
       ['CAGED', 'CAGED (saldo, salário, tipo de movimentação por UF/CNAE)', `${cagedCov.inicio} a ${cagedCov.fim} (mensal)`, 'Cobertura calculada dinamicamente a partir da base carregada.'],
-      ['Financeiro', 'IBGE — PIA-Empresa (Metalurgia e Fundição 24.5)', '2007–2023 (anual)', 'Valores em R$ mil convertidos para R$ na exibição. Fundição 24.5 combina 2451+2452.'],
-      ['Comércio exterior', 'MDIC — Comex Stat (exportação/importação por país e UF)', '2006/2016–2026 (anual)', 'Dado oficial brasileiro, específico por CNAE.'],
+      ['Financeiro', 'IBGE, PIA-Empresa (Metalurgia e Fundição 24.5)', '2007–2023 (anual)', 'Valores em R$ mil convertidos para R$ na exibição. Fundição 24.5 combina 2451+2452.'],
+      ['Comércio exterior', 'MDIC, Comex Stat (exportação/importação por país e UF)', '2006/2016–2026 (anual)', 'Dado oficial brasileiro, específico por CNAE.'],
       ['Comércio exterior', 'UN Comtrade (comércio mundial por código HS)', '2015–2024 (anual)', 'Proxy por HS (não existe CNAE em bases internacionais); usado só para contexto Brasil x Mundo.'],
-      ['Energia', 'CCEE — consumo no mercado livre (exato por CNAE)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Janela curta: histórico só existe a partir dessa data.'],
-      ['Energia', 'CCEE — consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
-      ['BNDES', 'BNDES — desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
-      ['DECOM', 'DECOM/GECEX — processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
+      ['Energia', 'CCEE, consumo no mercado livre (exato por CNAE)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Janela curta: histórico só existe a partir dessa data.'],
+      ['Energia', 'CCEE, consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
+      ['BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
+      ['DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
       ['Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.']
     ];
     $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
