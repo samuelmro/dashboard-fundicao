@@ -637,15 +637,18 @@
 
   // ---------------------------------------------------------------------
   // Tabela genérica (HTML), com ordenação por coluna — BNDES, DECOM
-  // opts: { columns:[{key,label,align,format}], rows:[{...}] }
+  // opts: { columns:[{key,label,align,format}], rows:[{...}], pageSize? }
+  // Com pageSize, mostra só as N primeiras linhas (da ordenação atual) e um
+  // botão "Ver mais" que revela mais N a cada clique.
   // ---------------------------------------------------------------------
   function dataTable(container, opts) {
-    const { columns, rows } = opts;
+    const { columns, rows, pageSize } = opts;
     if (!rows || !rows.length) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
       return;
     }
     let sortKey = null, sortDir = 1;
+    let visibleCount = pageSize || rows.length;
     function render() {
       const sorted = sortKey ? [...rows].sort((a, b) => {
         const av = a[sortKey], bv = b[sortKey];
@@ -654,6 +657,7 @@
         if (typeof av === 'number') return (av - bv) * sortDir;
         return String(av).localeCompare(String(bv)) * sortDir;
       }) : rows;
+      const shown = sorted.slice(0, visibleCount);
       const wrap = document.createElement('div');
       wrap.className = 'data-table-wrap';
       const table = document.createElement('table');
@@ -673,7 +677,7 @@
       thead.appendChild(trh);
       table.appendChild(thead);
       const tbody = document.createElement('tbody');
-      sorted.forEach(r => {
+      shown.forEach(r => {
         const tr = document.createElement('tr');
         columns.forEach(col => {
           const td = document.createElement('td');
@@ -688,6 +692,15 @@
       wrap.appendChild(table);
       container.innerHTML = '';
       container.appendChild(wrap);
+
+      if (pageSize && visibleCount < sorted.length) {
+        const moreBtn = document.createElement('button');
+        moreBtn.type = 'button';
+        moreBtn.className = 'table-more-btn';
+        moreBtn.textContent = `Ver mais (${sorted.length - visibleCount} restantes)`;
+        moreBtn.addEventListener('click', () => { visibleCount += pageSize; render(); });
+        container.appendChild(moreBtn);
+      }
     }
     render();
   }

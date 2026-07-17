@@ -252,21 +252,16 @@ a:hover { color: var(--accent); }
 }
 .exhibit-block { grid-column: 1 / -1; }
 
-/* Exhibit: tag, caption (título+subtítulo) e gráfico ficam na mesma ordem no
-   DOM (tag, gráfico, caption) mas são reordenados visualmente via flex —
-   evita editar cada um dos ~36 blocos no HTML. */
+/* Exhibit: caption (título+subtítulo) e gráfico ficam na mesma ordem no DOM
+   (gráfico, caption) mas são reordenados visualmente via flex — evita editar
+   cada um dos ~36 blocos no HTML. */
 .exhibit, .exhibit-block {
   display: flex;
   flex-direction: column;
 }
-.exhibit .exhibit-tag, .exhibit-block .exhibit-tag {
-  order: -1;
-  font-size: 0.66rem; letter-spacing: 0.08em; color: var(--text-muted);
-  text-transform: uppercase; margin-bottom: 6px;
-}
 .exhibit .exhibit-caption, .exhibit-block .exhibit-caption { order: 0; margin-bottom: 14px; }
-.exhibit > div:not(.exhibit-tag):not(.exhibit-caption),
-.exhibit-block > div:not(.exhibit-tag):not(.exhibit-caption) { order: 1; }
+.exhibit > div:not(.exhibit-caption),
+.exhibit-block > div:not(.exhibit-caption) { order: 1; }
 .exhibit .filter-note { order: 2; margin-top: 8px; }
 
 .exhibit-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
@@ -347,6 +342,18 @@ table.data-table th {
 table.data-table td { color: var(--text-secondary); }
 table.data-table tbody tr:hover { background: var(--surface-2); }
 
+.table-more-btn {
+  margin-top: 12px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.table-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ---------- Gargalos ---------- */
 .gargalos-list .gargalo-row {
   display: flex; gap: 22px; padding: 26px 0; border-top: 1px solid var(--border);
@@ -359,6 +366,9 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 .gargalo-row p { margin: 0 0 10px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 .gargalo-evidence { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
 .gargalo-evidence strong { color: var(--text-primary); }
+
+.decom-highlight { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 16px; }
+.decom-highlight strong { color: var(--text-primary); font-size: 1.15rem; font-weight: 700; }
 
 /* ---------- PD&I / Referências (páginas de aba, não mais accordion) ---------- */
 #pdi-view, #referencias-view { padding: 40px 0 60px; }

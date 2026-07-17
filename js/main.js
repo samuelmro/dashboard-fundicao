@@ -454,6 +454,9 @@
   // ---------------------------------------------------------------------
   // 07 — BNDES
   // ---------------------------------------------------------------------
+  const PORTES_ORDEM = ['GRANDE', 'MÉDIA', 'PEQUENA', 'MICRO'];
+  const CORES_PORTE = { GRANDE: 'var(--series-6)', 'MÉDIA': 'var(--series-8)', PEQUENA: 'var(--series-4)', MICRO: 'var(--series-2)' };
+
   function renderBndes() {
     const s = csS();
     const bndesY = filterAnnual(s.bndes.yearly, state.lo, state.hi);
@@ -466,6 +469,30 @@
       label: i.nome_uf, value: i.valor_desembolsado, color: i.uf === state.uf ? 'var(--series-3)' : 'var(--series-8)'
     })), { formatVal: fmt.brl });
 
+    // Desembolso por porte ao longo do tempo (barra empilhada) + concentração (donut) —
+    // as duas leituras que a tabela de 200+ linhas não deixa claras de cara.
+    const bndesTableFiltrado = s.bndes.table.filter(r => r.ano >= state.lo && r.ano <= state.hi);
+    const catsPorte = Array.from(new Set(bndesTableFiltrado.map(r => r.ano))).sort((a, b) => a - b);
+    const seriesPorte = PORTES_ORDEM.filter(p => bndesTableFiltrado.some(r => r.porte === p)).map(porte => ({
+      label: titleCasePt(porte), color: CORES_PORTE[porte] || 'var(--series-1)',
+      values: catsPorte.map(ano => bndesTableFiltrado
+        .filter(r => r.ano === ano && r.porte === porte)
+        .reduce((a, r) => a + (r.valor_desembolsado || 0), 0))
+    }));
+    barChart($('#chart-bndes-porte'), { categories: catsPorte, formatY: fmt.brl, height: 270, stacked: true, series: seriesPorte });
+
+    const totalPorte = {};
+    bndesTableFiltrado.forEach(r => { totalPorte[r.porte] = (totalPorte[r.porte] || 0) + (r.valor_desembolsado || 0); });
+    const totalGeral = Object.values(totalPorte).reduce((a, v) => a + v, 0);
+    const grandePct = totalGeral ? ((totalPorte.GRANDE || 0) / totalGeral) * 100 : null;
+    $('#bndes-concentracao-sub').textContent = grandePct != null
+      ? `Grande porte: ${fmt.full1(grandePct)}% do desembolsado no período`
+      : 'Acumulado no período selecionado';
+    donutChart($('#chart-bndes-concentracao'), {
+      formatVal: fmt.brl, size: 200,
+      items: PORTES_ORDEM.filter(p => totalPorte[p]).map(p => ({ label: titleCasePt(p), value: totalPorte[p], color: CORES_PORTE[p] }))
+    });
+
     dataTable($('#table-bndes'), {
       columns: [
         { key: 'ano', label: 'Ano' },
@@ -475,15 +502,25 @@
         { key: 'valor_desembolsado', label: 'Desembolsado', align: 'right', format: fmt.brl },
       ],
       rows: s.bndes.table,
+      pageSize: 10,
     });
 
     const totalDesembolsado = bndesY.reduce((a, r) => a + (r.valor_desembolsado || 0), 0);
-    $('#bndes-narrative').textContent = `No período selecionado, o BNDES desembolsou ${fmt.brl(totalDesembolsado)} para o segmento. A tabela ao lado abre por ano, porte e instrumento de crédito.`;
+    $('#bndes-narrative').textContent = `No período selecionado, o BNDES desembolsou ${fmt.brl(totalDesembolsado)} para o segmento. Ao lado, quem recebeu (porte) e onde (UF); a tabela abaixo abre por ano, porte e instrumento de crédito.`;
   }
 
   // ---------------------------------------------------------------------
   // 08 — DECOM
   // ---------------------------------------------------------------------
+  function classifyDecomStatus(status) {
+    const s = String(status || '');
+    if (/sem medida/i.test(s)) return { emoji: '⚫', label: 'Sem medida' };
+    if (/encerrad/i.test(s)) return { emoji: '🔴', label: 'Encerrado' };
+    if (/históric|investigad/i.test(s)) return { emoji: '🟡', label: 'Histórico' };
+    if (/prorrogad|em vigor|compensat|antidumping|salvaguarda/i.test(s)) return { emoji: '🟢', label: 'Medida ativa' };
+    return { emoji: '⚪', label: s };
+  }
+
   function renderDecom() {
     const sh = shared();
     const wrap = $('#decom-wrap'), note = $('#decom-not-available');
@@ -498,13 +535,16 @@
       columns: [
         { key: 'ncm', label: 'NCM' },
         { key: 'pais', label: 'País' },
-        { key: 'status', label: 'Status' },
+        { key: 'status', label: 'Status', format: raw => { const c = classifyDecomStatus(raw); return c.emoji + ' ' + c.label; } },
         { key: 'aliquota', label: 'Alíquota' },
         { key: 'data_resolucao', label: 'Resolução' },
         { key: 'circular', label: 'Referência' },
       ],
       rows: sh.decom,
     });
+
+    const ativas = sh.decom.filter(d => classifyDecomStatus(d.status).label === 'Medida ativa').length;
+    $('#decom-highlight').innerHTML = `<strong>${ativas}</strong> medida${ativas === 1 ? '' : 's'} ativa${ativas === 1 ? '' : 's'} hoje · <strong>${sh.decom.length}</strong> processo${sh.decom.length === 1 ? '' : 's'} no histórico`;
   }
 
   // ---------------------------------------------------------------------
@@ -580,9 +620,9 @@
   }
 
   // ---------------------------------------------------------------------
-  // P&D / metodologia (estático, montado uma vez)
+  // Referências: fontes e metodologia (estático, montado uma vez)
   // ---------------------------------------------------------------------
-  function renderPdi(data) {
+  function renderReferencias(data) {
     const cagedCov = data.sectors['2451'].caged.coverage;
     const energiaCov = data.sectors['2451'].energia.coverage;
     const rows = [
@@ -596,9 +636,9 @@
       ['Energia', 'CCEE — consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
       ['BNDES', 'BNDES — desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
       ['DECOM', 'DECOM/GECEX — processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
-      ['Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (Exhibit 19); demais indicadores só como pano de fundo.']
+      ['Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.']
     ];
-    $('#pdi-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
   }
 
   // ---------------------------------------------------------------------
@@ -682,7 +722,7 @@
       populateUfSelect();
       setupViewTabs();
       setupPeriodSlider();
-      renderPdi(data);
+      renderReferencias(data);
       renderCharts();
       renderGargalos();
     })
