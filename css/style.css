@@ -1,12 +1,12 @@
 :root {
   color-scheme: light;
-  --surface-1:      #fdfffe;
-  --surface-2:      #f7f8f9;
+  --surface-1:      #fdffff;
+  --surface-2:      #f2f4f7; /* Cinza Névoa */
   --surface-card:   #ffffff;
   --text-primary:   #1e2329;
   --text-secondary: #34495e;
   --text-muted:     #8d99ae;
-  --gridline:       #f0f1f3;
+  --gridline:       #f2f4f7; /* Cinza Névoa */
   --baseline:       #c7cdd5;
   --border:         #e7e9ec;
   --good:           #2e6e49;
@@ -135,7 +135,7 @@ a:hover { color: var(--accent); }
 .header-title-row h1 {
   font-size: 1.85rem;
   margin: 0;
-  color: #fdfffe;
+  color: #fdffff;
   letter-spacing: -0.01em;
   font-weight: 700;
 }
@@ -186,9 +186,9 @@ a:hover { color: var(--accent); }
 .sector-switch button.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fdfffe;
+  color: #fdffff;
 }
-.sector-switch button:not(.active):hover { border-color: rgba(255,255,255,0.4); color: #fdfffe; }
+.sector-switch button:not(.active):hover { border-color: rgba(255,255,255,0.4); color: #fdffff; }
 
 /* ---------- Big numbers ---------- */
 .big-numbers {
@@ -393,20 +393,20 @@ a:hover { color: var(--accent); }
   box-shadow: 0 4px 16px rgba(30,35,41,0.35);
   padding: 10px 12px;
   font-size: 0.78rem;
-  color: #fdfffe;
+  color: #fdffff;
   max-width: 250px;
   opacity: 0;
   transition: opacity .08s;
 }
 .chart-tooltip.visible { opacity: 1; }
 .chart-tooltip .tt-title {
-  font-weight: 700; color: #fdfffe;
+  font-weight: 700; color: #fdffff;
   margin-bottom: 5px; font-variant-numeric: tabular-nums; font-size: 0.75rem;
 }
 .chart-tooltip .tt-row { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .chart-tooltip .tt-row + .tt-row { margin-top: 2px; }
 .chart-tooltip .tt-key { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
-.chart-tooltip .tt-val { font-weight: 700; color: #fdfffe; margin-left: auto; padding-left: 10px; font-variant-numeric: tabular-nums; }
+.chart-tooltip .tt-val { font-weight: 700; color: #fdffff; margin-left: auto; padding-left: 10px; font-variant-numeric: tabular-nums; }
 
 /* ---------- Data table (BNDES, DECOM) ---------- */
 .data-table-wrap { overflow-x: auto; }

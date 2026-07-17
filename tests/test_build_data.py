@@ -65,3 +65,26 @@ def test_financeiro_has_materias_primas(data):
 def test_json_is_utf8_no_bom():
     raw = (ROOT / 'data' / 'data.json').read_bytes()
     assert not raw.startswith(b'\xef\xbb\xbf')
+
+
+def is_sorted_by(rows, key):
+    values = [key(r) for r in rows]
+    assert values == sorted(values)
+
+
+@pytest.mark.parametrize('cnae', ['2451', '2452'])
+def test_yearly_and_monthly_series_are_chronological(data, cnae):
+    # Séries usadas diretamente como categorias de eixo X nos gráficos —
+    # se a ordem do CSV de origem não for cronológica, o gráfico embaralha
+    # o eixo (bug real encontrado com massa_nacional_yearly).
+    s = data['sectors'][cnae]
+    is_sorted_by(data['shared']['producao']['metalurgia_indice'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(data['shared']['producao']['aco_gusa'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(data['shared']['producao']['aco_gusa_dessaz'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(data['shared']['financeiro']['fundicao_24_5'], lambda r: r['ano'])
+    is_sorted_by(data['shared']['energia_metalurgia_aproximado'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(s['rais']['uf_yearly_total'], lambda r: r['ano'])
+    is_sorted_by(s['rais']['massa_nacional_yearly'], lambda r: r['ano'])
+    is_sorted_by(s['caged']['saldo_monthly_national'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(s['comex']['yearly'], lambda r: r['ano'])
+    is_sorted_by(s['bndes']['yearly'], lambda r: r['ano'])

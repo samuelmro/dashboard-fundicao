@@ -4,8 +4,8 @@
     {
       "name": "dashboard-serve",
       "runtimeExecutable": "pwsh",
-      "runtimeArgs": ["-File", "serve.ps1"],
-      "port": 8791
+      "runtimeArgs": ["-File", "serve.ps1", "-Port", "8792"],
+      "port": 8792
     }
   ]
 }

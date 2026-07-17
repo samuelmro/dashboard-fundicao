@@ -169,7 +169,8 @@ def build_producao():
                                  'aco_bruto': to_num(r.aco_bruto),
                                  'total_sem_ferro_gusa': to_num(r.total_sem_ferro_gusa)})
 
-    return metalurgia_indice, aco_gusa, aco_gusa_dessaz
+    key = lambda r: r['ano'] * 100 + r['mes']
+    return sorted(metalurgia_indice, key=key), sorted(aco_gusa, key=key), sorted(aco_gusa_dessaz, key=key)
 
 
 # ---------------------------------------------------------------------------
@@ -203,7 +204,7 @@ def read_financeiro(name):
             'vbpi': to_num(df['vbpi'].iat[i]),
             'vti': to_num(df['vti'].iat[i]),
         })
-    return out
+    return sorted(out, key=lambda r: r['ano'])
 
 
 # ---------------------------------------------------------------------------
@@ -211,23 +212,25 @@ def read_financeiro(name):
 # ---------------------------------------------------------------------------
 def build_energia_aproximado():
     df = read_csv('Consumo_Energia_CCEE_Metalurgia_e_Produtos_Metal_APROXIMADO.csv')
-    return [
+    rows = [
         {'ano': to_int(r.Ano), 'mes': to_int(r.Mes),
          'consumo_livre_acl': to_num(r.Consumo_Livre_ACL),
          'consumo_autoprodutor_acl': to_num(r.Consumo_Autoprodutor_ACL)}
         for r in df.itertuples(index=False)
     ]
+    return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
 
 
 def build_macro():
     df = read_csv('Indicadores_Macro_e_Inflacao.csv')
     df = df[df['ano'] >= 1990]
-    return [
+    rows = [
         {'ano': to_int(r.ano), 'mes': to_int(r.mes), 'data': r.data,
          'ipca': to_num(r.ipca_indice_inflacao), 'dolar': to_num(r.dolar_venda),
          'ipp_metalurgia': to_num(r.ipp_metalurgia_indice)}
         for r in df.itertuples(index=False)
     ]
+    return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
 
 
 def build_decom():
@@ -264,19 +267,20 @@ def build_sector(cnae, label):
         if ufi:
             uf_yearly.append({'ano': to_int(r.Ano), 'uf': ufi[0], 'nome_uf': ufi[1],
                                'estabelecimentos': to_int(r.Estabelecimentos), 'vinculos': to_int(r.Vinculos)})
-    uf_yearly_total = [
+    uf_yearly.sort(key=lambda r: (r['ano'], r['uf']))
+    uf_yearly_total = sorted([
         {'ano': to_int(r.Ano), 'estabelecimentos': to_int(r.Estabelecimentos), 'vinculos': to_int(r.Vinculos)}
         for r in rais_df.itertuples(index=False) if str(r.UF).strip() == 'Total'
-    ]
+    ], key=lambda r: r['ano'])
 
     # --- RAIS por porte ---
     tam_file = 'Empregos_RAIS_Tamanho_Ferro_Aco_2451.csv' if cnae == '2451' else 'Empregos_RAIS_Tamanho_Nao_Ferrosos_2452.csv'
     tam_df = read_csv(tam_file)
-    tamanho_yearly = [
+    tamanho_yearly = sorted([
         {'ano': to_int(r.Ano), 'faixa': r.Faixa_Tamanho, 'estabelecimentos': to_int(r.Estabelecimentos),
          'vinculos': to_int(r.Vinculos)}
         for r in tam_df.itertuples(index=False) if r.Faixa_Tamanho != 'Total'
-    ]
+    ], key=lambda r: r['ano'])
 
     # --- Perfis detalhados RAIS (retrato do último ano) ---
     escolaridade_latest = latest_breakdown(f'rais_vinc_fundicao_escolaridade_{cnae}.csv')
@@ -286,10 +290,10 @@ def build_sector(cnae, label):
     # --- Escolaridade como série completa (para área empilhada) ---
     esc_df = read_csv(f'rais_vinc_fundicao_escolaridade_{cnae}.csv')
     esc_full = esc_df[(~is_true_col(esc_df['is_total'])) & (esc_df['categoria'] != 'Total')]
-    escolaridade_yearly = [
+    escolaridade_yearly = sorted([
         {'ano': to_int(r.ano), 'categoria': r.categoria, 'frequencia': to_int(r.frequencia)}
         for r in esc_full.itertuples(index=False)
-    ]
+    ], key=lambda r: r['ano'])
 
     # --- Remuneração (massa salarial) ---
     massa_df = read_csv(f'rais_vinc_fundicao_massa_{cnae}.csv')
@@ -310,7 +314,7 @@ def build_sector(cnae, label):
                                  'remuneracao_media_nominal': to_num(r.remuneracao_media_nominal)})
     massa_uf_latest = {'ano': massa_ano_max, 'nacional': massa_nat, 'items': massa_items}
 
-    massa_nat_all = massa_df[is_true_col(massa_df['is_total'])]
+    massa_nat_all = massa_df[is_true_col(massa_df['is_total'])].sort_values('ano')
     massa_nacional_yearly = [
         {'ano': to_int(r.ano), 'frequencia': to_int(r.frequencia),
          'remuneracao_media_nominal': to_num(r.remuneracao_media_nominal)}

@@ -16,6 +16,7 @@ while ($listener.IsListening) {
   try {
     $ctx = $listener.GetContext()
     $req = $ctx.Request; $res = $ctx.Response
+    $res.KeepAlive = $false
     $path = [Uri]::UnescapeDataString($req.Url.AbsolutePath)
     if ($path -eq '/') { $path = '/index.html' }
     $file = Join-Path $root ($path.TrimStart('/'))
