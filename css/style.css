@@ -219,7 +219,6 @@ a:hover { color: var(--accent); }
 }
 .section-header .section-num { font-size: 0.81rem; color: var(--accent); font-weight: 700; flex-shrink: 0; }
 .section-header h2 { font-size: 1.3rem; font-weight: 700; margin: 0; color: var(--text-primary); flex-shrink: 0; }
-.section-header .narrative { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0; flex: 1; min-width: 260px; }
 .section-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin: 0 0 28px; line-height: 1.5; }
 
 .exhibit-grid {

@@ -27,10 +27,6 @@
   // ---------------------------------------------------------------------
   // Helpers de dados
   // ---------------------------------------------------------------------
-  function pctChange(now, before) {
-    if (now == null || before == null || before === 0) return null;
-    return ((now - before) / Math.abs(before)) * 100;
-  }
   function filterAnnual(rows, lo, hi) { return rows.filter(r => r.ano >= lo && r.ano <= hi); }
   function filterMonthly(rows, lo, hi) { return rows.filter(r => r.ano >= lo && r.ano <= hi); }
   function monthLabel(k, long) {
@@ -56,7 +52,6 @@
     return categories.map(k => (map.has(k) ? map.get(k) : null));
   }
   function last(arr) { return arr.length ? arr[arr.length - 1] : null; }
-  function findAt(arr, idxFromEnd) { return arr.length > idxFromEnd ? arr[arr.length - 1 - idxFromEnd] : null; }
   function csS() { return state.data.sectors[state.sector]; }
   function shared() { return state.data.shared; }
   function ufName(uf) {
@@ -106,12 +101,6 @@
       categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
       series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
     });
-
-    const latest = last(sh.producao.aco_gusa), prev12 = findAt(sh.producao.aco_gusa, 12);
-    const growth = prev12 ? pctChange(latest.aco_bruto, prev12.aco_bruto) : null;
-    $('#producao-narrative').textContent = growth == null
-      ? 'Acompanhe abaixo a evolução mensal da produção física de aço, ferro-gusa e laminados no Brasil, com contexto de recessões e sazonalidade.'
-      : `Nos últimos 12 meses, a produção de aço bruto no Brasil ${growth >= 0 ? 'cresceu' : 'caiu'} ${fmt.full1(Math.abs(growth))}%. O índice geral da metalurgia acompanha o mesmo ritmo da atividade industrial nacional, e as faixas sombreadas marcam as últimas recessões (CODACE/FGV).`;
   }
 
   // ---------------------------------------------------------------------
@@ -171,10 +160,6 @@
         { label: 'Custo total', value: custoTotal * 1000, isTotal: true },
       ]
     });
-
-    const latestPia = last(sh.financeiro.fundicao_24_5), prevPia = findAt(sh.financeiro.fundicao_24_5, 1);
-    const growth = prevPia ? pctChange(latestPia.receita_liquida_total, prevPia.receita_liquida_total) : null;
-    $('#financeiro-narrative').textContent = `Em ${latestPia.ano}, o grupo Fundição faturou ${fmt.brl(latestPia.receita_liquida_total * 1000)}${growth != null ? ' (' + fmt.pct(growth, true) + ' vs ' + prevPia.ano + ')' : ''}. VBPI, VTI, participação na Metalurgia e produtividade dão o contexto por trás da margem operacional (receita menos custos) e da decomposição de custos ao lado.`;
   }
 
   // ---------------------------------------------------------------------
@@ -279,9 +264,6 @@
         { label: 'Real (preços de ' + (anoRefMassa || '') + ')', color: 'var(--series-3)', values: remReal },
       ]
     });
-
-    const ufCount = new Set(s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano && r.estabelecimentos > 0).map(r => r.uf)).size;
-    $('#emprego-narrative').textContent = `Em ${totalLatest.ano}, o setor empregava ${fmt.full(totalLatest.vinculos)} pessoas, distribuídas por ${ufCount} estados. Os gráficos ao lado detalham composição por porte, UF, escolaridade, ocupação, tempo de emprego e remuneração.`;
   }
 
   // ---------------------------------------------------------------------
@@ -327,11 +309,6 @@
     rankList($('#rank-caged-saldo-uf'), rankSaldoUf.map(r => ({
       label: ufName(r.uf), value: r.saldo, color: r.saldo >= 0 ? 'var(--series-4)' : 'var(--series-6)'
     })), { formatVal: fmt.full });
-
-    const latestSaldo = last(saldoRows);
-    $('#caged-narrative').textContent = latestSaldo
-      ? `O saldo líquido mensal de admissões menos desligamentos, a composição de desligamentos por tipo e a massa salarial mostram o pulso de curto prazo do mercado de trabalho do setor, mês a mês.`
-      : 'Explore abaixo a dinâmica mensal de admissões e desligamentos do setor.';
   }
 
   // ---------------------------------------------------------------------
@@ -406,17 +383,6 @@
     const top = s.comex.top_paises_latest;
     $('#comex-paises-sub').textContent = 'Exportação de ' + top.ano;
     rankList($('#rank-comex-paises'), top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-4)' });
-
-    const anoRef = top.ano;
-    const rowRef = s.comex.yearly.find(r => r.ano === anoRef);
-    const saldo = rowRef ? rowRef.exportacao_usd - rowRef.importacao_usd : null;
-    const ctRefBr = s.comtrade.brazil_yearly.find(r => r.ano === s.comtrade.top_partners_latest.ano);
-    const ctRefWorld = s.comtrade.world_yearly.find(r => r.ano === s.comtrade.top_partners_latest.ano);
-    const share = ctRefBr && ctRefWorld && ctRefWorld.export_usd ? (ctRefBr.export_usd / ctRefWorld.export_usd) * 100 : null;
-    $('#comex-narrative').textContent = rowRef
-      ? `Em ${anoRef}, o setor exportou ${fmt.usd(rowRef.exportacao_usd)} e importou ${fmt.usd(rowRef.importacao_usd)}: ${saldo >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldo))}.` +
-        (share != null ? ` No comércio mundial desses produtos, o Brasil responde por cerca de ${fmt.full1(share)}%.` : '')
-      : 'Explore a evolução do comércio exterior do setor abaixo.';
   }
 
   // ---------------------------------------------------------------------
@@ -442,13 +408,6 @@
         { label: 'Autoprodutor', color: 'var(--series-7)', values: aprox.map(r => r.consumo_autoprodutor_acl) },
       ]
     });
-
-    const rows = s.energia.exato_monthly;
-    const latest = last(rows), prev12 = findAt(rows, 12);
-    const growth = prev12 ? pctChange(latest.consumo_acl_mwh, prev12.consumo_acl_mwh) : null;
-    $('#energia-narrative').textContent = growth == null
-      ? `O consumo de energia no mercado livre do setor foi de ${fmt.mwh(latest.consumo_acl_mwh)} em ${monthLabel(latest.ano * 100 + latest.mes, true)}.`
-      : `O consumo de energia no mercado livre do setor foi de ${fmt.mwh(latest.consumo_acl_mwh)} em ${monthLabel(latest.ano * 100 + latest.mes, true)}, uma variação de ${fmt.pct(growth, true)} em 12 meses. Ao lado, a quebra entre mercado Livre e Autoprodutor (nível nacional "Metalurgia", contexto).`;
   }
 
   // ---------------------------------------------------------------------
@@ -504,9 +463,6 @@
       rows: s.bndes.table,
       pageSize: 10,
     });
-
-    const totalDesembolsado = bndesY.reduce((a, r) => a + (r.valor_desembolsado || 0), 0);
-    $('#bndes-narrative').textContent = `No período selecionado, o BNDES desembolsou ${fmt.brl(totalDesembolsado)} para o segmento. Ao lado, quem recebeu (porte) e onde (UF); a tabela abaixo abre por ano, porte e instrumento de crédito.`;
   }
 
   // ---------------------------------------------------------------------
