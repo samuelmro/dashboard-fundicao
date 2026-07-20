@@ -612,9 +612,9 @@
   }
 
   // Duas listas de botões: sector-tabs (2451/2452) e view-tabs (home) + foot-tabs
-  // (pdi/estudos/referencias) formam juntas as 6 "vistas" mutuamente exclusivas.
+  // (pdi/relatorios/referencias) formam juntas as 6 "vistas" mutuamente exclusivas.
   // home fica vazia (reservada para conteúdo futuro); 2451/2452 mostram o
-  // painel de dados (trocando o setor); pdi/estudos/referencias trocam para
+  // painel de dados (trocando o setor); pdi/relatorios/referencias trocam para
   // uma página estática.
   function setupViewTabs() {
     const allBtns = Array.from(document.querySelectorAll('#view-tabs button, #sector-tabs button, #foot-tabs button'));
@@ -623,7 +623,7 @@
     const filterRow = $('#filter-row');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
     const pdiView = $('#pdi-view');
-    const estudosView = $('#estudos-view');
+    const relatoriosView = $('#relatorios-view');
     const referenciasView = $('#referencias-view');
 
     function applyVisibility() {
@@ -634,7 +634,7 @@
       sectionNav.style.display = isData ? '' : 'none';
       sectionNavList.style.display = isData ? '' : 'none';
       pdiView.hidden = state.view !== 'pdi';
-      estudosView.hidden = state.view !== 'estudos';
+      relatoriosView.hidden = state.view !== 'relatorios';
       referenciasView.hidden = state.view !== 'referencias';
     }
 
@@ -693,6 +693,7 @@
     { target: 'block-energia', num: '06', title: 'Energia', sub: 'Consumo no mercado livre, CCEE.' },
     { target: 'block-bndes', num: '07', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
     { target: 'block-decom', num: '08', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
+    { target: 'block-estudos-especiais', num: '09', title: 'Estudos especiais', sub: 'Em construção.' },
     { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
   ];
   function renderSectorSummary() {
