@@ -19,6 +19,8 @@
     full1(n) { return n == null || isNaN(n) ? '-' : fmtFull1.format(n); },
     usd(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtCompact.format(n); },
     brl(n) { return n == null || isNaN(n) ? '-' : 'R$ ' + fmtCompact.format(n); },
+    usdFull(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtFull.format(n); },
+    brlFull(n) { return n == null || isNaN(n) ? '-' : 'R$ ' + fmtFull.format(n); },
     mwh(n) { return n == null || isNaN(n) ? '-' : fmtCompact.format(n) + ' MWh'; },
     pct(n, signed) {
       if (n == null || isNaN(n)) return '-';

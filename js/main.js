@@ -101,6 +101,19 @@
       categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
       series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
     });
+
+    const producaoTableRows = [...sh.producao.aco_gusa].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
+    dataTable($('#table-producao'), {
+      columns: [
+        { key: 'k', label: 'Mês', format: monthLabel },
+        { key: 'aco_bruto', label: 'Aço bruto (t)', align: 'right', format: fmt.full },
+        { key: 'ferro_gusa', label: 'Ferro-gusa (t)', align: 'right', format: fmt.full },
+        { key: 'laminados', label: 'Laminados (t)', align: 'right', format: fmt.full },
+        { key: 'semi_acabados', label: 'Semiacabados (t)', align: 'right', format: fmt.full },
+      ],
+      rows: producaoTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
+      pageSize: 12,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -159,6 +172,25 @@
         { label: 'Outros', value: outros * 1000 },
         { label: 'Custo total', value: custoTotal * 1000, isTotal: true },
       ]
+    });
+
+    dataTable($('#table-financeiro'), {
+      columns: [
+        { key: 'ano', label: 'Ano' },
+        { key: 'numero_empresas', label: 'Nº empresas', align: 'right', format: fmt.full },
+        { key: 'pessoal_ocupado', label: 'Pessoal ocupado', align: 'right', format: fmt.full },
+        { key: 'vbpi', label: 'VBPI', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'vti', label: 'VTI', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'receita_liquida_total', label: 'Receita líquida', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'custos_despesas_totais', label: 'Custos totais', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'margem', label: 'Margem operacional', align: 'right', format: n => fmt.pct(n) },
+      ],
+      rows: [...sh.financeiro.fundicao_24_5].reverse().map(r => ({
+        ...r,
+        margem: (r.receita_liquida_total && r.custos_despesas_totais != null)
+          ? ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100 : null,
+      })),
+      pageSize: 20,
     });
   }
 
@@ -264,6 +296,19 @@
         { label: 'Real (preços de ' + (anoRefMassa || '') + ')', color: 'var(--series-3)', values: remReal },
       ]
     });
+
+    $('#emprego-uf-table-sub').textContent = 'Ano de ' + totalLatest.ano + ', todas as UFs com dado';
+    const ufTableRows = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos);
+    dataTable($('#table-emprego-uf'), {
+      columns: [
+        { key: 'nome_uf', label: 'UF' },
+        { key: 'estabelecimentos', label: 'Estabelecimentos', align: 'right', format: fmt.full },
+        { key: 'vinculos', label: 'Vínculos', align: 'right', format: fmt.full },
+        { key: 'razao', label: 'Vínculos / estabelecimento', align: 'right', format: fmt.full1 },
+      ],
+      rows: ufTableRows.map(r => ({ ...r, razao: r.estabelecimentos ? r.vinculos / r.estabelecimentos : null })),
+      pageSize: 10,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -304,11 +349,20 @@
     const saldoUfRows = s.caged.saldo_uf_yearly.filter(r => r.ano >= state.lo && r.ano <= state.hi);
     const saldoPorUf = {};
     saldoUfRows.forEach(r => { saldoPorUf[r.uf] = (saldoPorUf[r.uf] || 0) + r.saldo; });
-    const rankSaldoUf = Object.entries(saldoPorUf).map(([uf, saldo]) => ({ uf, saldo }))
-      .sort((a, b) => Math.abs(b.saldo) - Math.abs(a.saldo)).slice(0, 8);
-    rankList($('#rank-caged-saldo-uf'), rankSaldoUf.map(r => ({
+    const saldoUfSorted = Object.entries(saldoPorUf).map(([uf, saldo]) => ({ uf, saldo }))
+      .sort((a, b) => Math.abs(b.saldo) - Math.abs(a.saldo));
+    rankList($('#rank-caged-saldo-uf'), saldoUfSorted.slice(0, 8).map(r => ({
       label: ufName(r.uf), value: r.saldo, color: r.saldo >= 0 ? 'var(--series-4)' : 'var(--series-6)'
     })), { formatVal: fmt.full });
+
+    dataTable($('#table-caged-uf'), {
+      columns: [
+        { key: 'uf_nome', label: 'UF' },
+        { key: 'saldo', label: 'Saldo acumulado', align: 'right', format: fmt.full },
+      ],
+      rows: saldoUfSorted.map(r => ({ uf_nome: ufName(r.uf), saldo: r.saldo })),
+      pageSize: 10,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -383,6 +437,24 @@
     const top = s.comex.top_paises_latest;
     $('#comex-paises-sub').textContent = 'Exportação de ' + top.ano;
     rankList($('#rank-comex-paises'), top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-4)' });
+
+    const ufAnoMax = Math.max(...s.comex.uf_yearly.map(r => r.ano));
+    $('#comex-uf-table-sub').textContent = 'Ano de ' + ufAnoMax + ', principais UFs produtoras';
+    const ufNomes = Array.from(new Set(s.comex.uf_yearly.map(r => r.nome_uf)));
+    const ufTableRows = ufNomes.map(nome_uf => {
+      const exp = s.comex.uf_yearly.find(r => r.nome_uf === nome_uf && r.ano === ufAnoMax && r.fluxo === 'Exportação');
+      const imp = s.comex.uf_yearly.find(r => r.nome_uf === nome_uf && r.ano === ufAnoMax && r.fluxo === 'Importação');
+      return { nome_uf, exportacao_usd: exp ? exp.valor_usd : 0, importacao_usd: imp ? imp.valor_usd : 0 };
+    }).sort((a, b) => b.exportacao_usd - a.exportacao_usd);
+    dataTable($('#table-comex-uf'), {
+      columns: [
+        { key: 'nome_uf', label: 'UF' },
+        { key: 'exportacao_usd', label: 'Exportação', align: 'right', format: fmt.usdFull },
+        { key: 'importacao_usd', label: 'Importação', align: 'right', format: fmt.usdFull },
+      ],
+      rows: ufTableRows,
+      pageSize: 8,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -407,6 +479,17 @@
         { label: 'Livre (ACL)', color: 'var(--series-5)', values: aprox.map(r => r.consumo_livre_acl) },
         { label: 'Autoprodutor', color: 'var(--series-7)', values: aprox.map(r => r.consumo_autoprodutor_acl) },
       ]
+    });
+
+    const energiaTableRows = [...s.energia.exato_monthly].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
+    dataTable($('#table-energia'), {
+      columns: [
+        { key: 'k', label: 'Mês', format: monthLabel },
+        { key: 'consumo_acl_mwh', label: 'Consumo ACL', align: 'right', format: fmt.mwh },
+        { key: 'consumo_total_mwh', label: 'Consumo total', align: 'right', format: fmt.mwh },
+      ],
+      rows: energiaTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
+      pageSize: 12,
     });
   }
 
@@ -461,6 +544,15 @@
         { key: 'valor_desembolsado', label: 'Desembolsado', align: 'right', format: fmt.brl },
       ],
       rows: s.bndes.table,
+      pageSize: 10,
+    });
+
+    dataTable($('#table-bndes-uf'), {
+      columns: [
+        { key: 'nome_uf', label: 'UF' },
+        { key: 'valor_desembolsado', label: 'Desembolsado (acumulado)', align: 'right', format: fmt.brlFull },
+      ],
+      rows: s.bndes.uf_total,
       pageSize: 10,
     });
   }

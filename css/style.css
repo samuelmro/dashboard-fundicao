@@ -234,14 +234,16 @@ a:hover { color: var(--accent); }
 .exhibit-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 28px;
+  column-gap: 28px;
+  row-gap: 44px;
 }
 .exhibit-grid.single { grid-template-columns: 1fr; }
 @media (max-width: 640px) { .exhibit-grid { grid-template-columns: 1fr; } }
 
 .exhibit-block + .exhibit-grid,
-.exhibit-grid + .exhibit-block {
-  margin-top: 28px;
+.exhibit-grid + .exhibit-block,
+.exhibit-block + .exhibit-block {
+  margin-top: 44px;
 }
 .exhibit-block { grid-column: 1 / -1; }
 
