@@ -93,7 +93,9 @@ def test_yearly_and_monthly_series_are_chronological(data, cnae):
 def test_setor_eletrico_has_data(data, uf):
     scope = data['setor_eletrico'][uf]
     assert len(scope['total_monthly']) > 0
-    assert len(scope['metalurgia_monthly']) > 0
     assert len(scope['divisoes_latest']['items']) == 24
+    assert len(scope['por_divisao_monthly']) == 24
     is_sorted_by(scope['total_monthly'], lambda r: r['ano'] * 100 + r['mes'])
-    is_sorted_by(scope['metalurgia_monthly'], lambda r: r['ano'] * 100 + r['mes'])
+    for rows in scope['por_divisao_monthly'].values():
+        assert len(rows) > 0
+        is_sorted_by(rows, lambda r: r['ano'] * 100 + r['mes'])

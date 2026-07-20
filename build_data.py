@@ -254,15 +254,19 @@ def build_setor_eletrico():
             for (ano, mes), g in sub.groupby(['ANO', 'MES'])
         ], key=lambda r: r['ano'] * 100 + r['mes'])
 
-        met = sub[sub['CNAE_DIVISAO'] == 24].sort_values(['ANO', 'MES'])
-        metalurgia_monthly = [
-            {'ano': to_int(r.ANO), 'mes': to_int(r.MES), 'consumo_mwh': to_num(r.CONSUMO_MWH),
-             'custo_baixo': to_num(r.CUSTO_TOTAL_RS_MWH_BAIXO), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
-             'custo_alto': to_num(r.CUSTO_TOTAL_RS_MWH_ALTO),
-             'gasto_baixo': to_num(r.GASTO_ESTIMADO_RS_BAIXO), 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO),
-             'gasto_alto': to_num(r.GASTO_ESTIMADO_RS_ALTO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR)}
-            for r in met.itertuples(index=False)
-        ]
+        # Série mensal completa por divisão (as 24), para o seletor de CNAE
+        # do dashboard interativo do Setor Elétrico.
+        por_divisao_monthly = {}
+        for cnae, g in sub.groupby('CNAE_DIVISAO'):
+            g = g.sort_values(['ANO', 'MES'])
+            por_divisao_monthly[str(int(cnae))] = [
+                {'ano': to_int(r.ANO), 'mes': to_int(r.MES), 'consumo_mwh': to_num(r.CONSUMO_MWH),
+                 'custo_baixo': to_num(r.CUSTO_TOTAL_RS_MWH_BAIXO), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
+                 'custo_alto': to_num(r.CUSTO_TOTAL_RS_MWH_ALTO),
+                 'gasto_baixo': to_num(r.GASTO_ESTIMADO_RS_BAIXO), 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO),
+                 'gasto_alto': to_num(r.GASTO_ESTIMADO_RS_ALTO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR)}
+                for r in g.itertuples(index=False)
+            ]
 
         ano_max = int(sub['ANO'].max())
         mes_max = int(sub[sub['ANO'] == ano_max]['MES'].max())
@@ -278,7 +282,7 @@ def build_setor_eletrico():
             ],
         }
 
-        return {'total_monthly': total_monthly, 'metalurgia_monthly': metalurgia_monthly,
+        return {'total_monthly': total_monthly, 'por_divisao_monthly': por_divisao_monthly,
                 'divisoes_latest': divisoes_latest}
 
     return {
