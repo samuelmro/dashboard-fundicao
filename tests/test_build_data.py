@@ -99,17 +99,6 @@ def test_energia_industrial_schema(data):
     assert ei['serie_campos'] == ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct']
 
 
-def test_energia_industrial_composicao_participacao(data):
-    ei = data['energia_industrial']
-    comp = ei['composicao_participacao']
-    assert set(comp.keys()) == {u['uf'] for u in ei['ufs']}
-    for uf in ('BR', 'SP'):
-        by_month = comp[uf]
-        assert len(by_month) > 0
-        for valores in by_month.values():
-            assert len(valores) == 24
-
-
 @pytest.mark.parametrize('cnae', [10, 24, 33])
 def test_energia_industrial_serie_por_divisao(data, cnae):
     path = ROOT / 'data' / 'energia' / f'serie-cnae-{cnae}.json'

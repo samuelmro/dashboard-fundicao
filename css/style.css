@@ -447,7 +447,7 @@ table.pdi-table td.mono { font-variant-numeric: tabular-nums; white-space: nowra
 
 /* ---------- Ranked list (top países etc) ---------- */
 .rank-list { list-style: none; margin: 0; padding: 0; }
-#rank-ei-custo-estados { max-height: 280px; overflow-y: auto; }
+#rank-ei-custo-estados, #rank-ei-composicao { max-height: 280px; overflow-y: auto; }
 .rank-list li {
   display: flex; align-items: center; gap: 10px;
   padding: 6px 0;

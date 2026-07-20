@@ -804,33 +804,25 @@
         onClick: (it) => { stateEI.ufs.add(it.uf); renderUfPanel(); syncUfBtn(); update(); },
       });
 
-      // Composição setorial: top 7 divisões (pela soma nos estados
-      // selecionados) + Outras, participação % no mês final do período.
-      const chaveMes = String(stateEI.hi);
-      const comp = ei.composicao_participacao;
-      const partDe = (uf, idx) => (comp[uf] && comp[uf][chaveMes] && comp[uf][chaveMes][idx]) || 0;
-      const totalPorDivisao = ei.divisoes.map((d, idx) => ({
-        d, idx, total: ufsSel.reduce((a, uf) => a + partDe(uf, idx), 0)
-      }));
-      const topDivisoes = [...totalPorDivisao].sort((a, b) => b.total - a.total).slice(0, 7);
-      const seriesComposicao = topDivisoes.map((t, i) => ({
-        label: titleCasePt(t.d.descricao), color: CORES[i % CORES.length],
-        values: ufsSel.map(uf => partDe(uf, t.idx)),
-      }));
-      seriesComposicao.push({
-        label: 'Outras divisões', color: 'var(--baseline)',
-        values: ufsSel.map(uf => {
-          const arr = (comp[uf] && comp[uf][chaveMes]) || [];
-          const totalUf = arr.reduce((a, v) => a + (v || 0), 0);
-          const topUf = topDivisoes.reduce((a, t) => a + partDe(uf, t.idx), 0);
-          return Math.max(0, totalUf - topUf);
-        }),
-      });
-      $('#ei-composicao-sub').textContent = `% do consumo industrial por divisão CNAE, ${monthLabel(stateEI.hi, true)}`;
-      barChart($('#chart-ei-composicao'), {
-        categories: ufsSel, formatX: uf => ufInfo[uf], formatY: n => fmt.pct(n), height: 280, stacked: true,
-        series: seriesComposicao,
-        onCategoryClick: (uf) => { if (stateEI.ufs.size > 1) stateEI.ufs.delete(uf); renderUfPanel(); syncUfBtn(); update(); },
+      // Participação do setor selecionado no consumo industrial, por
+      // estado: ranking simples (mesmo padrão do gráfico de custo acima) em
+      // vez de empilhar as 24 divisões numa barra só por estado — com 4+
+      // estados e 8 divisões (top 7 + outras) o empilhado virava um
+      // mosaico de blocos difícil de comparar. Um ranking de uma métrica só
+      // (participação do setor já escolhido no filtro) é direto de ler.
+      const itemsComposicao = estados.map(u => {
+        const rows = serie[u.uf] || [];
+        const row = rows.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rows[rows.length - 1];
+        return row ? { uf: u.uf, label: u.nome, value: row[4] } : null;
+      }).filter(Boolean).sort((a, b) => b.value - a.value);
+      $('#ei-composicao-title').textContent = 'Participação de ' + nomeDivisao + ' no consumo industrial';
+      $('#ei-composicao-sub').textContent = `%, por estado, ${monthLabel(stateEI.hi, true)}, SP em destaque`;
+      rankList($('#rank-ei-composicao'), itemsComposicao.map(it => ({
+        uf: it.uf, label: it.label, value: it.value, color: it.uf === 'SP' ? 'var(--series-3)' : 'var(--series-1)',
+        tooltip: 'Fator de carga (premissa): ' + fmt.full1(divisao.fator_carga),
+      })), {
+        formatVal: n => fmt.pct(n),
+        onClick: (it) => { stateEI.ufs.add(it.uf); renderUfPanel(); syncUfBtn(); update(); },
       });
 
       // Tabela filtrada: UF x mês, para os estados e o período selecionados.

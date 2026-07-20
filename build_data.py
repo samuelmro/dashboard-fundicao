@@ -268,23 +268,9 @@ def build_energia_industrial():
          'fator_carga': to_num(r.FATOR_CARGA_ASSUMIDO)}
         for r in divisoes_df.itertuples(index=False)
     ]
-    ordem_cnae = [d['cnae'] for d in divisoes]
-
     coverage = monthly_coverage(
         [{'ano': to_int(r.ANO), 'mes': to_int(r.MES)} for r in df[['ANO', 'MES']].drop_duplicates().itertuples(index=False)]
     )
-
-    # Composição setorial por UF: participação (%) de cada divisão em cada
-    # mês, na ordem fixa de `divisoes` (evita repetir o código CNAE a cada
-    # mês). Leve o bastante (só 1 número por divisão) pra embutir no
-    # data.json principal sem lazy-load.
-    composicao_participacao = {}
-    for uf, g in df.groupby('UF'):
-        by_month = {}
-        for (ano, mes), gg in g.groupby(['ANO', 'MES']):
-            part_por_cnae = {int(r.CNAE_DIVISAO): to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF) for r in gg.itertuples(index=False)}
-            by_month[str(ano * 100 + mes)] = [part_por_cnae.get(c) for c in ordem_cnae]
-        composicao_participacao[uf] = by_month
 
     energia_dir = OUT_DIR / 'energia'
     energia_dir.mkdir(parents=True, exist_ok=True)
@@ -305,7 +291,6 @@ def build_energia_industrial():
         'coverage': coverage,
         'ufs': ufs,
         'divisoes': divisoes,
-        'composicao_participacao': composicao_participacao,
         'serie_campos': ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct'],
     }
 
