@@ -22,7 +22,7 @@ def data():
 
 
 def test_top_level_schema(data):
-    assert set(data.keys()) == {'meta', 'shared', 'sectors', 'setor_eletrico'}
+    assert set(data.keys()) == {'meta', 'shared', 'sectors', 'energia_industrial'}
     assert set(data['sectors'].keys()) == {'2451', '2452'}
 
 
@@ -89,13 +89,35 @@ def test_yearly_and_monthly_series_are_chronological(data, cnae):
     is_sorted_by(s['bndes']['yearly'], lambda r: r['ano'])
 
 
-@pytest.mark.parametrize('uf', ['brasil', 'sp'])
-def test_setor_eletrico_has_data(data, uf):
-    scope = data['setor_eletrico'][uf]
-    assert len(scope['total_monthly']) > 0
-    assert len(scope['divisoes_latest']['items']) == 24
-    assert len(scope['por_divisao_monthly']) == 24
-    is_sorted_by(scope['total_monthly'], lambda r: r['ano'] * 100 + r['mes'])
-    for rows in scope['por_divisao_monthly'].values():
+def test_energia_industrial_schema(data):
+    ei = data['energia_industrial']
+    assert len(ei['ufs']) == 28  # 27 estados + Brasil
+    assert {'BR', 'SP', 'AC', 'RR'} <= {u['uf'] for u in ei['ufs']}
+    assert ei['ufs'][0]['uf'] == 'BR'  # Brasil primeiro na lista
+    assert len(ei['divisoes']) == 24
+    assert all('fator_carga' in d and d['fator_carga'] for d in ei['divisoes'])
+    assert ei['serie_campos'] == ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct']
+
+
+def test_energia_industrial_composicao_participacao(data):
+    ei = data['energia_industrial']
+    comp = ei['composicao_participacao']
+    assert set(comp.keys()) == {u['uf'] for u in ei['ufs']}
+    for uf in ('BR', 'SP'):
+        by_month = comp[uf]
+        assert len(by_month) > 0
+        for valores in by_month.values():
+            assert len(valores) == 24
+
+
+@pytest.mark.parametrize('cnae', [10, 24, 33])
+def test_energia_industrial_serie_por_divisao(data, cnae):
+    path = ROOT / 'data' / 'energia' / f'serie-cnae-{cnae}.json'
+    assert path.exists()
+    with open(path, encoding='utf-8') as f:
+        obj = json.load(f)
+    ufs_esperadas = {u['uf'] for u in data['energia_industrial']['ufs']}
+    assert set(obj.keys()) == ufs_esperadas
+    for uf, rows in obj.items():
         assert len(rows) > 0
-        is_sorted_by(rows, lambda r: r['ano'] * 100 + r['mes'])
+        is_sorted_by(rows, lambda r: r[0] * 100 + r[1])

@@ -653,148 +653,210 @@
   }
 
   // ---------------------------------------------------------------------
-  // Energia Industrial: consumo e custo de energia da indústria de
-  // transformação inteira (24 divisões CNAE, Brasil x São Paulo).
-  // Totalmente interativo: divisão, abrangência e período (stateEI) — todo
-  // exhibit responde às três escolhas, sem nenhum gráfico/tabela estático.
-  // Rankings e a tabela de divisões agregam dentro do período selecionado
-  // (soma para consumo/gasto, média ponderada para custo, média simples
-  // para participação; fator de carga é premissa fixa por divisão).
+  // Energia Industrial: consumo/custo de energia da indústria de
+  // transformação inteira — 27 estados + Brasil, 24 divisões CNAE.
+  // Filtros: estados (multi-select), setor (CNAE, single-select) e período
+  // (mês inicial/final). A série completa por divisão x UF (~115 mil
+  // linhas) é grande demais para embutir tudo no data.json principal, então
+  // fica em 24 arquivos (data/energia/serie-cnae-N.json) carregados sob
+  // demanda ao trocar de setor, com cache em memória depois do 1º fetch.
+  // Clicar numa barra do ranking (gráfico 2) adiciona aquele estado ao
+  // filtro; clicar numa barra da composição (gráfico 3) remove.
   // ---------------------------------------------------------------------
   function renderEnergiaIndustrial(data) {
-    const se = data.setor_eletrico;
-    const anoMin = Number(se.coverage.inicio.slice(0, 4)), anoMax = Number(se.coverage.fim.slice(0, 4));
-    const stateEI = { cnae: 24, uf: 'BR', lo: anoMin, hi: anoMax };
-    const scopeOf = uf => (uf === 'SP' ? se.sp : se.brasil);
-    const inRange = rows => rows.filter(r => r.ano >= stateEI.lo && r.ano <= stateEI.hi);
+    const ei = data.energia_industrial;
+    const cache = {};
+    const anoMesLo0 = Number(ei.coverage.inicio.replace('-', ''));
+    const anoMesHi0 = Number(ei.coverage.fim.replace('-', ''));
+    const meses = [];
+    for (let k = anoMesLo0; k <= anoMesHi0;) {
+      meses.push(k);
+      const a = Math.floor(k / 100), m = k % 100;
+      k = m === 12 ? (a + 1) * 100 + 1 : k + 1;
+    }
 
-    const divisoesMeta = [...se.brasil.divisoes_latest.items].sort((a, b) => a.cnae - b.cnae);
-    const fatorCargaPorCnae = {};
-    divisoesMeta.forEach(d => { fatorCargaPorCnae[d.cnae] = d.fator_carga; });
+    const stateEI = { ufs: new Set(['SP', 'BR']), cnae: 24, lo: anoMesLo0, hi: anoMesHi0 };
+    const ufInfo = {}; ei.ufs.forEach(u => { ufInfo[u.uf] = u.nome; });
+    const divInfo = {}; ei.divisoes.forEach(d => { divInfo[d.cnae] = d; });
+    const ufsOrdenadas = () => ei.ufs.map(u => u.uf).filter(uf => stateEI.ufs.has(uf));
 
-    const cnaeSel = $('#se-cnae-select');
-    cnaeSel.innerHTML = divisoesMeta.map(d =>
+    async function ensureCnae(cnae) {
+      if (!cache[cnae]) cache[cnae] = await fetch(`data/energia/serie-cnae-${cnae}.json`).then(r => r.json());
+      return cache[cnae];
+    }
+
+    // ---- Estados: multi-select em dropdown de checkboxes ----
+    const ufBtn = $('#ei-uf-btn'), ufPanel = $('#ei-uf-panel');
+    function renderUfPanel() {
+      ufPanel.innerHTML = ei.ufs.map(u => `
+        <label class="multiselect-option">
+          <input type="checkbox" value="${u.uf}"${stateEI.ufs.has(u.uf) ? ' checked' : ''}>
+          ${u.nome}
+        </label>`).join('');
+      ufPanel.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
+        if (inp.checked) stateEI.ufs.add(inp.value);
+        else if (stateEI.ufs.size > 1) stateEI.ufs.delete(inp.value);
+        else inp.checked = true; // sempre pelo menos 1 estado selecionado
+        syncUfBtn();
+        update();
+      }));
+    }
+    function syncUfBtn() {
+      const sel = ufsOrdenadas();
+      ufBtn.textContent = sel.length <= 3 ? sel.map(uf => ufInfo[uf]).join(', ') : sel.length + ' estados selecionados';
+    }
+    ufBtn.addEventListener('click', () => {
+      const abrir = ufPanel.hidden;
+      ufPanel.hidden = !abrir;
+      ufBtn.setAttribute('aria-expanded', String(abrir));
+    });
+    document.addEventListener('click', (evt) => {
+      if (!$('#ei-uf-multiselect').contains(evt.target)) {
+        ufPanel.hidden = true; ufBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    renderUfPanel();
+    syncUfBtn();
+
+    // ---- Setor (CNAE): select único, 24 opções ----
+    const cnaeSel = $('#ei-cnae-select');
+    cnaeSel.innerHTML = ei.divisoes.map(d =>
       `<option value="${d.cnae}"${d.cnae === stateEI.cnae ? ' selected' : ''}>${d.cnae} · ${titleCasePt(d.descricao)}</option>`
     ).join('');
-    const ufSel = $('#se-uf-select');
-    const loSel = $('#se-period-lo-select'), hiSel = $('#se-period-hi-select');
-    const anos = []; for (let y = anoMin; y <= anoMax; y++) anos.push(y);
-    function fillYearOptions(sel, selected) {
-      sel.innerHTML = anos.map(y => `<option value="${y}"${y === selected ? ' selected' : ''}>${y}</option>`).join('');
-    }
-    fillYearOptions(loSel, stateEI.lo);
-    fillYearOptions(hiSel, stateEI.hi);
-
     cnaeSel.addEventListener('change', () => { stateEI.cnae = Number(cnaeSel.value); update(); });
-    ufSel.addEventListener('change', () => { stateEI.uf = ufSel.value; update(); });
-    loSel.addEventListener('change', () => {
-      stateEI.lo = Math.min(Number(loSel.value), stateEI.hi); loSel.value = stateEI.lo; update();
-    });
-    hiSel.addEventListener('change', () => {
-      stateEI.hi = Math.max(Number(hiSel.value), stateEI.lo); hiSel.value = stateEI.hi; update();
-    });
 
-    // Agrega as 24 divisões dentro do período [lo,hi] para uma abrangência:
-    // consumo/gasto somados, custo médio ponderado (gasto/consumo), participação
-    // média simples, fator de carga é premissa fixa (não varia no tempo).
-    function snapshot(uf) {
-      const scope = scopeOf(uf);
-      return divisoesMeta.map(d => {
-        const rows = inRange(scope.por_divisao_monthly[String(d.cnae)] || []);
-        if (!rows.length) return null;
-        const consumo = rows.reduce((a, r) => a + (r.consumo_mwh || 0), 0);
-        const gasto = rows.reduce((a, r) => a + (r.gasto_medio || 0), 0);
-        const participacaoMedia = rows.reduce((a, r) => a + (r.participacao_pct || 0), 0) / rows.length;
-        return {
-          cnae: d.cnae, descricao: d.descricao, consumo_mwh: consumo, gasto_medio: gasto,
-          custo_medio: consumo ? (gasto / consumo) : null, participacao_pct: participacaoMedia,
-          fator_carga: fatorCargaPorCnae[d.cnae],
-        };
-      }).filter(Boolean);
+    // ---- Período: mês/ano inicial e final ----
+    const loSel = $('#ei-period-lo-select'), hiSel = $('#ei-period-hi-select');
+    function fillMonthOptions(sel, selected) {
+      sel.innerHTML = meses.map(k => `<option value="${k}"${k === selected ? ' selected' : ''}>${monthLabel(k)}</option>`).join('');
+    }
+    fillMonthOptions(loSel, stateEI.lo);
+    fillMonthOptions(hiSel, stateEI.hi);
+    loSel.addEventListener('change', () => { stateEI.lo = Math.min(Number(loSel.value), stateEI.hi); loSel.value = stateEI.lo; update(); });
+    hiSel.addEventListener('change', () => { stateEI.hi = Math.max(Number(hiSel.value), stateEI.lo); hiSel.value = stateEI.hi; update(); });
+
+    // ---- Exportar CSV (dados filtrados, tal como carregados) ----
+    let tableRowsAtual = [];
+    function toCsv(rows) {
+      const cols = [
+        ['UF', r => r.uf_nome], ['Setor', r => r.setor], ['Mês', r => monthLabel(r.k)],
+        ['Consumo (MWh)', r => r.consumo_mwh], ['Custo (R$/MWh)', r => r.custo_rs_mwh],
+        ['Gasto (R$)', r => r.gasto_rs], ['Participação (%)', r => r.participacao_pct],
+      ];
+      const esc = v => { const s = String(v == null ? '' : v); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+      const linhas = [cols.map(c => esc(c[0])).join(';'), ...rows.map(r => cols.map(c => esc(c[1](r))).join(';'))];
+      const blob = new Blob(['\ufeff' + linhas.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'energia_industrial.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    $('#ei-export-csv').addEventListener('click', () => toCsv(tableRowsAtual));
+
+    function corUf(uf, i) {
+      if (uf === 'BR') return 'var(--series-1)';
+      if (uf === 'SP') return 'var(--series-3)';
+      return CORES[(i + 2) % CORES.length];
     }
 
-    function update() {
-      const nomeDivisao = titleCasePt((divisoesMeta.find(d => d.cnae === stateEI.cnae) || {}).descricao || '');
-      const ufLabel = stateEI.uf === 'SP' ? 'São Paulo' : 'Brasil';
-      const periodoLabel = stateEI.lo === stateEI.hi ? String(stateEI.lo) : `${stateEI.lo}–${stateEI.hi}`;
-      const totalBr = inRange(se.brasil.total_monthly), totalSp = inRange(se.sp.total_monthly);
-      const rowsBr = inRange(se.brasil.por_divisao_monthly[String(stateEI.cnae)] || []);
-      const rowsSp = inRange(se.sp.por_divisao_monthly[String(stateEI.cnae)] || []);
-      const rowsAtivo = stateEI.uf === 'SP' ? rowsSp : rowsBr;
-      const catDiv = rowsBr.map(r => r.ano * 100 + r.mes);
+    async function update() {
+      const cnaeAlvo = stateEI.cnae;
+      const serie = await ensureCnae(cnaeAlvo);
+      if (cnaeAlvo !== stateEI.cnae) return; // usuário trocou de novo antes do fetch voltar
+      const divisao = divInfo[stateEI.cnae];
+      const nomeDivisao = titleCasePt(divisao.descricao);
+      const ufsSel = ufsOrdenadas();
+      const inRange = rows => rows.filter(r => (r[0] * 100 + r[1]) >= stateEI.lo && (r[0] * 100 + r[1]) <= stateEI.hi);
+      const tooltipFatorCarga = () => [{ label: 'Fator de carga (premissa)', value: fmt.full1(divisao.fator_carga) }];
 
-      lineChart($('#chart-se-consumo-total'), {
-        categories: totalBr.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 280,
-        series: [
-          { label: 'Brasil', color: 'var(--series-1)', values: totalBr.map(r => r.consumo_mwh), area: true },
-          { label: 'São Paulo', color: 'var(--series-5)', values: totalSp.map(r => r.consumo_mwh) },
-        ]
+      const seriesPorUf = ufsSel.map(uf => ({ uf, rows: inRange(serie[uf] || []) }));
+      const catTempo = seriesPorUf.length ? seriesPorUf[0].rows.map(r => r[0] * 100 + r[1]) : [];
+
+      $('#ei-consumo-sub').textContent = `MWh por mês, ${nomeDivisao}`;
+      lineChart($('#chart-ei-consumo'), {
+        categories: catTempo, formatX: monthLabel, formatY: fmt.mwh, height: 280,
+        series: seriesPorUf.map((s, i) => ({ label: ufInfo[s.uf], color: corUf(s.uf, i), values: s.rows.map(r => r[2]), area: i === 0 })),
+        tooltipExtra: tooltipFatorCarga,
       });
 
-      $('#se-participacao-title').textContent = 'Participação de ' + nomeDivisao + ' no consumo industrial';
-      lineChart($('#chart-se-participacao-metalurgia'), {
-        categories: catDiv, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
-        series: [
-          { label: 'Brasil', color: 'var(--series-3)', values: rowsBr.map(r => r.participacao_pct), area: true },
-          { label: 'São Paulo', color: 'var(--series-5)', values: rowsSp.map(r => r.participacao_pct) },
-        ]
+      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomeDivisao}`;
+      lineChart($('#chart-ei-custo-tempo'), {
+        categories: catTempo, formatX: monthLabel, formatY: fmt.brl, height: 280,
+        series: seriesPorUf.map((s, i) => ({ label: ufInfo[s.uf], color: corUf(s.uf, i), values: s.rows.map(r => r[3]) })),
+        tooltipExtra: tooltipFatorCarga,
       });
 
-      const divisoesEscopo = snapshot(stateEI.uf);
-      $('#se-ranking-consumo-sub').textContent = ufLabel + ', ' + periodoLabel + ' (acumulado)';
-      rankList($('#rank-se-divisoes-consumo'), [...divisoesEscopo].sort((a, b) => b.consumo_mwh - a.consumo_mwh).slice(0, 8).map(d => ({
-        label: titleCasePt(d.descricao), value: d.consumo_mwh, color: d.cnae === stateEI.cnae ? 'var(--series-3)' : 'var(--series-1)'
-      })), { formatVal: fmt.mwh });
-
-      $('#se-ranking-fator-sub').textContent = 'Intensidade de uso contínuo da energia (0 a 1), ' + ufLabel;
-      rankList($('#rank-se-fator-carga'), [...divisoesEscopo].sort((a, b) => b.fator_carga - a.fator_carga).slice(0, 8).map(d => ({
-        label: titleCasePt(d.descricao), value: d.fator_carga, color: d.cnae === stateEI.cnae ? 'var(--series-3)' : 'var(--series-8)'
-      })), { formatVal: n => fmt.full1(n) });
-
-      $('#se-custo-title').textContent = 'Custo médio de energia: ' + nomeDivisao;
-      lineChart($('#chart-se-custo-metalurgia'), {
-        categories: rowsAtivo.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 280,
-        series: [
-          { label: 'Baixo', color: 'var(--series-4)', values: rowsAtivo.map(r => r.custo_baixo) },
-          { label: 'Médio', color: 'var(--series-3)', values: rowsAtivo.map(r => r.custo_medio) },
-          { label: 'Alto', color: 'var(--series-6)', values: rowsAtivo.map(r => r.custo_alto) },
-        ]
+      // Ranking: todos os 27 estados (sem Brasil, que é o agregado), custo
+      // no mês final do período selecionado, do mais barato ao mais caro.
+      const estados = ei.ufs.filter(u => u.uf !== 'BR');
+      const itemsRanking = estados.map(u => {
+        const rows = serie[u.uf] || [];
+        const row = rows.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rows[rows.length - 1];
+        return row ? { uf: u.uf, label: u.nome, value: row[3] } : null;
+      }).filter(Boolean).sort((a, b) => a.value - b.value);
+      $('#ei-ranking-custo-sub').textContent = `R$/MWh, ${nomeDivisao}, ${monthLabel(stateEI.hi, true)}, SP em destaque`;
+      rankList($('#rank-ei-custo-estados'), itemsRanking.map(it => ({
+        uf: it.uf, label: it.label, value: it.value, color: it.uf === 'SP' ? 'var(--series-3)' : 'var(--series-1)',
+        tooltip: 'Fator de carga (premissa): ' + fmt.full1(divisao.fator_carga),
+      })), {
+        formatVal: n => fmt.brl(n) + '/MWh',
+        onClick: (it) => { stateEI.ufs.add(it.uf); renderUfPanel(); syncUfBtn(); update(); },
       });
 
-      $('#se-gasto-title').textContent = 'Gasto estimado com energia: ' + nomeDivisao;
-      lineChart($('#chart-se-gasto-metalurgia'), {
-        categories: catDiv, formatX: monthLabel, formatY: fmt.brl, height: 280,
-        series: [
-          { label: 'Brasil', color: 'var(--series-1)', values: rowsBr.map(r => r.gasto_medio), area: true },
-          { label: 'São Paulo', color: 'var(--series-5)', values: rowsSp.map(r => r.gasto_medio) },
-        ]
+      // Composição setorial: top 7 divisões (pela soma nos estados
+      // selecionados) + Outras, participação % no mês final do período.
+      const chaveMes = String(stateEI.hi);
+      const comp = ei.composicao_participacao;
+      const partDe = (uf, idx) => (comp[uf] && comp[uf][chaveMes] && comp[uf][chaveMes][idx]) || 0;
+      const totalPorDivisao = ei.divisoes.map((d, idx) => ({
+        d, idx, total: ufsSel.reduce((a, uf) => a + partDe(uf, idx), 0)
+      }));
+      const topDivisoes = [...totalPorDivisao].sort((a, b) => b.total - a.total).slice(0, 7);
+      const seriesComposicao = topDivisoes.map((t, i) => ({
+        label: titleCasePt(t.d.descricao), color: CORES[i % CORES.length],
+        values: ufsSel.map(uf => partDe(uf, t.idx)),
+      }));
+      seriesComposicao.push({
+        label: 'Outras divisões', color: 'var(--baseline)',
+        values: ufsSel.map(uf => {
+          const arr = (comp[uf] && comp[uf][chaveMes]) || [];
+          const totalUf = arr.reduce((a, v) => a + (v || 0), 0);
+          const topUf = topDivisoes.reduce((a, t) => a + partDe(uf, t.idx), 0);
+          return Math.max(0, totalUf - topUf);
+        }),
+      });
+      $('#ei-composicao-sub').textContent = `% do consumo industrial por divisão CNAE, ${monthLabel(stateEI.hi, true)}`;
+      barChart($('#chart-ei-composicao'), {
+        categories: ufsSel, formatX: uf => ufInfo[uf], formatY: n => fmt.pct(n), height: 280, stacked: true,
+        series: seriesComposicao,
+        onCategoryClick: (uf) => { if (stateEI.ufs.size > 1) stateEI.ufs.delete(uf); renderUfPanel(); syncUfBtn(); update(); },
       });
 
-      $('#se-table-divisoes-sub').textContent = ufLabel + ', ' + periodoLabel + ' (acumulado/médio no período)';
-      dataTable($('#table-se-divisoes'), {
+      // Tabela filtrada: UF x mês, para os estados e o período selecionados.
+      const linhas = [];
+      ufsSel.forEach(uf => {
+        inRange(serie[uf] || []).forEach(r => {
+          linhas.push({
+            uf, uf_nome: ufInfo[uf], setor: nomeDivisao, k: r[0] * 100 + r[1],
+            consumo_mwh: r[2], custo_rs_mwh: r[3], gasto_rs: r[2] * r[3], participacao_pct: r[4],
+          });
+        });
+      });
+      linhas.sort((a, b) => b.k - a.k);
+      tableRowsAtual = linhas;
+      dataTable($('#table-ei-dados'), {
         columns: [
-          { key: 'cnae', label: 'CNAE' },
-          { key: 'descricao', label: 'Divisão', format: titleCasePt },
-          { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
-          { key: 'custo_medio', label: 'Custo médio', align: 'right', format: n => fmt.brl(n) + '/MWh' },
-          { key: 'gasto_medio', label: 'Gasto estimado', align: 'right', format: fmt.brlFull },
-          { key: 'participacao_pct', label: 'Participação média', align: 'right', format: n => fmt.pct(n) },
-          { key: 'fator_carga', label: 'Fator de carga', align: 'right', format: fmt.full1 },
-        ],
-        rows: divisoesEscopo,
-      });
-
-      $('#se-table-divisao-title').textContent = nomeDivisao + ': série mensal, ' + periodoLabel;
-      dataTable($('#table-se-metalurgia'), {
-        columns: [
+          { key: 'uf_nome', label: 'UF' },
+          { key: 'setor', label: 'Setor' },
           { key: 'k', label: 'Mês', format: monthLabel },
           { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
-          { key: 'custo_medio', label: 'Custo médio', align: 'right', format: n => fmt.brl(n) + '/MWh' },
-          { key: 'gasto_medio', label: 'Gasto estimado', align: 'right', format: fmt.brlFull },
+          { key: 'custo_rs_mwh', label: 'Custo', align: 'right', format: n => fmt.brl(n) + '/MWh' },
+          { key: 'gasto_rs', label: 'Gasto', align: 'right', format: fmt.brlFull },
           { key: 'participacao_pct', label: 'Participação', align: 'right', format: n => fmt.pct(n) },
         ],
-        rows: [...rowsAtivo].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes)).map(r => ({ ...r, k: r.ano * 100 + r.mes })),
-        pageSize: 12,
+        rows: linhas,
+        pageSize: 20,
       });
     }
 

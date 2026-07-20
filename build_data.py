@@ -233,62 +233,80 @@ def build_decom():
 
 
 # ---------------------------------------------------------------------------
-# SETOR ELÉTRICO: consumo/custo de energia de toda a indústria de
-# transformação (24 divisões CNAE), Brasil x São Paulo. Fonte própria,
-# formato diferente dos demais CSVs (separador decimal '.', não ',').
+# ENERGIA INDUSTRIAL: consumo/custo de energia de toda a indústria de
+# transformação (24 divisões CNAE), com abertura pelas 27 UFs + Brasil.
+# Fonte própria, formato diferente dos demais CSVs (separador decimal '.',
+# não ','). A série completa por divisão x UF (~115 mil linhas) é grande
+# demais para embutir inteira no data.json principal, então é gravada em
+# 24 arquivos separados (data/energia/serie-cnae-N.json) e carregada sob
+# demanda pelo dashboard só quando aquela divisão é selecionada.
 # ---------------------------------------------------------------------------
-def build_setor_eletrico():
-    df = pd.read_csv(SRC_DIR / 'energia_industria_transformacao_sp_brasil_2012-2026.csv',
+UF_NOME_EXTRA = {'BR': 'Brasil'}
+
+
+def build_energia_industrial():
+    df = pd.read_csv(SRC_DIR / 'energia_industria_transformacao_estados_brasil_2012-2026.csv',
                       sep=';', decimal='.', encoding='utf-8-sig')
-    num_cols = ['FATOR_CARGA_ASSUMIDO', 'CONSUMO_MWH', 'CUSTO_TOTAL_RS_MWH_BAIXO',
-                'CUSTO_TOTAL_RS_MWH_MEDIO', 'CUSTO_TOTAL_RS_MWH_ALTO', 'GASTO_ESTIMADO_RS_BAIXO',
-                'GASTO_ESTIMADO_RS_MEDIO', 'GASTO_ESTIMADO_RS_ALTO', 'PARTICIPACAO_PCT_SETOR']
+    num_cols = ['FATOR_CARGA_ASSUMIDO', 'CONSUMO_MWH', 'CUSTO_TOTAL_RS_MWH', 'GASTO_ESTIMADO_RS',
+                'PARTICIPACAO_PCT_SETOR_NA_UF']
     for c in num_cols:
         df[c] = pd.to_numeric(df[c], errors='coerce')
 
-    def build_scope(uf):
-        sub = df[df['UF'] == uf]
+    def nome_uf(uf):
+        if uf in UF_NOME_EXTRA:
+            return UF_NOME_EXTRA[uf]
+        found = BY_ABBR.get(uf)
+        return found[1] if found else uf
 
-        total_monthly = sorted([
-            {'ano': to_int(ano), 'mes': to_int(mes), 'consumo_mwh': to_num(g['CONSUMO_MWH'].sum())}
-            for (ano, mes), g in sub.groupby(['ANO', 'MES'])
-        ], key=lambda r: r['ano'] * 100 + r['mes'])
+    ufs = [{'uf': uf, 'nome': nome_uf(uf)} for uf in sorted(df['UF'].unique().tolist())]
+    ufs.sort(key=lambda u: (u['uf'] != 'BR', u['nome']))
 
-        # Série mensal completa por divisão (as 24), para o seletor de CNAE
-        # do dashboard interativo do Setor Elétrico.
-        por_divisao_monthly = {}
-        for cnae, g in sub.groupby('CNAE_DIVISAO'):
+    divisoes_df = (df[['CNAE_DIVISAO', 'CNAE_DIVISAO_DESCRICAO', 'FATOR_CARGA_ASSUMIDO']]
+                   .drop_duplicates('CNAE_DIVISAO').sort_values('CNAE_DIVISAO'))
+    divisoes = [
+        {'cnae': to_int(r.CNAE_DIVISAO), 'descricao': r.CNAE_DIVISAO_DESCRICAO,
+         'fator_carga': to_num(r.FATOR_CARGA_ASSUMIDO)}
+        for r in divisoes_df.itertuples(index=False)
+    ]
+    ordem_cnae = [d['cnae'] for d in divisoes]
+
+    coverage = monthly_coverage(
+        [{'ano': to_int(r.ANO), 'mes': to_int(r.MES)} for r in df[['ANO', 'MES']].drop_duplicates().itertuples(index=False)]
+    )
+
+    # Composição setorial por UF: participação (%) de cada divisão em cada
+    # mês, na ordem fixa de `divisoes` (evita repetir o código CNAE a cada
+    # mês). Leve o bastante (só 1 número por divisão) pra embutir no
+    # data.json principal sem lazy-load.
+    composicao_participacao = {}
+    for uf, g in df.groupby('UF'):
+        by_month = {}
+        for (ano, mes), gg in g.groupby(['ANO', 'MES']):
+            part_por_cnae = {int(r.CNAE_DIVISAO): to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF) for r in gg.itertuples(index=False)}
+            by_month[str(ano * 100 + mes)] = [part_por_cnae.get(c) for c in ordem_cnae]
+        composicao_participacao[uf] = by_month
+
+    energia_dir = OUT_DIR / 'energia'
+    energia_dir.mkdir(parents=True, exist_ok=True)
+    for d in divisoes:
+        sub = df[df['CNAE_DIVISAO'] == d['cnae']]
+        obj = {}
+        for uf, g in sub.groupby('UF'):
             g = g.sort_values(['ANO', 'MES'])
-            por_divisao_monthly[str(int(cnae))] = [
-                {'ano': to_int(r.ANO), 'mes': to_int(r.MES), 'consumo_mwh': to_num(r.CONSUMO_MWH),
-                 'custo_baixo': to_num(r.CUSTO_TOTAL_RS_MWH_BAIXO), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
-                 'custo_alto': to_num(r.CUSTO_TOTAL_RS_MWH_ALTO),
-                 'gasto_baixo': to_num(r.GASTO_ESTIMADO_RS_BAIXO), 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO),
-                 'gasto_alto': to_num(r.GASTO_ESTIMADO_RS_ALTO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR)}
+            obj[uf] = [
+                [to_int(r.ANO), to_int(r.MES), to_num(r.CONSUMO_MWH), to_num(r.CUSTO_TOTAL_RS_MWH),
+                 to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF)]
                 for r in g.itertuples(index=False)
             ]
-
-        ano_max = int(sub['ANO'].max())
-        mes_max = int(sub[sub['ANO'] == ano_max]['MES'].max())
-        latest = sub[(sub['ANO'] == ano_max) & (sub['MES'] == mes_max)].sort_values('CONSUMO_MWH', ascending=False)
-        divisoes_latest = {
-            'ano': ano_max, 'mes': mes_max,
-            'items': [
-                {'cnae': to_int(r.CNAE_DIVISAO), 'descricao': r.CNAE_DIVISAO_DESCRICAO,
-                 'consumo_mwh': to_num(r.CONSUMO_MWH), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
-                 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR),
-                 'fator_carga': to_num(r.FATOR_CARGA_ASSUMIDO)}
-                for r in latest.itertuples(index=False)
-            ],
-        }
-
-        return {'total_monthly': total_monthly, 'por_divisao_monthly': por_divisao_monthly,
-                'divisoes_latest': divisoes_latest}
+        with open(energia_dir / f"serie-cnae-{d['cnae']}.json", 'w', encoding='utf-8') as f:
+            json.dump(obj, f, ensure_ascii=False, separators=(',', ':'), default=np_default)
 
     return {
-        'coverage': monthly_coverage([{'ano': to_int(r.ANO), 'mes': to_int(r.MES)} for r in df.itertuples(index=False)]),
-        'brasil': build_scope('BR'),
-        'sp': build_scope('SP'),
+        'coverage': coverage,
+        'ufs': ufs,
+        'divisoes': divisoes,
+        'composicao_participacao': composicao_participacao,
+        'serie_campos': ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct'],
     }
 
 
@@ -615,7 +633,7 @@ def main():
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
     macro = build_macro()
     decom = build_decom()
-    setor_eletrico = build_setor_eletrico()
+    energia_industrial = build_energia_industrial()
 
     sector_2451 = build_sector('2451', 'Fundição de ferro e aço')
     sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos')
@@ -636,7 +654,7 @@ def main():
             'decom': decom,
         },
         'sectors': {'2451': sector_2451, '2452': sector_2452},
-        'setor_eletrico': setor_eletrico,
+        'energia_industrial': energia_industrial,
     }
 
     OUT_DIR.mkdir(exist_ok=True)

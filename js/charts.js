@@ -168,7 +168,7 @@
   // ---------------------------------------------------------------------
   function lineChart(container, opts) {
     container.innerHTML = '';
-    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, bands = [] } = opts;
+    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, bands = [], tooltipExtra } = opts;
     const n = categories.length;
     if (!n || !series.some(s => s.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
@@ -290,6 +290,7 @@
         const rows = series
           .filter(s => s.values[i] != null)
           .map(s => ({ label: s.label, color: s.color, value: formatY(s.values[i]) }));
+        if (tooltipExtra) rows.push(...tooltipExtra(i));
         if (!rows.length) return;
         const pos = clientPosFromEvent(evt, hit);
         showTooltip(pos.x, pos.y, formatX(categories[i], true), rows);
@@ -318,7 +319,7 @@
   // ---------------------------------------------------------------------
   function barChart(container, opts) {
     container.innerHTML = '';
-    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false } = opts;
+    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, tooltipExtra, onCategoryClick } = opts;
     const n = categories.length;
     if (!n || !series.some(s => s.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
@@ -401,15 +402,17 @@
       const hit = svgEl('rect', { x: slotX, y: margin.top, width: slotW, height: innerH, class: 'hit-area', tabindex: 0 });
       hit.style.cursor = 'pointer';
       const onEnter = (evt) => {
-        if (!rows.length) return;
+        const allRows = tooltipExtra ? [...rows, ...tooltipExtra(i)] : rows;
+        if (!allRows.length) return;
         const pos = clientPosFromEvent(evt, hit);
-        showTooltip(pos.x, pos.y, formatX(categories[i], true), rows);
+        showTooltip(pos.x, pos.y, formatX(categories[i], true), allRows);
       };
       hit.addEventListener('pointerenter', onEnter);
       hit.addEventListener('pointermove', onEnter);
       hit.addEventListener('pointerleave', hideTooltip);
       hit.addEventListener('focus', onEnter);
       hit.addEventListener('blur', hideTooltip);
+      if (onCategoryClick) hit.addEventListener('click', () => onCategoryClick(categories[i], i));
       svg.appendChild(hit);
     }
 
@@ -713,7 +716,7 @@
   // ---------------------------------------------------------------------
   function rankList(container, items, opts) {
     container.innerHTML = '';
-    const { formatVal = fmt.compact, color = 'var(--series-1)' } = opts || {};
+    const { formatVal = fmt.compact, color = 'var(--series-1)', onClick } = opts || {};
     if (!items.length) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
       return;
@@ -723,10 +726,14 @@
     ul.className = 'rank-list';
     items.forEach(it => {
       const li = document.createElement('li');
+      if (onClick) {
+        li.classList.add('rank-clickable');
+        li.addEventListener('click', () => onClick(it));
+      }
       const name = document.createElement('span');
       name.className = 'rank-name';
       name.textContent = it.label;
-      name.title = it.label;
+      name.title = it.tooltip ? it.label + ' · ' + it.tooltip : it.label;
       const barWrap = document.createElement('span');
       barWrap.className = 'rank-bar-wrap';
       const bar = document.createElement('span');
