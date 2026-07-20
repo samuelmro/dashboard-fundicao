@@ -1,3 +1,13 @@
+/* Hanken Grotesk: alternativa gratuita à Moderat (grotesca neutra, mesma
+   família de proporções), hospedada localmente, fonte variável 400-800. */
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../assets/fonts/HankenGrotesk-Variable.woff2") format("woff2-variations"), url("../assets/fonts/HankenGrotesk-Variable.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --surface-1:      #fdffff;
@@ -42,7 +52,7 @@ html, body {
   margin: 0; padding: 0;
   background: var(--surface-1);
   color: var(--text-primary);
-  font-family: Arial, "Segoe UI", sans-serif;
+  font-family: "Hanken Grotesk", Arial, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 body { overflow-x: hidden; }
