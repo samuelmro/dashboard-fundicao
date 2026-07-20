@@ -1997,736 +1997,1194 @@
 "Total";TRUE;"Desligamento por morte";"2452";307
 "Total";TRUE;"Desligamento por acordo empregado e empregador";"2451";322
 "Total";TRUE;"Desligamento por acordo empregado e empregador";"2452";80
-"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";514
-"Mai/2020";FALSE;"Admissão por primeiro emprego";"2452";3
-"Ago/2020";FALSE;"Desligamento por aposentadoria";"2452";1
-"Jan/2023";FALSE;"Desligamento a pedido";"2451";545
-"Out/2023";FALSE;"Desligamento a pedido";"2451";539
-"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";586
-"Mai/2022";FALSE;"Desligamento por morte";"2451";4
-"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
+"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";208
+"Jan/2020";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";330
+"Dez/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";12
+"Abr/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Jul/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Fev/2020";FALSE;"Desligamento por demissão com justa causa";"2451";34
+"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";127
+"Set/2023";FALSE;"Desligamento a pedido";"2452";102
+"Jul/2020";FALSE;"Desligamento a pedido";"2451";176
+"Dez/2023";FALSE;"Desligamento por morte";"2451";6
+"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Out/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";599
+"Out/2021";FALSE;"Desligamento por morte";"2452";2
+"Jan/2021";FALSE;"Desligamento por demissão com justa causa";"2451";46
+"Nov/2023";FALSE;"Desligamento por aposentadoria";"2452";1
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";607
+"Jun/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Jan/2022";FALSE;"Desligamento por morte";"2451";12
+"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";312
+"Fev/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";656
+"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";261
+"Jul/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";7
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";530
+"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";653
+"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
+"Nov/2021";FALSE;"Desligamento por morte";"2452";5
+"Set/2024";FALSE;"Desligamento por morte";"2452";2
+"Set/2025";FALSE;"Desligamento a pedido";"2451";531
+"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";580
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";14
+"Jun/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
+"Jun/2023";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Fev/2024";FALSE;"Desligamento por morte";"2452";3
+"Mar/2021";FALSE;"Desligamento por morte";"2452";1
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
+"Set/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";38
+"Mar/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1833
+"Abr/2023";FALSE;"Desligamento por morte";"2451";8
+"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";246
+"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";259
+"Abr/2022";FALSE;"Desligamento por morte";"2452";2
+"Set/2021";FALSE;"Desligamento a pedido";"2452";160
+"Out/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";40
+"Dez/2020";FALSE;"Desligamento por demissão com justa causa";"2451";28
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";622
+"Nov/2024";FALSE;"Desligamento por morte";"2452";2
+"Jul/2023";FALSE;"Desligamento por demissão com justa causa";"2452";2
+"Jun/2025";FALSE;"Desligamento a pedido";"2451";516
+"Jun/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Mar/2022";FALSE;"Desligamento a pedido";"2451";709
+"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1806
+"Ago/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";18
+"Jan/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";18
+"Abr/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";18
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";99
+"Set/2025";FALSE;"Desligamento por demissão com justa causa";"2451";66
+"Dez/2024";FALSE;"Desligamento por morte";"2452";1
+"Mar/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";46
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Abr/2020";FALSE;"Desligamento por morte";"2452";1
+"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Ago/2025";FALSE;"Desligamento a pedido";"2451";584
+"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Mar/2023";FALSE;"Desligamento por morte";"2451";1
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";181
 "Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Mai/2022";FALSE;"Desligamento por morte";"2451";4
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";51
+"Jan/2023";FALSE;"Desligamento a pedido";"2451";545
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
+"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";514
+"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";54
+"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";586
+"Out/2023";FALSE;"Desligamento a pedido";"2451";539
+"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";13
+"Mai/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Ago/2020";FALSE;"Desligamento por aposentadoria";"2452";1
 "Jul/2020";FALSE;"Desligamento por morte";"2452";1
-"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";619
-"Jan/2024";FALSE;"Desligamento a pedido";"2452";108
-"Out/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";3
-"Mar/2020";FALSE;"Admissão por primeiro emprego";"2451";86
-"Out/2023";FALSE;"Desligamento a pedido";"2452";105
-"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";793
-"Ago/2025";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Fev/2025";FALSE;"Desligamento por demissão com justa causa";"2451";53
-"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Jun/2023";FALSE;"Desligamento por demissão com justa causa";"2451";72
-"Jun/2023";FALSE;"Desligamento por morte";"2451";9
-"Jul/2020";FALSE;"Admissão por primeiro emprego";"2451";44
-"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";255
-"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";455
-"Set/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Mar/2021";FALSE;"Desligamento por demissão com justa causa";"2451";52
-"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";343
-"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1393
-"Ago/2020";FALSE;"Desligamento a pedido";"2452";77
-"Out/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";555
-"Mai/2022";FALSE;"Desligamento a pedido";"2452";121
-"Jun/2022";FALSE;"Desligamento por morte";"2451";5
-"Fev/2020";FALSE;"Desligamento a pedido";"2452";61
-"Mar/2025";FALSE;"Desligamento por morte";"2452";1
-"Mar/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
-"Jan/2023";FALSE;"Desligamento por morte";"2452";2
-"Mar/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";225
-"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";310
-"Fev/2021";FALSE;"Desligamento por demissão com justa causa";"2451";57
-"Abr/2021";FALSE;"Desligamento a pedido";"2452";114
-"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
-"Abr/2020";FALSE;"Desligamento por morte";"2451";4
-"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";222
-"Abr/2024";FALSE;"Desligamento por morte";"2451";5
-"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1222
-"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";576
-"Jan/2024";FALSE;"Desligamento por demissão com justa causa";"2452";6
-"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";615
-"Fev/2021";FALSE;"Desligamento por morte";"2451";4
-"Jan/2023";FALSE;"Desligamento a pedido";"2452";98
-"Ago/2021";FALSE;"Admissão por primeiro emprego";"2452";1
-"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";215
-"Fev/2025";FALSE;"Desligamento a pedido";"2452";182
-"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
-"Jun/2024";FALSE;"Desligamento por demissão com justa causa";"2451";33
-"Mar/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Dez/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Out/2021";FALSE;"Desligamento a pedido";"2451";603
+"Mai/2020";FALSE;"Admissão por primeiro emprego";"2452";3
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Nov/2024";FALSE;"Desligamento a pedido";"2451";542
+"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";594
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";42
+"Dez/2022";FALSE;"Desligamento a pedido";"2451";348
+"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";37
+"Mai/2021";FALSE;"Desligamento por demissão com justa causa";"2451";46
+"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1573
+"Nov/2021";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Jun/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";444
+"Jul/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Dez/2023";FALSE;"Desligamento a pedido";"2452";76
+"Out/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";34
+"Mar/2025";FALSE;"Desligamento a pedido";"2451";777
+"Out/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";26
+"Mai/2020";FALSE;"Desligamento por demissão com justa causa";"2451";10
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";142
+"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";124
+"Mar/2020";FALSE;"Desligamento por demissão com justa causa";"2451";23
+"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";89
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";136
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";38
+"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";166
+"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";482
+"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2020";FALSE;"Admissão por primeiro emprego";"2451";148
+"Mar/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";4
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";594
+"Mai/2020";FALSE;"Desligamento a pedido";"2452";19
+"Ago/2025";FALSE;"Desligamento por morte";"2452";1
+"Set/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1451
+"Jan/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";15
+"Jan/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1367
+"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";634
+"Mar/2020";FALSE;"Desligamento a pedido";"2452";59
+"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";326
+"Set/2020";FALSE;"Admissão por primeiro emprego";"2452";37
+"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";166
+"Jul/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";22
+"Dez/2023";FALSE;"Desligamento por demissão com justa causa";"2451";26
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Out/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Fev/2023";FALSE;"Desligamento por aposentadoria";"2451";1
 "Jun/2021";FALSE;"Desligamento a pedido";"2452";140
-"Jul/2025";FALSE;"Desligamento por demissão com justa causa";"2451";74
-"Mai/2024";FALSE;"Desligamento por morte";"2451";11
 "Jul/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";203
-"Out/2020";FALSE;"Desligamento a pedido";"2452";133
+"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1605
+"Out/2021";FALSE;"Desligamento a pedido";"2451";603
+"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";32
+"Jul/2025";FALSE;"Desligamento por demissão com justa causa";"2451";74
+"Fev/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1487
+"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";69
+"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";162
 "Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";211
-"Nov/2024";FALSE;"Desligamento por demissão com justa causa";"2451";37
-"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";491
-"Out/2021";FALSE;"Desligamento por morte";"2451";12
-"Mar/2021";FALSE;"Admissão por primeiro emprego";"2451";123
-"Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";464
-"Abr/2021";FALSE;"Desligamento por morte";"2451";19
-"Mar/2025";FALSE;"Desligamento por demissão com justa causa";"2452";11
-"Dez/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
-"Jun/2021";FALSE;"Desligamento por demissão com justa causa";"2451";48
-"Nov/2020";FALSE;"Desligamento por morte";"2452";2
-"Abr/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Mar/2023";FALSE;"Desligamento por demissão com justa causa";"2451";63
-"Nov/2021";FALSE;"Desligamento a pedido";"2452";122
-"Jan/2021";FALSE;"Admissão por primeiro emprego";"2451";163
-"Jan/2025";FALSE;"Desligamento por demissão com justa causa";"2452";11
-"Abr/2021";FALSE;"Desligamento por demissão com justa causa";"2451";61
-"Mai/2025";FALSE;"Desligamento por demissão com justa causa";"2451";75
-"Abr/2022";FALSE;"Desligamento por morte";"2451";10
-"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Ago/2022";FALSE;"Desligamento por morte";"2451";13
-"Ago/2020";FALSE;"Admissão por primeiro emprego";"2452";30
-"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";5
-"Nov/2022";FALSE;"Desligamento por demissão com justa causa";"2451";44
-"Jun/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";4
-"Mar/2022";FALSE;"Desligamento por morte";"2451";3
-"Mai/2022";FALSE;"Desligamento por morte";"2452";2
-"Jun/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Jul/2025";FALSE;"Desligamento a pedido";"2451";601
-"Fev/2021";FALSE;"Desligamento por demissão com justa causa";"2452";15
-"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";290
-"Nov/2021";FALSE;"Desligamento por demissão com justa causa";"2451";79
-"Jun/2020";FALSE;"Desligamento por morte";"2451";4
-"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";254
-"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";353
-"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";304
-"Ago/2022";FALSE;"Desligamento por morte";"2452";2
-"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";234
-"Ago/2022";FALSE;"Desligamento por demissão com justa causa";"2452";9
-"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";448
-"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";592
-"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";71
-"Abr/2020";FALSE;"Desligamento por aposentadoria";"2452";1
-"Mai/2025";FALSE;"Desligamento a pedido";"2452";169
-"Jan/2021";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Abr/2021";FALSE;"Desligamento por morte";"2452";7
-"Jan/2020";FALSE;"Desligamento a pedido";"2452";67
-"Jul/2020";FALSE;"Desligamento por morte";"2451";5
-"Jun/2021";FALSE;"Desligamento por morte";"2452";1
-"Nov/2025";FALSE;"Desligamento a pedido";"2451";364
-"Out/2024";FALSE;"Desligamento a pedido";"2452";155
-"Mar/2024";FALSE;"Desligamento por demissão com justa causa";"2451";47
-"Mai/2022";FALSE;"Desligamento a pedido";"2451";556
-"Jan/2021";FALSE;"Admissão por primeiro emprego";"2452";31
-"Ago/2021";FALSE;"Desligamento por morte";"2451";4
-"Abr/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Abr/2025";FALSE;"Desligamento por morte";"2451";5
-"Nov/2020";FALSE;"Desligamento por morte";"2451";8
-"Jun/2021";FALSE;"Desligamento por morte";"2451";17
-"Dez/2024";FALSE;"Desligamento por morte";"2451";6
-"Ago/2024";FALSE;"Desligamento por morte";"2451";8
-"Fev/2025";FALSE;"Desligamento a pedido";"2451";716
-"Jul/2024";FALSE;"Desligamento a pedido";"2452";139
-"Jul/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
-"Mai/2023";FALSE;"Desligamento a pedido";"2451";547
-"Set/2023";FALSE;"Desligamento por demissão com justa causa";"2452";2
-"Dez/2024";FALSE;"Desligamento a pedido";"2451";311
-"Dez/2021";FALSE;"Desligamento por demissão com justa causa";"2451";68
-"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";583
-"Jun/2020";FALSE;"Desligamento a pedido";"2452";41
-"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";212
-"Abr/2025";FALSE;"Desligamento a pedido";"2452";141
-"Set/2020";FALSE;"Desligamento por demissão com justa causa";"2452";2
-"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";207
-"Mar/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";6
-"Mar/2023";FALSE;"Desligamento por morte";"2452";3
+"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";208
+"Out/2020";FALSE;"Desligamento a pedido";"2452";133
+"Mai/2024";FALSE;"Desligamento por morte";"2451";11
+"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";470
+"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";705
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";238
+"Mai/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Mai/2021";FALSE;"Desligamento a pedido";"2452";138
+"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
+"Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";249
+"Nov/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
+"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";3
+"Nov/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";42
+"Set/2021";FALSE;"Desligamento por morte";"2451";7
+"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";248
+"Nov/2020";FALSE;"Desligamento por demissão com justa causa";"2452";2
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
+"Mar/2022";FALSE;"Desligamento por morte";"2452";3
+"Jan/2022";FALSE;"Desligamento por demissão com justa causa";"2451";52
+"Ago/2022";FALSE;"Desligamento por demissão com justa causa";"2451";72
+"Ago/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";9
+"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";608
+"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";338
+"Set/2023";FALSE;"Desligamento a pedido";"2451";528
+"Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Out/2020";FALSE;"Admissão por primeiro emprego";"2451";76
+"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Jan/2020";FALSE;"Desligamento por morte";"2452";5
+"Set/2020";FALSE;"Desligamento por morte";"2451";10
+"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jun/2020";FALSE;"Desligamento por morte";"2452";3
+"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";109
+"Out/2022";FALSE;"Desligamento por demissão com justa causa";"2451";47
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jun/2022";FALSE;"Desligamento a pedido";"2451";545
+"Nov/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";51
+"Jun/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Jul/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
+"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";575
+"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";89
+"Fev/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";746
+"Fev/2023";FALSE;"Desligamento por demissão com justa causa";"2451";58
+"Nov/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";13
+"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";634
+"Jun/2022";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Fev/2023";FALSE;"Desligamento por morte";"2451";4
+"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";88
+"Ago/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Out/2023";FALSE;"Desligamento por morte";"2452";2
+"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Ago/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";619
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";27
+"Mar/2020";FALSE;"Admissão por primeiro emprego";"2451";86
+"Mar/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Mai/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";566
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";3
+"Jan/2024";FALSE;"Desligamento a pedido";"2452";108
+"Fev/2025";FALSE;"Desligamento por demissão com justa causa";"2451";53
+"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";793
+"Jul/2020";FALSE;"Admissão por primeiro emprego";"2451";44
+"Out/2023";FALSE;"Desligamento a pedido";"2452";105
+"Jun/2023";FALSE;"Desligamento por morte";"2451";9
+"Jun/2023";FALSE;"Desligamento por demissão com justa causa";"2451";72
+"Out/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";57
+"Jul/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Ago/2025";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";284
+"Out/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1356
+"Set/2024";FALSE;"Desligamento a pedido";"2451";631
+"Mar/2022";FALSE;"Desligamento a pedido";"2452";136
+"Mar/2020";FALSE;"Desligamento por morte";"2451";11
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";356
+"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1452
+"Jan/2021";FALSE;"Desligamento por morte";"2451";8
+"Mai/2021";FALSE;"Admissão por primeiro emprego";"2452";15
+"Dez/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";310
+"Fev/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";29
+"Nov/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";356
+"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2024";FALSE;"Desligamento por morte";"2451";4
+"Abr/2024";FALSE;"Desligamento a pedido";"2452";153
+"Mai/2023";FALSE;"Desligamento por demissão com justa causa";"2451";52
+"Jun/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Set/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Out/2021";FALSE;"Admissão por primeiro emprego";"2451";1
+"Nov/2025";FALSE;"Desligamento por morte";"2451";8
+"Jun/2024";FALSE;"Desligamento a pedido";"2451";531
+"Set/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";10
+"Ago/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";393
+"Abr/2020";FALSE;"Admissão por primeiro emprego";"2451";8
+"Nov/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Abr/2021";FALSE;"Admissão por primeiro emprego";"2452";28
+"Jan/2024";FALSE;"Desligamento por demissão com justa causa";"2451";29
+"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";45
+"Nov/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";25
+"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";278
+"Nov/2023";FALSE;"Desligamento por morte";"2452";3
+"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";32
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";111
+"Jun/2020";FALSE;"Desligamento por demissão com justa causa";"2451";9
+"Out/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Fev/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";16
+"Out/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";27
+"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";315
+"Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1919
+"Jul/2022";FALSE;"Desligamento a pedido";"2452";136
+"Mar/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";314
+"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";229
+"Out/2022";FALSE;"Desligamento a pedido";"2452";106
+"Mar/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Dez/2024";FALSE;"Desligamento a pedido";"2452";107
+"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";162
+"Set/2021";FALSE;"Desligamento por morte";"2452";3
+"Abr/2024";FALSE;"Desligamento por morte";"2452";2
+"Dez/2020";FALSE;"Desligamento a pedido";"2452";113
+"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";69
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";210
+"Mar/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1752
+"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";348
+"Out/2024";FALSE;"Desligamento por morte";"2451";5
+"Ago/2024";FALSE;"Desligamento por demissão com justa causa";"2452";1
+"Mar/2023";FALSE;"Desligamento por aposentadoria";"2451";8
+"Mar/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Jun/2023";FALSE;"Desligamento por aposentadoria";"2451";1
+"Mai/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Jan/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
 "Jun/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";744
 "Out/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";643
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";25
 "Set/2022";FALSE;"Desligamento por morte";"2452";3
-"Ago/2020";FALSE;"Desligamento por morte";"2451";10
-"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";222
-"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";445
-"Jun/2022";FALSE;"Desligamento a pedido";"2452";104
 "Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";8
 "Fev/2023";FALSE;"Desligamento a pedido";"2452";113
-"Jun/2024";FALSE;"Desligamento a pedido";"2452";132
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";445
 "Mai/2021";FALSE;"Desligamento a pedido";"2451";497
-"Fev/2020";FALSE;"Desligamento por aposentadoria";"2452";1
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";222
+"Jun/2024";FALSE;"Desligamento a pedido";"2452";132
+"Jun/2022";FALSE;"Desligamento a pedido";"2452";104
+"Fev/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";36
+"Set/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Ago/2020";FALSE;"Desligamento por morte";"2451";10
 "Jun/2025";FALSE;"Desligamento por morte";"2452";6
-"Set/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";316
-"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";798
-"Jan/2022";FALSE;"Desligamento a pedido";"2452";120
-"Set/2020";FALSE;"Desligamento a pedido";"2451";366
-"Ago/2024";FALSE;"Desligamento a pedido";"2451";689
-"Fev/2020";FALSE;"Admissão por primeiro emprego";"2452";39
-"Fev/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1176
-"Jul/2023";FALSE;"Desligamento a pedido";"2452";100
-"Jan/2020";FALSE;"Desligamento por demissão com justa causa";"2451";15
-"Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";297
-"Jul/2023";FALSE;"Desligamento por morte";"2452";1
-"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";528
-"Jul/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";584
-"Out/2025";FALSE;"Desligamento a pedido";"2451";532
-"Mar/2025";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Dez/2020";FALSE;"Admissão por primeiro emprego";"2452";18
-"Nov/2025";FALSE;"Desligamento a pedido";"2452";106
-"Nov/2020";FALSE;"Admissão por primeiro emprego";"2451";55
-"Nov/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";618
-"Dez/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";267
-"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";890
-"Jan/2023";FALSE;"Desligamento por demissão com justa causa";"2452";4
-"Jan/2025";FALSE;"Desligamento por morte";"2451";5
-"Fev/2023";FALSE;"Desligamento a pedido";"2451";521
-"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
-"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";136
-"Fev/2021";FALSE;"Desligamento por morte";"2452";3
-"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
-"Jul/2021";FALSE;"Desligamento por demissão com justa causa";"2452";6
-"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";761
-"Ago/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";220
-"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";237
-"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1912
-"Mar/2020";FALSE;"Admissão por primeiro emprego";"2452";22
-"Dez/2020";FALSE;"Desligamento por morte";"2452";1
-"Ago/2025";FALSE;"Desligamento por demissão com justa causa";"2451";46
-"Out/2020";FALSE;"Desligamento por morte";"2451";5
-"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
-"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Nov/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Set/2025";FALSE;"Desligamento a pedido";"2452";175
-"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";616
-"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";83
-"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";324
-"Fev/2022";FALSE;"Desligamento por morte";"2451";6
-"Nov/2025";FALSE;"Desligamento por morte";"2452";5
-"Out/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
-"Jun/2020";FALSE;"Admissão por primeiro emprego";"2452";4
-"Jan/2025";FALSE;"Desligamento a pedido";"2451";543
-"Fev/2022";FALSE;"Desligamento por morte";"2452";4
-"Mar/2023";FALSE;"Desligamento a pedido";"2451";643
-"Ago/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";971
-"Jul/2024";FALSE;"Desligamento por demissão com justa causa";"2451";35
-"Mar/2025";FALSE;"Desligamento por morte";"2451";6
-"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";307
-"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";353
-"Abr/2022";FALSE;"Desligamento a pedido";"2451";539
-"Out/2025";FALSE;"Desligamento por morte";"2452";4
-"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";239
-"Out/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";296
-"Jul/2025";FALSE;"Desligamento a pedido";"2452";132
-"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";771
-"Jan/2021";FALSE;"Desligamento a pedido";"2451";486
-"Ago/2025";FALSE;"Desligamento a pedido";"2452";129
-"Jul/2022";FALSE;"Desligamento por morte";"2452";1
-"Nov/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";483
-"Jun/2022";FALSE;"Desligamento por morte";"2452";1
-"Nov/2022";FALSE;"Desligamento por morte";"2452";1
-"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
-"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Fev/2022";FALSE;"Desligamento por demissão com justa causa";"2451";47
-"Mar/2023";FALSE;"Desligamento a pedido";"2452";116
-"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";649
-"Abr/2020";FALSE;"Desligamento por demissão com justa causa";"2451";8
-"Jan/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Mar/2020";FALSE;"Desligamento a pedido";"2451";217
-"Fev/2020";FALSE;"Desligamento a pedido";"2451";246
-"Mai/2021";FALSE;"Desligamento por demissão com justa causa";"2452";17
+"Fev/2020";FALSE;"Desligamento por aposentadoria";"2452";1
+"Fev/2021";FALSE;"Desligamento a pedido";"2451";546
+"Dez/2021";FALSE;"Desligamento por demissão com justa causa";"2452";11
+"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Abr/2023";FALSE;"Desligamento a pedido";"2452";93
+"Fev/2020";FALSE;"Admissão por primeiro emprego";"2451";197
+"Mar/2024";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Mar/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";23
+"Set/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Abr/2021";FALSE;"Admissão por primeiro emprego";"2451";102
+"Jun/2025";FALSE;"Desligamento a pedido";"2452";156
+"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";285
+"Jul/2025";FALSE;"Desligamento por morte";"2452";4
+"Mai/2024";FALSE;"Desligamento a pedido";"2451";587
+"Nov/2022";FALSE;"Desligamento a pedido";"2451";460
+"Mar/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";22
+"Mar/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1365
+"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";191
+"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";440
+"Nov/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";378
+"Ago/2020";FALSE;"Desligamento por morte";"2452";2
+"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";255
+"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1569
+"Mai/2022";FALSE;"Desligamento a pedido";"2452";121
+"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";455
+"Set/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";47
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";555
+"Out/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Mar/2021";FALSE;"Desligamento por demissão com justa causa";"2451";52
+"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1393
+"Jan/2023";FALSE;"Desligamento por morte";"2452";2
+"Jun/2022";FALSE;"Desligamento por morte";"2451";5
+"Out/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1123
+"Fev/2020";FALSE;"Desligamento a pedido";"2452";61
+"Ago/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";36
+"Mar/2025";FALSE;"Desligamento por morte";"2452";1
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";26
+"Mar/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
+"Ago/2020";FALSE;"Desligamento a pedido";"2452";77
+"Mar/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";343
+"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Mar/2021";FALSE;"Desligamento por morte";"2451";7
+"Out/2024";FALSE;"Desligamento a pedido";"2451";683
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";208
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";222
+"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";159
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";150
+"Fev/2024";FALSE;"Desligamento por morte";"2451";7
+"Ago/2021";FALSE;"Desligamento a pedido";"2452";175
+"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";231
+"Abr/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";7
+"Ago/2021";FALSE;"Desligamento por morte";"2452";3
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";18
+"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";978
+"Mai/2021";FALSE;"Desligamento por morte";"2452";4
+"Jun/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";20
+"Abr/2024";FALSE;"Desligamento por demissão com justa causa";"2452";7
+"Dez/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Set/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";433
+"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";119
+"Fev/2021";FALSE;"Admissão por primeiro emprego";"2452";24
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";550
+"Jan/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1883
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";316
+"Jul/2022";FALSE;"Desligamento por demissão com justa causa";"2451";51
+"Ago/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";33
+"Nov/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";34
+"Mar/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";9
+"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";564
+"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";15
+"Abr/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";26
+"Ago/2021";FALSE;"Desligamento a pedido";"2451";614
+"Jun/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1369
+"Jun/2023";FALSE;"Desligamento a pedido";"2452";74
+"Ago/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";440
+"Abr/2025";FALSE;"Desligamento por morte";"2452";1
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jun/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";428
+"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";37
+"Set/2022";FALSE;"Desligamento por morte";"2451";7
+"Mai/2022";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Abr/2022";FALSE;"Desligamento por demissão com justa causa";"2451";34
+"Fev/2023";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";24
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1032
+"Abr/2020";FALSE;"Desligamento a pedido";"2452";24
+"Jun/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";281
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";145
+"Out/2024";FALSE;"Desligamento por demissão com justa causa";"2451";57
+"Dez/2020";FALSE;"Desligamento a pedido";"2451";357
+"Abr/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Jun/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";51
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Nov/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Mai/2020";FALSE;"Desligamento por morte";"2452";4
+"Mar/2022";FALSE;"Desligamento por morte";"2451";3
+"Dez/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";204
+"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";36
+"Ago/2022";FALSE;"Desligamento por morte";"2451";13
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";5
+"Abr/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Nov/2022";FALSE;"Desligamento por demissão com justa causa";"2451";44
+"Jun/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";4
+"Mai/2022";FALSE;"Desligamento por morte";"2452";2
+"Ago/2020";FALSE;"Admissão por primeiro emprego";"2452";30
+"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
+"Jun/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Abr/2025";FALSE;"Desligamento a pedido";"2451";569
+"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";557
+"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";211
+"Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";27
+"Ago/2023";FALSE;"Desligamento por demissão com justa causa";"2451";47
+"Jul/2021";FALSE;"Desligamento por morte";"2451";15
+"Mai/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Nov/2023";FALSE;"Desligamento por morte";"2451";7
+"Jan/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";22
+"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";33
+"Jun/2022";FALSE;"Desligamento por demissão com justa causa";"2451";60
+"Jun/2023";FALSE;"Desligamento a pedido";"2451";497
+"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
+"Fev/2020";FALSE;"Desligamento por demissão com justa causa";"2452";12
+"Nov/2020";FALSE;"Desligamento a pedido";"2452";125
+"Nov/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Ago/2020";FALSE;"Desligamento por demissão com justa causa";"2451";28
+"Mai/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Abr/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1753
+"Abr/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";725
+"Jun/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1393
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";246
+"Fev/2021";FALSE;"Admissão por primeiro emprego";"2451";162
+"Jan/2023";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Jul/2021";FALSE;"Desligamento por demissão com justa causa";"2451";51
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";49
+"Jan/2021";FALSE;"Desligamento por morte";"2452";6
+"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";132
+"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";33
+"Dez/2020";FALSE;"Admissão por primeiro emprego";"2451";48
+"Ago/2021";FALSE;"Desligamento por demissão com justa causa";"2451";64
+"Jun/2020";FALSE;"Desligamento a pedido";"2451";113
+"Jun/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Jun/2023";FALSE;"Desligamento por morte";"2452";2
+"Jun/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";52
+"Ago/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";6
+"Jan/2021";FALSE;"Desligamento a pedido";"2452";153
+"Fev/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";40
+"Dez/2022";FALSE;"Desligamento por morte";"2452";2
+"Set/2021";FALSE;"Desligamento por demissão com justa causa";"2451";71
+"Mar/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";428
+"Jul/2020";FALSE;"Admissão por primeiro emprego";"2452";19
+"Fev/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";10
+"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";468
+"Nov/2020";FALSE;"Admissão por primeiro emprego";"2452";18
+"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";4
+"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";354
+"Mai/2023";FALSE;"Desligamento por morte";"2451";5
+"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Ago/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Jan/2020";FALSE;"Desligamento por morte";"2451";4
 "Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";491
+"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";494
+"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1410
+"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";499
+"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";859
+"Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";110
+"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";27
+"Fev/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Mar/2024";FALSE;"Desligamento a pedido";"2452";120
 "Set/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";777
 "Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";147
 "Set/2020";FALSE;"Admissão por primeiro emprego";"2451";110
-"Mar/2024";FALSE;"Desligamento a pedido";"2452";120
-"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";859
+"Out/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";404
 "Out/2020";FALSE;"Desligamento por morte";"2452";5
-"Nov/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Mai/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";5
 "Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";594
-"Mai/2020";FALSE;"Desligamento a pedido";"2452";19
-"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";136
-"Mar/2020";FALSE;"Desligamento por demissão com justa causa";"2451";23
-"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";142
-"Ago/2025";FALSE;"Desligamento por morte";"2452";1
-"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";482
-"Mar/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jan/2020";FALSE;"Admissão por primeiro emprego";"2451";148
-"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";208
-"Out/2024";FALSE;"Desligamento a pedido";"2451";683
-"Mar/2021";FALSE;"Desligamento por morte";"2451";7
-"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";231
-"Ago/2021";FALSE;"Desligamento a pedido";"2452";175
-"Ago/2021";FALSE;"Desligamento por morte";"2452";3
-"Fev/2024";FALSE;"Desligamento por morte";"2451";7
-"Abr/2024";FALSE;"Desligamento por demissão com justa causa";"2452";7
-"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";978
-"Mai/2021";FALSE;"Desligamento por morte";"2452";4
-"Nov/2024";FALSE;"Desligamento a pedido";"2452";120
-"Jul/2022";FALSE;"Desligamento por morte";"2451";7
-"Dez/2021";FALSE;"Desligamento a pedido";"2452";115
-"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";770
-"Set/2020";FALSE;"Desligamento por demissão com justa causa";"2451";26
-"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";6
-"Abr/2020";FALSE;"Desligamento a pedido";"2451";104
-"Fev/2025";FALSE;"Desligamento por morte";"2452";3
-"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
-"Out/2025";FALSE;"Desligamento por demissão com justa causa";"2452";9
-"Abr/2023";FALSE;"Desligamento por demissão com justa causa";"2451";56
-"Set/2020";FALSE;"Desligamento por morte";"2452";2
-"Mar/2021";FALSE;"Desligamento por aposentadoria";"2452";1
-"Out/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";634
-"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";575
-"Ago/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Jun/2022";FALSE;"Desligamento por demissão com justa causa";"2452";6
-"Fev/2023";FALSE;"Desligamento por demissão com justa causa";"2451";58
-"Out/2023";FALSE;"Desligamento por morte";"2452";2
-"Fev/2023";FALSE;"Desligamento por morte";"2451";4
-"Jul/2021";FALSE;"Desligamento por demissão com justa causa";"2451";51
-"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";246
-"Fev/2021";FALSE;"Admissão por primeiro emprego";"2451";162
-"Ago/2021";FALSE;"Desligamento por demissão com justa causa";"2451";64
-"Jan/2023";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Jun/2020";FALSE;"Desligamento a pedido";"2451";113
-"Jun/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
-"Jan/2021";FALSE;"Desligamento por morte";"2452";6
-"Dez/2020";FALSE;"Admissão por primeiro emprego";"2451";48
-"Jun/2023";FALSE;"Desligamento por morte";"2452";2
-"Set/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Set/2024";FALSE;"Desligamento por demissão com justa causa";"2451";50
-"Ago/2020";FALSE;"Admissão por primeiro emprego";"2451";68
-"Jun/2025";FALSE;"Desligamento por morte";"2451";6
-"Nov/2023";FALSE;"Desligamento a pedido";"2451";435
-"Out/2025";FALSE;"Desligamento a pedido";"2452";129
-"Jul/2025";FALSE;"Desligamento por morte";"2451";6
-"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Set/2022";FALSE;"Desligamento por morte";"2451";7
-"Out/2024";FALSE;"Desligamento por demissão com justa causa";"2451";57
-"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1032
-"Abr/2020";FALSE;"Desligamento a pedido";"2452";24
-"Mai/2022";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Fev/2023";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Jun/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";281
-"Dez/2020";FALSE;"Desligamento a pedido";"2451";357
-"Abr/2022";FALSE;"Desligamento por demissão com justa causa";"2451";34
-"Mai/2020";FALSE;"Desligamento por morte";"2452";4
-"Set/2025";FALSE;"Desligamento por morte";"2451";7
-"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";275
-"Nov/2022";FALSE;"Desligamento por morte";"2451";8
-"Jul/2024";FALSE;"Desligamento por morte";"2451";14
-"Mai/2023";FALSE;"Desligamento a pedido";"2452";97
-"Dez/2022";FALSE;"Desligamento por morte";"2451";5
-"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Dez/2023";FALSE;"Desligamento por morte";"2452";3
-"Fev/2022";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Nov/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Nov/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";550
+"Jul/2024";FALSE;"Desligamento por demissão com justa causa";"2451";35
+"Jan/2025";FALSE;"Desligamento a pedido";"2451";543
+"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";307
+"Jan/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";23
+"Abr/2022";FALSE;"Desligamento a pedido";"2451";539
+"Fev/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";28
+"Mai/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";420
+"Jun/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";384
+"Mar/2023";FALSE;"Desligamento a pedido";"2451";643
+"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";353
+"Mar/2025";FALSE;"Desligamento por morte";"2451";6
+"Ago/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";971
+"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";17
+"Fev/2022";FALSE;"Desligamento por morte";"2452";4
+"Out/2025";FALSE;"Desligamento por morte";"2452";4
+"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jul/2021";FALSE;"Desligamento a pedido";"2451";516
+"Jun/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1252
+"Jan/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";146
+"Fev/2022";FALSE;"Desligamento a pedido";"2452";130
+"Abr/2023";FALSE;"Desligamento a pedido";"2451";445
+"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";40
+"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";174
+"Dez/2024";FALSE;"Desligamento por demissão com justa causa";"2451";39
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";35
+"Fev/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";23
+"Set/2021";FALSE;"Desligamento por demissão com justa causa";"2452";13
+"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Ago/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Abr/2025";FALSE;"Desligamento a pedido";"2452";141
+"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1872
+"Ago/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1510
+"Dez/2021";FALSE;"Desligamento por demissão com justa causa";"2451";68
+"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";583
+"Jul/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";528
+"Mar/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Jul/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";10
+"Ago/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";138
+"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";165
+"Dez/2024";FALSE;"Desligamento a pedido";"2451";311
+"Mai/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";7
+"Dez/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";10
+"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";207
+"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";212
+"Set/2020";FALSE;"Desligamento por demissão com justa causa";"2452";2
+"Jun/2020";FALSE;"Desligamento a pedido";"2452";41
+"Mar/2023";FALSE;"Desligamento por morte";"2452";3
+"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";4
+"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";6
+"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";290
+"Fev/2021";FALSE;"Desligamento por demissão com justa causa";"2452";15
+"Jul/2025";FALSE;"Desligamento a pedido";"2451";601
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";6
+"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";489
+"Ago/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";47
+"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";484
+"Nov/2021";FALSE;"Desligamento por demissão com justa causa";"2451";79
+"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";353
+"Mar/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";175
+"Jun/2020";FALSE;"Desligamento por morte";"2451";4
+"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";254
+"Jun/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";7
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";304
+"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jan/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";3
+"Ago/2022";FALSE;"Desligamento por morte";"2452";2
+"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";492
+"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";46
+"Jul/2024";FALSE;"Desligamento a pedido";"2451";518
+"Ago/2022";FALSE;"Desligamento a pedido";"2452";147
+"Dez/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1070
+"Jan/2022";FALSE;"Desligamento por morte";"2452";4
+"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";142
+"Fev/2024";FALSE;"Desligamento a pedido";"2452";111
+"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";682
+"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";290
+"Fev/2020";FALSE;"Desligamento por morte";"2451";4
+"Mar/2025";FALSE;"Desligamento a pedido";"2452";188
+"Ago/2023";FALSE;"Desligamento por morte";"2452";3
+"Out/2020";FALSE;"Desligamento por demissão com justa causa";"2451";11
+"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";40
+"Jun/2024";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Abr/2020";FALSE;"Admissão por primeiro emprego";"2452";5
+"Out/2024";FALSE;"Desligamento por morte";"2452";3
+"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Ago/2025";FALSE;"Desligamento por morte";"2451";7
+"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Mar/2021";FALSE;"Admissão por primeiro emprego";"2452";39
+"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";133
+"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";295
+"Jan/2025";FALSE;"Desligamento a pedido";"2452";164
+"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";231
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";264
+"Ago/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";211
+"Mai/2021";FALSE;"Admissão por primeiro emprego";"2451";80
+"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1447
+"Set/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";31
+"Fev/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Abr/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";23
+"Mar/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Mai/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";16
+"Nov/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";12
+"Set/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
 "Nov/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";255
-"Fev/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2375
-"Ago/2020";FALSE;"Desligamento a pedido";"2451";291
-"Out/2021";FALSE;"Desligamento por demissão com justa causa";"2451";99
-"Nov/2023";FALSE;"Desligamento a pedido";"2452";90
-"Out/2025";FALSE;"Desligamento por demissão com justa causa";"2451";70
-"Set/2024";FALSE;"Desligamento por morte";"2451";6
+"Jun/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";535
 "Jun/2021";FALSE;"Desligamento por aposentadoria";"2451";1
+"Out/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";589
+"Fev/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2375
+"Jul/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";18
+"Out/2025";FALSE;"Desligamento por demissão com justa causa";"2451";70
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";27
+"Nov/2023";FALSE;"Desligamento a pedido";"2452";90
+"Set/2024";FALSE;"Desligamento por morte";"2451";6
 "Jan/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
 "Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";162
+"Set/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Jun/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Ago/2020";FALSE;"Desligamento a pedido";"2451";291
+"Out/2021";FALSE;"Desligamento por demissão com justa causa";"2451";99
 "Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Jul/2021";FALSE;"Desligamento a pedido";"2451";516
-"Set/2021";FALSE;"Desligamento por demissão com justa causa";"2452";13
-"Fev/2022";FALSE;"Desligamento a pedido";"2452";130
-"Dez/2024";FALSE;"Desligamento por demissão com justa causa";"2451";39
-"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Abr/2023";FALSE;"Desligamento a pedido";"2451";445
-"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Ago/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Set/2022";FALSE;"Desligamento a pedido";"2451";594
-"Dez/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Dez/2021";FALSE;"Desligamento por morte";"2451";8
-"Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";640
-"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";260
-"Jun/2020";FALSE;"Admissão por primeiro emprego";"2451";23
-"Set/2024";FALSE;"Desligamento por morte";"2452";2
-"Set/2025";FALSE;"Desligamento a pedido";"2451";531
-"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";607
-"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";261
-"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
-"Jan/2022";FALSE;"Desligamento por morte";"2451";12
-"Nov/2021";FALSE;"Desligamento por morte";"2452";5
-"Mar/2021";FALSE;"Desligamento por morte";"2452";1
-"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";653
-"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";530
-"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";312
-"Fev/2024";FALSE;"Desligamento por morte";"2452";3
-"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";580
-"Jun/2023";FALSE;"Desligamento por demissão com justa causa";"2452";3
-"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
-"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
-"Ago/2022";FALSE;"Desligamento a pedido";"2452";147
-"Jan/2022";FALSE;"Desligamento por morte";"2452";4
-"Nov/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";682
-"Fev/2024";FALSE;"Desligamento a pedido";"2452";111
-"Abr/2020";FALSE;"Admissão por primeiro emprego";"2452";5
-"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";290
-"Jul/2024";FALSE;"Desligamento a pedido";"2451";518
-"Ago/2023";FALSE;"Desligamento por morte";"2452";3
-"Ago/2025";FALSE;"Desligamento por morte";"2451";7
-"Mar/2025";FALSE;"Desligamento a pedido";"2452";188
-"Fev/2020";FALSE;"Desligamento por morte";"2451";4
-"Out/2020";FALSE;"Desligamento por demissão com justa causa";"2451";11
-"Out/2024";FALSE;"Desligamento por morte";"2452";3
-"Jun/2024";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2443
+"Out/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";157
+"Dez/2021";FALSE;"Desligamento a pedido";"2451";418
+"Dez/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";697
+"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Fev/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";330
+"Fev/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Mar/2024";FALSE;"Desligamento por morte";"2451";7
+"Fev/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";103
+"Set/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";26
+"Abr/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";15
+"Jul/2020";FALSE;"Desligamento por demissão com justa causa";"2451";10
+"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";3
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";385
+"Jan/2020";FALSE;"Desligamento a pedido";"2451";237
+"Jul/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";29
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";38
+"Abr/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Set/2024";FALSE;"Desligamento a pedido";"2452";175
+"Abr/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Jul/2025";FALSE;"Desligamento por demissão com justa causa";"2452";14
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";31
+"Jun/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";9
+"Mar/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Mai/2025";FALSE;"Desligamento por demissão com justa causa";"2452";15
+"Out/2020";FALSE;"Admissão por primeiro emprego";"2452";22
+"Set/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Abr/2022";FALSE;"Desligamento a pedido";"2452";135
+"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2017
+"Ago/2023";FALSE;"Desligamento a pedido";"2451";529
+"Jan/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";577
+"Set/2021";FALSE;"Desligamento a pedido";"2451";639
+"Jul/2021";FALSE;"Desligamento a pedido";"2452";116
+"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";795
+"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";427
+"Mai/2024";FALSE;"Desligamento a pedido";"2452";139
+"Out/2022";FALSE;"Desligamento por morte";"2451";7
+"Nov/2021";FALSE;"Desligamento por morte";"2451";7
+"Jun/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";19
+"Ago/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";7
+"Dez/2020";FALSE;"Desligamento por morte";"2451";5
+"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";56
+"Ago/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";9
+"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Nov/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2025";FALSE;"Desligamento por demissão com justa causa";"2451";42
+"Dez/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";7
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";179
+"Jul/2023";FALSE;"Desligamento por morte";"2451";8
+"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";700
+"Fev/2024";FALSE;"Desligamento a pedido";"2451";578
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";136
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";41
+"Out/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";19
+"Nov/2024";FALSE;"Desligamento por morte";"2451";5
+"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";28
+"Mar/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";274
+"Dez/2023";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
 "Mar/2021";FALSE;"Desligamento a pedido";"2452";120
+"Out/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";469
 "Fev/2022";FALSE;"Desligamento a pedido";"2451";603
-"Out/2023";FALSE;"Desligamento por demissão com justa causa";"2452";12
-"Jun/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Nov/2020";FALSE;"Desligamento a pedido";"2451";437
+"Fev/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";24
+"Dez/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";475
 "Abr/2025";FALSE;"Desligamento por demissão com justa causa";"2451";73
-"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";37
+"Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";142
+"Mai/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";21
+"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";21
+"Out/2023";FALSE;"Desligamento por demissão com justa causa";"2452";12
+"Nov/2020";FALSE;"Desligamento a pedido";"2451";437
 "Jun/2024";FALSE;"Desligamento por morte";"2452";2
+"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";491
+"Jun/2021";FALSE;"Desligamento por demissão com justa causa";"2451";48
+"Mar/2021";FALSE;"Admissão por primeiro emprego";"2451";123
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";44
+"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";161
+"Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";464
+"Nov/2024";FALSE;"Desligamento por demissão com justa causa";"2451";37
+"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2113
+"Abr/2021";FALSE;"Desligamento por morte";"2451";19
+"Abr/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Jun/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1741
+"Mar/2025";FALSE;"Desligamento por demissão com justa causa";"2452";11
+"Abr/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Dez/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
+"Out/2021";FALSE;"Desligamento por morte";"2451";12
+"Fev/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Nov/2020";FALSE;"Desligamento por morte";"2452";2
+"Out/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1599
+"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";119
+"Jul/2023";FALSE;"Desligamento a pedido";"2451";459
+"Jul/2024";FALSE;"Desligamento por morte";"2452";3
+"Out/2022";FALSE;"Desligamento a pedido";"2451";556
+"Mai/2025";FALSE;"Desligamento a pedido";"2451";601
 "Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";729
 "Abr/2021";FALSE;"Desligamento a pedido";"2451";477
-"Jul/2023";FALSE;"Desligamento a pedido";"2451";459
-"Out/2022";FALSE;"Desligamento a pedido";"2451";556
-"Abr/2020";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Mai/2025";FALSE;"Desligamento a pedido";"2451";601
-"Jul/2024";FALSE;"Desligamento por morte";"2452";3
+"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";158
 "Mar/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";603
+"Abr/2020";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Jun/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
 "Set/2023";FALSE;"Desligamento por morte";"2451";9
-"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";620
-"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";693
-"Jan/2024";FALSE;"Desligamento a pedido";"2451";498
-"Jun/2021";FALSE;"Desligamento a pedido";"2451";511
-"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";241
-"Mar/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Mar/2022";FALSE;"Desligamento por demissão com justa causa";"2451";59
-"Mai/2025";FALSE;"Desligamento por morte";"2451";10
-"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Jul/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";625
-"Out/2025";FALSE;"Desligamento por morte";"2451";5
+"Jul/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";584
+"Jul/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1648
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";528
+"Out/2025";FALSE;"Desligamento a pedido";"2451";532
+"Dez/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";561
+"Set/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";26
+"Jun/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";45
+"Dez/2020";FALSE;"Admissão por primeiro emprego";"2452";18
+"Nov/2020";FALSE;"Admissão por primeiro emprego";"2451";55
+"Mar/2025";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Nov/2025";FALSE;"Desligamento a pedido";"2452";106
+"Nov/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jun/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";278
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";832
+"Jul/2022";FALSE;"Desligamento a pedido";"2451";523
+"Jul/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1400
+"Mar/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Ago/2024";FALSE;"Desligamento a pedido";"2452";144
+"Fev/2023";FALSE;"Desligamento por morte";"2452";2
+"Fev/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1540
+"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";43
+"Set/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Fev/2025";FALSE;"Desligamento por morte";"2451";5
+"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";78
+"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";11
+"Out/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
+"Fev/2020";FALSE;"Desligamento por aposentadoria";"2451";1
+"Jul/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";8
+"Mar/2020";FALSE;"Desligamento por morte";"2452";1
+"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1442
+"Fev/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";591
+"Jan/2022";FALSE;"Desligamento a pedido";"2452";120
+"Fev/2020";FALSE;"Admissão por primeiro emprego";"2452";39
+"Fev/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1176
+"Jul/2023";FALSE;"Desligamento a pedido";"2452";100
+"Jul/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";382
+"Ago/2024";FALSE;"Desligamento a pedido";"2451";689
+"Set/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";316
+"Set/2020";FALSE;"Desligamento a pedido";"2451";366
+"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";798
+"Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";297
+"Nov/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";143
+"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jan/2020";FALSE;"Desligamento por demissão com justa causa";"2451";15
+"Jul/2023";FALSE;"Desligamento por morte";"2452";1
+"Nov/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1226
+"Set/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Jan/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2014
+"Nov/2023";FALSE;"Desligamento a pedido";"2451";435
+"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";27
+"Out/2025";FALSE;"Desligamento a pedido";"2452";129
+"Set/2024";FALSE;"Desligamento por demissão com justa causa";"2451";50
+"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";215
+"Jul/2025";FALSE;"Desligamento por morte";"2451";6
+"Ago/2020";FALSE;"Admissão por primeiro emprego";"2451";68
+"Jun/2025";FALSE;"Desligamento por morte";"2451";6
+"Out/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";18
+"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";770
+"Nov/2024";FALSE;"Desligamento a pedido";"2452";120
+"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1700
+"Dez/2021";FALSE;"Desligamento a pedido";"2452";115
+"Mar/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";19
+"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";157
+"Abr/2023";FALSE;"Desligamento por demissão com justa causa";"2451";56
+"Abr/2020";FALSE;"Desligamento a pedido";"2451";104
+"Jul/2022";FALSE;"Desligamento por morte";"2451";7
+"Mar/2021";FALSE;"Desligamento por aposentadoria";"2452";1
+"Jan/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";413
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";7
+"Set/2020";FALSE;"Desligamento por demissão com justa causa";"2451";26
+"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";6
+"Out/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Out/2025";FALSE;"Desligamento por demissão com justa causa";"2452";9
+"Set/2020";FALSE;"Desligamento por morte";"2452";2
+"Fev/2025";FALSE;"Desligamento por morte";"2452";3
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";21
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";609
+"Fev/2021";FALSE;"Desligamento a pedido";"2452";132
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";143
+"Jan/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1383
+"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";37
+"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";729
+"Mai/2021";FALSE;"Desligamento por morte";"2451";11
+"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";19
+"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";489
+"Jun/2024";FALSE;"Desligamento por morte";"2451";8
+"Dez/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Dez/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";11
+"Mai/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Jun/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";173
+"Jun/2025";FALSE;"Desligamento por demissão com justa causa";"2451";60
+"Mai/2020";FALSE;"Admissão por primeiro emprego";"2451";22
+"Out/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jun/2021";FALSE;"Desligamento por demissão com justa causa";"2452";9
+"Dez/2022";FALSE;"Desligamento por demissão com justa causa";"2451";42
+"Mai/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jul/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";25
+"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";683
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";255
+"Ago/2022";FALSE;"Desligamento a pedido";"2451";668
+"Set/2022";FALSE;"Desligamento a pedido";"2452";130
+"Ago/2023";FALSE;"Desligamento a pedido";"2452";109
+"Ago/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1602
+"Jul/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Fev/2024";FALSE;"Desligamento por demissão com justa causa";"2452";9
+"Jul/2020";FALSE;"Desligamento a pedido";"2452";53
+"Nov/2020";FALSE;"Desligamento por demissão com justa causa";"2451";32
+"Nov/2025";FALSE;"Desligamento por demissão com justa causa";"2451";51
+"Mar/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
+"Set/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";11
+"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";513
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";109
+"Jul/2021";FALSE;"Desligamento por morte";"2452";3
+"Mar/2024";FALSE;"Desligamento a pedido";"2451";646
+"Nov/2022";FALSE;"Desligamento a pedido";"2452";88
+"Set/2023";FALSE;"Desligamento por demissão com justa causa";"2451";45
+"Abr/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";640
+"Out/2024";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Mar/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";96
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
+"Jan/2020";FALSE;"Admissão por primeiro emprego";"2452";19
+"Jun/2025";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Ago/2023";FALSE;"Desligamento por morte";"2451";5
+"Ago/2024";FALSE;"Desligamento por morte";"2452";3
+"Ago/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jun/2021";FALSE;"Desligamento por morte";"2451";17
+"Jul/2024";FALSE;"Desligamento a pedido";"2452";139
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";52
+"Jul/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
+"Fev/2025";FALSE;"Desligamento a pedido";"2451";716
+"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
+"Mai/2023";FALSE;"Desligamento a pedido";"2451";547
+"Dez/2024";FALSE;"Desligamento por morte";"2451";6
+"Ago/2024";FALSE;"Desligamento por morte";"2451";8
+"Set/2023";FALSE;"Desligamento por demissão com justa causa";"2452";2
+"Jan/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";512
+"Mar/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";573
+"Jan/2023";FALSE;"Desligamento a pedido";"2452";98
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";215
+"Fev/2025";FALSE;"Desligamento a pedido";"2452";182
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";615
+"Dez/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Nov/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Mar/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
+"Fev/2021";FALSE;"Desligamento por morte";"2451";4
+"Out/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";14
+"Jun/2024";FALSE;"Desligamento por demissão com justa causa";"2451";33
+"Ago/2021";FALSE;"Admissão por primeiro emprego";"2452";1
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
+"Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Dez/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Nov/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";390
+"Nov/2025";FALSE;"Desligamento a pedido";"2451";364
+"Out/2024";FALSE;"Desligamento a pedido";"2452";155
+"Jan/2021";FALSE;"Admissão por primeiro emprego";"2452";31
+"Mai/2022";FALSE;"Desligamento a pedido";"2451";556
+"Jan/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";12
+"Mar/2024";FALSE;"Desligamento por demissão com justa causa";"2451";47
+"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";504
+"Abr/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Abr/2025";FALSE;"Desligamento por morte";"2451";5
+"Nov/2020";FALSE;"Desligamento por morte";"2451";8
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";19
+"Ago/2021";FALSE;"Desligamento por morte";"2451";4
+"Jan/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Fev/2022";FALSE;"Desligamento por demissão com justa causa";"2451";47
+"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Mar/2020";FALSE;"Desligamento a pedido";"2451";217
+"Fev/2020";FALSE;"Desligamento a pedido";"2451";246
+"Abr/2020";FALSE;"Desligamento por demissão com justa causa";"2451";8
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";649
+"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";184
+"Mar/2023";FALSE;"Desligamento a pedido";"2452";116
+"Jan/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Mai/2021";FALSE;"Desligamento por demissão com justa causa";"2452";17
+"Fev/2022";FALSE;"Desligamento por morte";"2451";6
+"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";324
+"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";616
+"Set/2025";FALSE;"Desligamento a pedido";"2452";175
+"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";174
+"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";61
+"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Jan/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";9
+"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";83
+"Out/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Jun/2020";FALSE;"Admissão por primeiro emprego";"2452";4
+"Nov/2025";FALSE;"Desligamento por morte";"2452";5
+"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1800
+"Mar/2020";FALSE;"Admissão por primeiro emprego";"2452";22
+"Ago/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";9
+"Jul/2021";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Ago/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";220
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";237
+"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1912
+"Set/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";614
+"Jul/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Set/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";761
+"Abr/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1553
+"Out/2020";FALSE;"Desligamento por morte";"2451";5
+"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
+"Dez/2020";FALSE;"Desligamento por morte";"2452";1
+"Ago/2025";FALSE;"Desligamento por demissão com justa causa";"2451";46
+"Nov/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jan/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";356
+"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";137
+"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";269
+"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";338
+"Set/2024";FALSE;"Desligamento por demissão com justa causa";"2452";7
+"Dez/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";28
+"Mai/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";5
+"Abr/2024";FALSE;"Desligamento a pedido";"2451";680
+"Jan/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Out/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";17
+"Nov/2022";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";5
+"Mai/2020";FALSE;"Desligamento por morte";"2451";6
+"Jul/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jul/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
+"Jul/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";514
+"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";26
+"Dez/2023";FALSE;"Desligamento a pedido";"2451";308
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jan/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Out/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";991
+"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";269
+"Set/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1117
+"Dez/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";234
+"Abr/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";40
+"Fev/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";26
+"Ago/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Mai/2020";FALSE;"Desligamento a pedido";"2451";72
+"Ago/2020";FALSE;"Desligamento por demissão com justa causa";"2452";1
+"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";665
+"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";700
+"Fev/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";650
+"Mar/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Mai/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1354
+"Mai/2023";FALSE;"Desligamento por morte";"2452";1
+"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
+"Fev/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";4
 "Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";280
 "Mar/2021";FALSE;"Desligamento a pedido";"2451";565
 "Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";259
-"Dez/2024";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";231
 "Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";244
+"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";157
+"Mai/2021";FALSE;"Desligamento por acordo empregado e empregador";"2451";24
+"Dez/2024";FALSE;"Desligamento por demissão com justa causa";"2452";8
 "Set/2020";FALSE;"Desligamento a pedido";"2452";120
-"Mar/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Out/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1345
-"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
 "Jul/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";256
-"Abr/2021";FALSE;"Admissão por primeiro emprego";"2451";102
-"Fev/2021";FALSE;"Desligamento a pedido";"2451";546
-"Dez/2021";FALSE;"Desligamento por demissão com justa causa";"2452";11
-"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";285
-"Jul/2025";FALSE;"Desligamento por morte";"2452";4
-"Mar/2024";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Jun/2025";FALSE;"Desligamento a pedido";"2452";156
-"Nov/2022";FALSE;"Desligamento a pedido";"2451";460
-"Mai/2024";FALSE;"Desligamento a pedido";"2451";587
-"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";440
-"Fev/2020";FALSE;"Admissão por primeiro emprego";"2451";197
-"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";191
-"Abr/2023";FALSE;"Desligamento a pedido";"2452";93
-"Ago/2020";FALSE;"Desligamento por morte";"2452";2
-"Set/2021";FALSE;"Desligamento a pedido";"2452";160
-"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";246
-"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";622
-"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";259
-"Dez/2020";FALSE;"Desligamento por demissão com justa causa";"2451";28
-"Nov/2024";FALSE;"Desligamento por morte";"2452";2
-"Abr/2023";FALSE;"Desligamento por morte";"2451";8
-"Jul/2023";FALSE;"Desligamento por demissão com justa causa";"2452";2
-"Abr/2022";FALSE;"Desligamento por morte";"2452";2
-"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";683
-"Jul/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Set/2022";FALSE;"Desligamento a pedido";"2452";130
-"Ago/2022";FALSE;"Desligamento a pedido";"2451";668
-"Mar/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Fev/2024";FALSE;"Desligamento por demissão com justa causa";"2452";9
-"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";255
-"Ago/2023";FALSE;"Desligamento a pedido";"2452";109
-"Nov/2025";FALSE;"Desligamento por demissão com justa causa";"2451";51
-"Nov/2020";FALSE;"Desligamento por demissão com justa causa";"2451";32
-"Mar/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
-"Jul/2020";FALSE;"Desligamento a pedido";"2452";53
-"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Dez/2022";FALSE;"Desligamento por demissão com justa causa";"2451";42
-"Mai/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Jun/2021";FALSE;"Desligamento por demissão com justa causa";"2452";9
-"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";326
-"Mar/2020";FALSE;"Desligamento a pedido";"2452";59
-"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";634
-"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";166
-"Set/2020";FALSE;"Admissão por primeiro emprego";"2452";37
-"Dez/2023";FALSE;"Desligamento por demissão com justa causa";"2451";26
-"Out/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Fev/2023";FALSE;"Desligamento por aposentadoria";"2451";1
-"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2063
-"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";295
+"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
+"Mar/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";129
+"Out/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1345
+"Jun/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";236
+"Dez/2023";FALSE;"Desligamento por acordo empregado e empregador";"2451";10
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";239
+"Jul/2024";FALSE;"Desligamento por demissão com justa causa";"2452";2
+"Jul/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";45
 "Jan/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";209
 "Ago/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";582
-"Jul/2024";FALSE;"Desligamento por demissão com justa causa";"2452";2
 "Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";566
+"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";295
+"Abr/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2063
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";2
+"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";165
+"Abr/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";132
+"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";66
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";40
 "Out/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
-"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1452
-"Set/2024";FALSE;"Desligamento a pedido";"2451";631
-"Jan/2024";FALSE;"Desligamento por morte";"2451";4
-"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";284
-"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";356
-"Out/2021";FALSE;"Admissão por primeiro emprego";"2451";1
-"Mar/2022";FALSE;"Desligamento a pedido";"2452";136
-"Abr/2024";FALSE;"Desligamento a pedido";"2452";153
-"Mai/2021";FALSE;"Admissão por primeiro emprego";"2452";15
-"Mar/2020";FALSE;"Desligamento por morte";"2451";11
-"Nov/2025";FALSE;"Desligamento por morte";"2451";8
-"Mai/2023";FALSE;"Desligamento por demissão com justa causa";"2451";52
-"Mai/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
-"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Jan/2021";FALSE;"Desligamento por morte";"2451";8
-"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2443
-"Dez/2021";FALSE;"Desligamento a pedido";"2451";418
-"Mar/2024";FALSE;"Desligamento por morte";"2451";7
-"Fev/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Fev/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";330
-"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Jul/2020";FALSE;"Desligamento por demissão com justa causa";"2451";10
-"Fev/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Fev/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";650
-"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";665
-"Abr/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";700
-"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
-"Mai/2023";FALSE;"Desligamento por morte";"2452";1
-"Dez/2022";FALSE;"Desligamento por morte";"2452";2
-"Set/2021";FALSE;"Desligamento por demissão com justa causa";"2451";71
-"Ago/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";4
-"Jan/2021";FALSE;"Desligamento a pedido";"2452";153
-"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";354
-"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";468
-"Mai/2023";FALSE;"Desligamento por morte";"2451";5
-"Nov/2020";FALSE;"Admissão por primeiro emprego";"2452";18
-"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Jan/2020";FALSE;"Desligamento por morte";"2451";4
-"Jul/2020";FALSE;"Admissão por primeiro emprego";"2452";19
-"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";550
-"Fev/2021";FALSE;"Admissão por primeiro emprego";"2452";24
-"Jul/2022";FALSE;"Desligamento por demissão com justa causa";"2451";51
-"Ago/2021";FALSE;"Desligamento a pedido";"2451";614
-"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jun/2023";FALSE;"Desligamento a pedido";"2452";74
-"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
-"Abr/2025";FALSE;"Desligamento por morte";"2452";1
-"Jan/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
-"Ago/2022";FALSE;"Desligamento por demissão com justa causa";"2451";72
-"Set/2020";FALSE;"Desligamento por morte";"2451";10
-"Mai/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";608
-"Set/2023";FALSE;"Desligamento a pedido";"2451";528
-"Jan/2022";FALSE;"Desligamento por demissão com justa causa";"2451";52
-"Out/2020";FALSE;"Admissão por primeiro emprego";"2451";76
-"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Mar/2022";FALSE;"Desligamento por morte";"2452";3
-"Jan/2020";FALSE;"Desligamento por morte";"2452";5
-"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2
-"Jun/2020";FALSE;"Desligamento por morte";"2452";3
-"Nov/2024";FALSE;"Desligamento por morte";"2451";5
-"Fev/2024";FALSE;"Desligamento a pedido";"2451";578
-"Jan/2025";FALSE;"Desligamento por demissão com justa causa";"2451";42
-"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";700
-"Jul/2023";FALSE;"Desligamento por morte";"2451";8
-"Mar/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";274
-"Dez/2023";FALSE;"Desligamento por demissão com justa causa";"2452";3
-"Set/2024";FALSE;"Desligamento a pedido";"2452";175
-"Jul/2025";FALSE;"Desligamento por demissão com justa causa";"2452";14
-"Mai/2025";FALSE;"Desligamento por demissão com justa causa";"2452";15
-"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";385
-"Jan/2020";FALSE;"Desligamento a pedido";"2451";237
-"Out/2020";FALSE;"Admissão por primeiro emprego";"2452";22
-"Set/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";513
-"Mar/2024";FALSE;"Desligamento a pedido";"2451";646
-"Out/2024";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Nov/2022";FALSE;"Desligamento a pedido";"2452";88
-"Jul/2021";FALSE;"Desligamento por morte";"2452";3
-"Set/2023";FALSE;"Desligamento por demissão com justa causa";"2451";45
-"Jan/2020";FALSE;"Admissão por primeiro emprego";"2452";19
-"Jun/2025";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Mar/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
-"Ago/2024";FALSE;"Desligamento por morte";"2452";3
-"Ago/2023";FALSE;"Desligamento por morte";"2451";5
-"Mai/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Dez/2022";FALSE;"Desligamento a pedido";"2452";69
-"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";169
-"Out/2021";FALSE;"Desligamento a pedido";"2452";127
-"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";806
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";17
 "Jan/2022";FALSE;"Desligamento a pedido";"2451";560
+"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";806
+"Dez/2022";FALSE;"Desligamento a pedido";"2452";69
+"Dez/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";200
+"Abr/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Nov/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";169
+"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
 "Nov/2021";FALSE;"Desligamento a pedido";"2451";548
 "Nov/2024";FALSE;"Desligamento por demissão com justa causa";"2452";12
 "Jun/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";530
-"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Set/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";412
+"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Jun/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";14
 "Out/2020";FALSE;"Desligamento a pedido";"2451";443
-"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
+"Out/2021";FALSE;"Desligamento a pedido";"2452";127
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
 "Fev/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Fev/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";330
-"Set/2023";FALSE;"Desligamento a pedido";"2452";102
-"Out/2021";FALSE;"Desligamento por morte";"2452";2
-"Dez/2023";FALSE;"Desligamento por morte";"2451";6
-"Jan/2021";FALSE;"Desligamento por demissão com justa causa";"2451";46
-"Jan/2020";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Fev/2020";FALSE;"Desligamento por demissão com justa causa";"2451";34
-"Abr/2022";FALSE;"Desligamento por demissão com justa causa";"2452";8
-"Out/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";599
-"Jul/2020";FALSE;"Desligamento a pedido";"2451";176
-"Nov/2023";FALSE;"Desligamento por aposentadoria";"2452";1
-"Set/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Fev/2021";FALSE;"Desligamento a pedido";"2452";132
-"Set/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";609
-"Mai/2020";FALSE;"Admissão por primeiro emprego";"2451";22
-"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";489
-"Jun/2025";FALSE;"Desligamento por demissão com justa causa";"2451";60
-"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";729
-"Mai/2021";FALSE;"Desligamento por morte";"2451";11
-"Mai/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Jun/2024";FALSE;"Desligamento por morte";"2451";8
-"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Jun/2024";FALSE;"Desligamento a pedido";"2451";531
-"Jan/2024";FALSE;"Desligamento por demissão com justa causa";"2451";29
-"Abr/2021";FALSE;"Admissão por primeiro emprego";"2452";28
-"Mar/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";278
-"Ago/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";393
-"Abr/2020";FALSE;"Admissão por primeiro emprego";"2451";8
-"Jun/2020";FALSE;"Desligamento por demissão com justa causa";"2451";9
-"Nov/2023";FALSE;"Desligamento por morte";"2452";3
-"Jun/2025";FALSE;"Desligamento a pedido";"2451";516
-"Dez/2024";FALSE;"Desligamento por morte";"2452";1
-"Abr/2020";FALSE;"Desligamento por morte";"2452";1
-"Mar/2022";FALSE;"Desligamento a pedido";"2451";709
-"Ago/2025";FALSE;"Desligamento a pedido";"2451";584
-"Set/2025";FALSE;"Desligamento por demissão com justa causa";"2451";66
-"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Mar/2023";FALSE;"Desligamento por morte";"2451";1
-"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Set/2022";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";871
-"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";3
-"Mai/2024";FALSE;"Desligamento por demissão com justa causa";"2451";50
-"Mai/2024";FALSE;"Desligamento por demissão com justa causa";"2452";11
-"Out/2023";FALSE;"Desligamento por morte";"2451";13
-"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";448
-"Nov/2023";FALSE;"Desligamento por demissão com justa causa";"2452";6
-"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
-"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Dez/2022";FALSE;"Desligamento a pedido";"2451";348
-"Nov/2024";FALSE;"Desligamento a pedido";"2451";542
-"Mar/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";594
-"Mai/2020";FALSE;"Desligamento por demissão com justa causa";"2451";10
-"Nov/2021";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Out/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
-"Dez/2023";FALSE;"Desligamento a pedido";"2452";76
-"Mai/2021";FALSE;"Desligamento por demissão com justa causa";"2451";46
-"Mar/2025";FALSE;"Desligamento a pedido";"2451";777
-"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
-"Out/2022";FALSE;"Desligamento por demissão com justa causa";"2451";47
-"Jun/2022";FALSE;"Desligamento a pedido";"2451";545
-"Jul/2020";FALSE;"Desligamento por demissão com justa causa";"2452";4
-"Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";249
-"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";470
-"Mai/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";248
-"Set/2021";FALSE;"Desligamento por morte";"2451";7
-"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
-"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";705
-"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";238
-"Nov/2023";FALSE;"Desligamento por demissão com justa causa";"2451";39
-"Mai/2021";FALSE;"Desligamento a pedido";"2452";138
-"Nov/2020";FALSE;"Desligamento por demissão com justa causa";"2452";2
-"Jul/2021";FALSE;"Desligamento por morte";"2451";15
-"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";211
-"Out/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";557
-"Ago/2020";FALSE;"Desligamento por demissão com justa causa";"2451";28
-"Jun/2022";FALSE;"Desligamento por demissão com justa causa";"2451";60
-"Ago/2023";FALSE;"Desligamento por demissão com justa causa";"2451";47
-"Nov/2023";FALSE;"Desligamento por morte";"2451";7
-"Fev/2020";FALSE;"Desligamento por demissão com justa causa";"2452";12
-"Abr/2025";FALSE;"Desligamento a pedido";"2451";569
-"Dez/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
-"Jun/2023";FALSE;"Desligamento a pedido";"2451";497
-"Nov/2020";FALSE;"Desligamento a pedido";"2452";125
-"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";231
-"Jan/2025";FALSE;"Desligamento a pedido";"2452";164
-"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";295
-"Mar/2021";FALSE;"Admissão por primeiro emprego";"2452";39
-"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";211
-"Ago/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Mar/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";264
-"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Abr/2024";FALSE;"Desligamento por demissão com justa causa";"2451";54
-"Mai/2021";FALSE;"Admissão por primeiro emprego";"2451";80
-"Fev/2025";FALSE;"Desligamento por demissão com justa causa";"2452";10
-"Mai/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Mai/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Mai/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";315
-"Jul/2022";FALSE;"Desligamento a pedido";"2452";136
-"Set/2021";FALSE;"Desligamento por morte";"2452";3
-"Jan/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";162
-"Dez/2024";FALSE;"Desligamento a pedido";"2452";107
-"Out/2022";FALSE;"Desligamento a pedido";"2452";106
-"Ago/2024";FALSE;"Desligamento por demissão com justa causa";"2452";1
-"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";229
-"Mar/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";314
-"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";210
-"Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1919
-"Jun/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";348
-"Abr/2024";FALSE;"Desligamento por morte";"2452";2
-"Dez/2020";FALSE;"Desligamento a pedido";"2452";113
-"Mar/2023";FALSE;"Desligamento por aposentadoria";"2451";8
-"Out/2024";FALSE;"Desligamento por morte";"2451";5
-"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
-"Mai/2020";FALSE;"Desligamento por demissão com justa causa";"2452";3
-"Jan/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jun/2023";FALSE;"Desligamento por aposentadoria";"2451";1
-"Jun/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";278
-"Jul/2022";FALSE;"Desligamento a pedido";"2451";523
-"Ago/2024";FALSE;"Desligamento a pedido";"2452";144
-"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";832
-"Fev/2023";FALSE;"Desligamento por morte";"2452";2
-"Fev/2025";FALSE;"Desligamento por morte";"2451";5
-"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";3
-"Fev/2020";FALSE;"Desligamento por aposentadoria";"2451";1
-"Mar/2020";FALSE;"Desligamento por morte";"2452";1
-"Set/2025";FALSE;"Desligamento por morte";"2452";1
-"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";671
+"Nov/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";870
+"Jul/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";225
+"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";149
+"Ago/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";527
+"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";326
+"Set/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";310
+"Out/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";400
+"Abr/2021";FALSE;"Desligamento a pedido";"2452";114
+"Abr/2020";FALSE;"Desligamento por morte";"2451";4
+"Mar/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
+"Set/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";47
+"Out/2022";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";222
+"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";576
+"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1222
+"Jan/2024";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Fev/2021";FALSE;"Desligamento por demissão com justa causa";"2451";57
+"Ago/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";48
+"Jan/2025";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Abr/2024";FALSE;"Desligamento por morte";"2451";5
+"Jul/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";426
+"Jun/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";33
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";119
 "Mar/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";811
 "Jan/2023";FALSE;"Desligamento por morte";"2451";6
+"Ago/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";510
+"Nov/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";671
 "Nov/2025";FALSE;"Desligamento por demissão com justa causa";"2452";9
-"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Set/2025";FALSE;"Desligamento por morte";"2452";1
 "Out/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Out/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Out/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Out/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
 "Abr/2023";FALSE;"Desligamento por demissão com justa causa";"2452";1
-"Jul/2021";FALSE;"Desligamento a pedido";"2452";116
-"Set/2021";FALSE;"Desligamento a pedido";"2451";639
-"Out/2022";FALSE;"Desligamento por morte";"2451";7
-"Nov/2021";FALSE;"Desligamento por morte";"2451";7
-"Ago/2023";FALSE;"Desligamento a pedido";"2451";529
-"Mai/2024";FALSE;"Desligamento a pedido";"2452";139
-"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";795
-"Abr/2022";FALSE;"Desligamento a pedido";"2452";135
-"Dez/2020";FALSE;"Desligamento por morte";"2451";5
-"Nov/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Set/2024";FALSE;"Desligamento por demissão com justa causa";"2452";7
-"Mai/2020";FALSE;"Desligamento por morte";"2451";6
-"Abr/2024";FALSE;"Desligamento a pedido";"2451";680
-"Nov/2022";FALSE;"Desligamento por demissão com justa causa";"2452";6
-"Abr/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";269
-"Set/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";5
-"Jul/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
-"Jul/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
-"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";234
-"Dez/2023";FALSE;"Desligamento a pedido";"2451";308
-"Mai/2020";FALSE;"Desligamento a pedido";"2451";72
-"Ago/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";235
-"Ago/2023";FALSE;"Desligamento por demissão com justa causa";"2452";5
-"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";269
-"Ago/2020";FALSE;"Desligamento por demissão com justa causa";"2452";1
+"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Nov/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";239
+"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";451
+"Out/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";296
+"Jan/2021";FALSE;"Desligamento a pedido";"2451";486
+"Jul/2025";FALSE;"Desligamento a pedido";"2452";132
+"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";771
+"Abr/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Out/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";46
+"Fev/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";531
+"Ago/2025";FALSE;"Desligamento a pedido";"2452";129
+"Jun/2022";FALSE;"Desligamento por morte";"2452";1
+"Mar/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";508
+"Out/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Nov/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";483
+"Nov/2022";FALSE;"Desligamento por morte";"2452";1
+"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";3
+"Jul/2022";FALSE;"Desligamento por morte";"2452";1
+"Ago/2022";FALSE;"Desligamento por demissão com justa causa";"2452";9
+"Jan/2021";FALSE;"Desligamento por demissão com justa causa";"2452";5
+"Jan/2020";FALSE;"Desligamento a pedido";"2452";67
+"Set/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";448
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";234
+"Mai/2022";FALSE;"Desligamento por acordo empregado e empregador";"2451";16
+"Fev/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1887
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";592
+"Abr/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";71
+"Abr/2021";FALSE;"Desligamento por morte";"2452";7
+"Jul/2020";FALSE;"Desligamento por morte";"2451";5
+"Jul/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";11
+"Mai/2025";FALSE;"Desligamento a pedido";"2452";169
+"Out/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";89
+"Abr/2020";FALSE;"Desligamento por aposentadoria";"2452";1
+"Jun/2021";FALSE;"Desligamento por morte";"2452";1
+"Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Out/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Jan/2021";FALSE;"Admissão por primeiro emprego";"2451";163
+"Jan/2025";FALSE;"Desligamento por demissão com justa causa";"2452";11
+"Nov/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";848
+"Ago/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";450
+"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";61
+"Nov/2021";FALSE;"Desligamento a pedido";"2452";122
+"Fev/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";76
+"Abr/2021";FALSE;"Desligamento por demissão com justa causa";"2451";61
+"Abr/2022";FALSE;"Desligamento por morte";"2451";10
+"Mar/2023";FALSE;"Desligamento por demissão com justa causa";"2451";63
+"Nov/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";66
+"Mai/2025";FALSE;"Desligamento por demissão com justa causa";"2451";75
+"Jun/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";31
+"Fev/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Set/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";890
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";136
+"Jan/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";31
+"Ago/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";267
+"Jan/2025";FALSE;"Desligamento por morte";"2451";5
+"Mar/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";23
+"Dez/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";618
+"Dez/2022";FALSE;"Desligamento por demissão com justa causa";"2452";10
+"Mai/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";3
+"Fev/2023";FALSE;"Desligamento a pedido";"2451";521
+"Nov/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1358
+"Abr/2020";FALSE;"Desligamento por acordo empregado e empregador";"2451";9
+"Nov/2021";FALSE;"Desligamento por acordo empregado e empregador";"2452";1
+"Fev/2021";FALSE;"Desligamento por morte";"2452";3
+"Jan/2023";FALSE;"Desligamento por demissão com justa causa";"2452";4
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";2
+"Fev/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";5
+"Abr/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";8
+"Set/2022";FALSE;"Desligamento a pedido";"2451";594
+"Jan/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";640
+"Jul/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";250
+"Abr/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1169
+"Dez/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";1
+"Dez/2021";FALSE;"Desligamento por morte";"2451";8
+"Fev/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";2196
+"Fev/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";437
+"Nov/2024";FALSE;"Desligamento por acordo empregado e empregador";"2452";6
+"Ago/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";260
+"Jul/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";53
+"Jun/2020";FALSE;"Admissão por primeiro emprego";"2451";23
+"Jan/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";448
+"Jul/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";871
+"Set/2022";FALSE;"Desligamento por demissão com justa causa";"2451";54
+"Dez/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";329
+"Fev/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";102
+"Abr/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";3
+"Abr/2020";FALSE;"Desligamento por acordo empregado e empregador";"2452";2
+"Fev/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";38
+"Mai/2024";FALSE;"Desligamento por demissão com justa causa";"2451";50
+"Nov/2023";FALSE;"Desligamento por demissão com justa causa";"2452";6
+"Out/2023";FALSE;"Desligamento por morte";"2451";13
+"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Mai/2024";FALSE;"Desligamento por demissão com justa causa";"2452";11
+"Jan/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";1
+"Jan/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";2
+"Jun/2021";FALSE;"Desligamento a pedido";"2451";511
+"Mai/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";427
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";241
+"Jul/2022";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";693
+"Mar/2022";FALSE;"Desligamento por demissão com justa causa";"2451";59
+"Jan/2024";FALSE;"Desligamento a pedido";"2451";498
+"Nov/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";620
+"Mar/2021";FALSE;"Desligamento por demissão com justa causa";"2452";8
+"Set/2025";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";175
+"Mai/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";47
+"Dez/2024";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";3
+"Jul/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";625
+"Mai/2025";FALSE;"Desligamento por morte";"2451";10
+"Jun/2023";FALSE;"Desligamento por acordo empregado e empregador";"2452";3
+"Dez/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Out/2025";FALSE;"Desligamento por morte";"2451";5
+"Set/2020";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";1
+"Nov/2024";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";961
+"Jul/2024";FALSE;"Desligamento por morte";"2451";14
+"Dez/2021";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2452";248
+"Jul/2022";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1500
+"Jul/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2451";224
+"Ago/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";15
+"Fev/2022";FALSE;"Desligamento por demissão com justa causa";"2452";3
+"Mai/2023";FALSE;"Desligamento a pedido";"2452";97
+"Mai/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1228
+"Ago/2021";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";275
+"Nov/2022";FALSE;"Desligamento por morte";"2451";8
+"Jul/2024";FALSE;"Desligamento por acordo empregado e empregador";"2451";8
+"Ago/2025";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1286
+"Nov/2023";FALSE;"Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato";"2452";47
+"Set/2023";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1122
+"Dez/2020";FALSE;"Admissão por reemprego, reint, e Contr de trabalho por prazo det";"2451";1
+"Mai/2025";FALSE;"Desligamento por acordo empregado e empregador";"2451";16
+"Dez/2022";FALSE;"Desligamento por morte";"2451";5
+"Set/2025";FALSE;"Desligamento por morte";"2451";7
+"Dez/2023";FALSE;"Desligamento por morte";"2452";3
