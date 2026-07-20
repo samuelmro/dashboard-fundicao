@@ -647,51 +647,89 @@
       [AMBOS, 'BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
       ['Ferro e aço (2451)', 'DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
       [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.'],
-      ['Setor Elétrico (aba própria)', 'Consumo e custo de energia da indústria de transformação, Brasil e São Paulo', '2012–2026 (mensal)', 'Nível de divisão CNAE (24 divisões), não é exclusivo de 2451/2452; custo e gasto são estimativas por cenário (baixo/médio/alto).'],
+      ['Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, Brasil e São Paulo', '2012–2026 (mensal)', 'Nível de divisão CNAE (24 divisões), não é exclusivo de 2451/2452; custo e gasto são estimativas por cenário (baixo/médio/alto). Abrangência geográfica limitada a Brasil x São Paulo nesta fonte (sem abertura para as demais UFs).'],
     ];
     $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
   }
 
   // ---------------------------------------------------------------------
-  // Setor Elétrico: consumo e custo de energia da indústria de
+  // Energia Industrial: consumo e custo de energia da indústria de
   // transformação inteira (24 divisões CNAE, Brasil x São Paulo).
-  // Interativo: o usuário escolhe a divisão e a abrangência nos selects
-  // (stateSE), e os exhibits específicos de uma divisão são re-renderizados.
-  // Os dois exhibits de contexto (consumo total e rankings) mostram sempre
-  // a indústria inteira, só destacando a divisão escolhida.
+  // Totalmente interativo: divisão, abrangência e período (stateEI) — todo
+  // exhibit responde às três escolhas, sem nenhum gráfico/tabela estático.
+  // Rankings e a tabela de divisões agregam dentro do período selecionado
+  // (soma para consumo/gasto, média ponderada para custo, média simples
+  // para participação; fator de carga é premissa fixa por divisão).
   // ---------------------------------------------------------------------
-  function renderSetorEletrico(data) {
+  function renderEnergiaIndustrial(data) {
     const se = data.setor_eletrico;
-    const stateSE = { cnae: 24, uf: 'BR' };
+    const anoMin = Number(se.coverage.inicio.slice(0, 4)), anoMax = Number(se.coverage.fim.slice(0, 4));
+    const stateEI = { cnae: 24, uf: 'BR', lo: anoMin, hi: anoMax };
     const scopeOf = uf => (uf === 'SP' ? se.sp : se.brasil);
+    const inRange = rows => rows.filter(r => r.ano >= stateEI.lo && r.ano <= stateEI.hi);
 
     const divisoesMeta = [...se.brasil.divisoes_latest.items].sort((a, b) => a.cnae - b.cnae);
+    const fatorCargaPorCnae = {};
+    divisoesMeta.forEach(d => { fatorCargaPorCnae[d.cnae] = d.fator_carga; });
+
     const cnaeSel = $('#se-cnae-select');
     cnaeSel.innerHTML = divisoesMeta.map(d =>
-      `<option value="${d.cnae}"${d.cnae === stateSE.cnae ? ' selected' : ''}>${d.cnae} · ${titleCasePt(d.descricao)}</option>`
+      `<option value="${d.cnae}"${d.cnae === stateEI.cnae ? ' selected' : ''}>${d.cnae} · ${titleCasePt(d.descricao)}</option>`
     ).join('');
     const ufSel = $('#se-uf-select');
+    const loSel = $('#se-period-lo-select'), hiSel = $('#se-period-hi-select');
+    const anos = []; for (let y = anoMin; y <= anoMax; y++) anos.push(y);
+    function fillYearOptions(sel, selected) {
+      sel.innerHTML = anos.map(y => `<option value="${y}"${y === selected ? ' selected' : ''}>${y}</option>`).join('');
+    }
+    fillYearOptions(loSel, stateEI.lo);
+    fillYearOptions(hiSel, stateEI.hi);
 
-    cnaeSel.addEventListener('change', () => { stateSE.cnae = Number(cnaeSel.value); update(); });
-    ufSel.addEventListener('change', () => { stateSE.uf = ufSel.value; update(); });
-
-    // Consumo total: contexto fixo, sempre Brasil x São Paulo, não muda com os selects.
-    const catTotal = se.brasil.total_monthly.map(r => r.ano * 100 + r.mes);
-    lineChart($('#chart-se-consumo-total'), {
-      categories: catTotal, formatX: monthLabel, formatY: fmt.mwh, height: 280,
-      series: [
-        { label: 'Brasil', color: 'var(--series-1)', values: se.brasil.total_monthly.map(r => r.consumo_mwh), area: true },
-        { label: 'São Paulo', color: 'var(--series-5)', values: se.sp.total_monthly.map(r => r.consumo_mwh) },
-      ]
+    cnaeSel.addEventListener('change', () => { stateEI.cnae = Number(cnaeSel.value); update(); });
+    ufSel.addEventListener('change', () => { stateEI.uf = ufSel.value; update(); });
+    loSel.addEventListener('change', () => {
+      stateEI.lo = Math.min(Number(loSel.value), stateEI.hi); loSel.value = stateEI.lo; update();
+    });
+    hiSel.addEventListener('change', () => {
+      stateEI.hi = Math.max(Number(hiSel.value), stateEI.lo); hiSel.value = stateEI.hi; update();
     });
 
+    // Agrega as 24 divisões dentro do período [lo,hi] para uma abrangência:
+    // consumo/gasto somados, custo médio ponderado (gasto/consumo), participação
+    // média simples, fator de carga é premissa fixa (não varia no tempo).
+    function snapshot(uf) {
+      const scope = scopeOf(uf);
+      return divisoesMeta.map(d => {
+        const rows = inRange(scope.por_divisao_monthly[String(d.cnae)] || []);
+        if (!rows.length) return null;
+        const consumo = rows.reduce((a, r) => a + (r.consumo_mwh || 0), 0);
+        const gasto = rows.reduce((a, r) => a + (r.gasto_medio || 0), 0);
+        const participacaoMedia = rows.reduce((a, r) => a + (r.participacao_pct || 0), 0) / rows.length;
+        return {
+          cnae: d.cnae, descricao: d.descricao, consumo_mwh: consumo, gasto_medio: gasto,
+          custo_medio: consumo ? (gasto / consumo) : null, participacao_pct: participacaoMedia,
+          fator_carga: fatorCargaPorCnae[d.cnae],
+        };
+      }).filter(Boolean);
+    }
+
     function update() {
-      const nomeDivisao = titleCasePt((divisoesMeta.find(d => d.cnae === stateSE.cnae) || {}).descricao || '');
-      const ufLabel = stateSE.uf === 'SP' ? 'São Paulo' : 'Brasil';
-      const rowsBr = se.brasil.por_divisao_monthly[String(stateSE.cnae)] || [];
-      const rowsSp = se.sp.por_divisao_monthly[String(stateSE.cnae)] || [];
-      const rowsAtivo = stateSE.uf === 'SP' ? rowsSp : rowsBr;
+      const nomeDivisao = titleCasePt((divisoesMeta.find(d => d.cnae === stateEI.cnae) || {}).descricao || '');
+      const ufLabel = stateEI.uf === 'SP' ? 'São Paulo' : 'Brasil';
+      const periodoLabel = stateEI.lo === stateEI.hi ? String(stateEI.lo) : `${stateEI.lo}–${stateEI.hi}`;
+      const totalBr = inRange(se.brasil.total_monthly), totalSp = inRange(se.sp.total_monthly);
+      const rowsBr = inRange(se.brasil.por_divisao_monthly[String(stateEI.cnae)] || []);
+      const rowsSp = inRange(se.sp.por_divisao_monthly[String(stateEI.cnae)] || []);
+      const rowsAtivo = stateEI.uf === 'SP' ? rowsSp : rowsBr;
       const catDiv = rowsBr.map(r => r.ano * 100 + r.mes);
+
+      lineChart($('#chart-se-consumo-total'), {
+        categories: totalBr.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 280,
+        series: [
+          { label: 'Brasil', color: 'var(--series-1)', values: totalBr.map(r => r.consumo_mwh), area: true },
+          { label: 'São Paulo', color: 'var(--series-5)', values: totalSp.map(r => r.consumo_mwh) },
+        ]
+      });
 
       $('#se-participacao-title').textContent = 'Participação de ' + nomeDivisao + ' no consumo industrial';
       lineChart($('#chart-se-participacao-metalurgia'), {
@@ -702,16 +740,15 @@
         ]
       });
 
-      const divisoesEscopo = scopeOf(stateSE.uf).divisoes_latest.items;
-      const refMes = monthLabel(scopeOf(stateSE.uf).divisoes_latest.ano * 100 + scopeOf(stateSE.uf).divisoes_latest.mes, true);
-      $('#se-ranking-consumo-sub').textContent = ufLabel + ', ' + refMes;
+      const divisoesEscopo = snapshot(stateEI.uf);
+      $('#se-ranking-consumo-sub').textContent = ufLabel + ', ' + periodoLabel + ' (acumulado)';
       rankList($('#rank-se-divisoes-consumo'), [...divisoesEscopo].sort((a, b) => b.consumo_mwh - a.consumo_mwh).slice(0, 8).map(d => ({
-        label: titleCasePt(d.descricao), value: d.consumo_mwh, color: d.cnae === stateSE.cnae ? 'var(--series-3)' : 'var(--series-1)'
+        label: titleCasePt(d.descricao), value: d.consumo_mwh, color: d.cnae === stateEI.cnae ? 'var(--series-3)' : 'var(--series-1)'
       })), { formatVal: fmt.mwh });
 
       $('#se-ranking-fator-sub').textContent = 'Intensidade de uso contínuo da energia (0 a 1), ' + ufLabel;
       rankList($('#rank-se-fator-carga'), [...divisoesEscopo].sort((a, b) => b.fator_carga - a.fator_carga).slice(0, 8).map(d => ({
-        label: titleCasePt(d.descricao), value: d.fator_carga, color: d.cnae === stateSE.cnae ? 'var(--series-3)' : 'var(--series-8)'
+        label: titleCasePt(d.descricao), value: d.fator_carga, color: d.cnae === stateEI.cnae ? 'var(--series-3)' : 'var(--series-8)'
       })), { formatVal: n => fmt.full1(n) });
 
       $('#se-custo-title').textContent = 'Custo médio de energia: ' + nomeDivisao;
@@ -733,7 +770,7 @@
         ]
       });
 
-      $('#se-table-divisoes-sub').textContent = ufLabel + ', ' + refMes;
+      $('#se-table-divisoes-sub').textContent = ufLabel + ', ' + periodoLabel + ' (acumulado/médio no período)';
       dataTable($('#table-se-divisoes'), {
         columns: [
           { key: 'cnae', label: 'CNAE' },
@@ -741,13 +778,13 @@
           { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
           { key: 'custo_medio', label: 'Custo médio', align: 'right', format: n => fmt.brl(n) + '/MWh' },
           { key: 'gasto_medio', label: 'Gasto estimado', align: 'right', format: fmt.brlFull },
-          { key: 'participacao_pct', label: 'Participação', align: 'right', format: n => fmt.pct(n) },
+          { key: 'participacao_pct', label: 'Participação média', align: 'right', format: n => fmt.pct(n) },
           { key: 'fator_carga', label: 'Fator de carga', align: 'right', format: fmt.full1 },
         ],
         rows: divisoesEscopo,
       });
 
-      $('#se-table-divisao-title').textContent = nomeDivisao + ': série mensal completa';
+      $('#se-table-divisao-title').textContent = nomeDivisao + ': série mensal, ' + periodoLabel;
       dataTable($('#table-se-metalurgia'), {
         columns: [
           { key: 'k', label: 'Mês', format: monthLabel },
@@ -788,7 +825,7 @@
     const dataView = $('#data-view');
     const filterRow = $('#filter-row');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
-    const setorEletricoView = $('#setor-eletrico-view');
+    const energiaIndustrialView = $('#energia-industrial-view');
     const pdiView = $('#pdi-view');
     const relatoriosView = $('#relatorios-view');
     const referenciasView = $('#referencias-view');
@@ -800,7 +837,7 @@
       filterRow.hidden = !isData;
       sectionNav.style.display = isData ? '' : 'none';
       sectionNavList.style.display = isData ? '' : 'none';
-      setorEletricoView.hidden = state.view !== 'setor-eletrico';
+      energiaIndustrialView.hidden = state.view !== 'energia-industrial';
       pdiView.hidden = state.view !== 'pdi';
       relatoriosView.hidden = state.view !== 'relatorios';
       referenciasView.hidden = state.view !== 'referencias';
@@ -911,7 +948,7 @@
       setupViewTabs();
       setupPeriodSlider();
       renderReferencias(data);
-      renderSetorEletrico(data);
+      renderEnergiaIndustrial(data);
       renderAll();
     })
     .catch(err => {

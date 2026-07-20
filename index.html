@@ -41,7 +41,7 @@
   </nav>
 
   <nav class="sidebar-nav sidebar-nav-foot" id="foot-tabs" role="tablist" aria-label="Outras seções">
-    <button type="button" data-view="setor-eletrico" role="tab" aria-selected="false">Setor Elétrico</button>
+    <button type="button" data-view="energia-industrial" role="tab" aria-selected="false">Energia Industrial</button>
     <button type="button" data-view="pdi" role="tab" aria-selected="false">PD&amp;I</button>
     <button type="button" data-view="relatorios" role="tab" aria-selected="false">Relatórios</button>
     <button type="button" data-view="referencias" role="tab" aria-selected="false">Referências</button>
@@ -472,7 +472,7 @@
 </div><!-- /#data-view -->
 
 <!-- ============ SETOR ELÉTRICO ============ -->
-<div id="setor-eletrico-view" hidden>
+<div id="energia-industrial-view" hidden>
   <div class="filter-row" id="se-filter-row">
     <div class="filter-row-inner">
       <div class="filter-group">
@@ -486,13 +486,19 @@
           <option value="SP">São Paulo</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label for="se-period-lo-select">Período</label>
+        <select id="se-period-lo-select"></select>
+        <span class="period-dash">–</span>
+        <select id="se-period-hi-select"></select>
+      </div>
     </div>
   </div>
   <section class="section">
     <div class="section-header">
-      <h2>Setor Elétrico: consumo e custo de energia na indústria de transformação</h2>
+      <h2>Energia Industrial: consumo e custo de energia na indústria de transformação</h2>
     </div>
-    <p class="section-note">Brasil e São Paulo, 24 divisões da indústria de transformação (CNAE 10 a 33), 2012–2026. Escolha a divisão e a abrangência acima para atualizar os gráficos e tabelas específicos dela.</p>
+    <p class="section-note">Brasil e São Paulo (única abertura geográfica disponível nesta fonte), 24 divisões da indústria de transformação (CNAE 10 a 33), 2012–2026. Escolha divisão, abrangência e período acima para atualizar todos os gráficos e tabelas.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-se-consumo-total"></div>
@@ -552,7 +558,7 @@
       </div>
     </div>
   </section>
-</div><!-- /#setor-eletrico-view -->
+</div><!-- /#energia-industrial-view -->
 
 <!-- ============ PD&I ============ -->
 <div id="pdi-view" hidden>
