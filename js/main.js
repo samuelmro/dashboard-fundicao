@@ -458,43 +458,7 @@
   }
 
   // ---------------------------------------------------------------------
-  // 06 — Energia
-  // ---------------------------------------------------------------------
-  function renderEnergia() {
-    const s = csS(), sh = shared();
-    const exato = filterMonthly(s.energia.exato_monthly, state.lo, state.hi);
-    const aprox = filterMonthly(sh.energia_metalurgia_aproximado, state.lo, state.hi);
-    const cat = monthlyCategories([exato, aprox]);
-    lineChart($('#chart-energia'), {
-      categories: cat, formatX: monthLabel, formatY: fmt.mwh, height: 280,
-      series: [
-        { label: 'Consumo do setor (ACL)', color: 'var(--series-5)', values: seriesMonthly(exato, 'consumo_acl_mwh', cat), area: true },
-        { label: 'Metalurgia (contexto, categoria mais ampla)', color: 'var(--series-8)', values: seriesMonthly(aprox, 'consumo_livre_acl', cat) }
-      ]
-    });
-
-    lineChart($('#chart-energia-livre-autoprodutor'), {
-      categories: aprox.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.mwh, height: 280, stacked: true,
-      series: [
-        { label: 'Livre (ACL)', color: 'var(--series-5)', values: aprox.map(r => r.consumo_livre_acl) },
-        { label: 'Autoprodutor', color: 'var(--series-7)', values: aprox.map(r => r.consumo_autoprodutor_acl) },
-      ]
-    });
-
-    const energiaTableRows = [...s.energia.exato_monthly].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
-    dataTable($('#table-energia'), {
-      columns: [
-        { key: 'k', label: 'Mês', format: monthLabel },
-        { key: 'consumo_acl_mwh', label: 'Consumo ACL', align: 'right', format: fmt.mwh },
-        { key: 'consumo_total_mwh', label: 'Consumo total', align: 'right', format: fmt.mwh },
-      ],
-      rows: energiaTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
-      pageSize: 12,
-    });
-  }
-
-  // ---------------------------------------------------------------------
-  // 07 — BNDES
+  // 06 — BNDES
   // ---------------------------------------------------------------------
   const PORTES_ORDEM = ['GRANDE', 'MÉDIA', 'PEQUENA', 'MICRO'];
   const CORES_PORTE = { GRANDE: 'var(--series-6)', 'MÉDIA': 'var(--series-8)', PEQUENA: 'var(--series-4)', MICRO: 'var(--series-2)' };
@@ -672,7 +636,6 @@
   // ---------------------------------------------------------------------
   function renderReferencias(data) {
     const cagedCov = data.sectors['2451'].caged.coverage;
-    const energiaCov = data.sectors['2451'].energia.coverage;
     const AMBOS = 'Ferro e aço (2451) e Não ferrosos (2452)';
     const rows = [
       [AMBOS, 'Produção física', 'Instituto Aço Brasil (IBS) + IBGE, PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', '1980–2026 (mensal)', 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.'],
@@ -681,13 +644,93 @@
       [AMBOS, 'Financeiro', 'IBGE, PIA-Empresa (Metalurgia e Fundição 24.5)', '2007–2023 (anual)', 'Valores em R$ mil convertidos para R$ na exibição. Fundição 24.5 combina 2451+2452.'],
       [AMBOS, 'Comércio exterior', 'MDIC, Comex Stat (exportação/importação por país e UF)', '2006/2016–2026 (anual)', 'Dado oficial brasileiro, específico por CNAE.'],
       [AMBOS, 'Comércio exterior', 'UN Comtrade (comércio mundial por código HS)', '2015–2024 (anual)', 'Proxy por HS (não existe CNAE em bases internacionais); usado só para contexto Brasil x Mundo.'],
-      [AMBOS, 'Energia', 'CCEE, consumo no mercado livre (exato por CNAE)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Janela curta: histórico só existe a partir dessa data.'],
-      [AMBOS, 'Energia', 'CCEE, consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
       [AMBOS, 'BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
       ['Ferro e aço (2451)', 'DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
-      [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.']
+      [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.'],
+      ['Setor Elétrico (aba própria)', 'Consumo e custo de energia da indústria de transformação, Brasil e São Paulo', '2012–2026 (mensal)', 'Nível de divisão CNAE (24 divisões), não é exclusivo de 2451/2452; custo e gasto são estimativas por cenário (baixo/médio/alto).'],
     ];
     $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+  }
+
+  // ---------------------------------------------------------------------
+  // Setor Elétrico: consumo e custo de energia da indústria de
+  // transformação (24 divisões CNAE, Brasil x São Paulo). Montado uma vez
+  // no boot, não responde aos filtros de setor/UF/período do painel.
+  // ---------------------------------------------------------------------
+  function renderSetorEletrico(data) {
+    const se = data.setor_eletrico;
+    const br = se.brasil, sp = se.sp;
+
+    const catTotal = br.total_monthly.map(r => r.ano * 100 + r.mes);
+    lineChart($('#chart-se-consumo-total'), {
+      categories: catTotal, formatX: monthLabel, formatY: fmt.mwh, height: 280,
+      series: [
+        { label: 'Brasil', color: 'var(--series-1)', values: br.total_monthly.map(r => r.consumo_mwh), area: true },
+        { label: 'São Paulo', color: 'var(--series-5)', values: sp.total_monthly.map(r => r.consumo_mwh) },
+      ]
+    });
+
+    const catMet = br.metalurgia_monthly.map(r => r.ano * 100 + r.mes);
+    lineChart($('#chart-se-participacao-metalurgia'), {
+      categories: catMet, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
+      series: [
+        { label: 'Brasil', color: 'var(--series-3)', values: br.metalurgia_monthly.map(r => r.participacao_pct), area: true },
+        { label: 'São Paulo', color: 'var(--series-5)', values: sp.metalurgia_monthly.map(r => r.participacao_pct) },
+      ]
+    });
+
+    const divisoesBr = br.divisoes_latest.items;
+    $('#se-ranking-consumo-sub').textContent = 'Brasil, ' + monthLabel(br.divisoes_latest.ano * 100 + br.divisoes_latest.mes, true);
+    rankList($('#rank-se-divisoes-consumo'), [...divisoesBr].sort((a, b) => b.consumo_mwh - a.consumo_mwh).slice(0, 8).map(d => ({
+      label: titleCasePt(d.descricao), value: d.consumo_mwh, color: d.cnae === 24 ? 'var(--series-3)' : 'var(--series-1)'
+    })), { formatVal: fmt.mwh });
+
+    rankList($('#rank-se-fator-carga'), [...divisoesBr].sort((a, b) => b.fator_carga - a.fator_carga).slice(0, 8).map(d => ({
+      label: titleCasePt(d.descricao), value: d.fator_carga, color: d.cnae === 24 ? 'var(--series-3)' : 'var(--series-8)'
+    })), { formatVal: n => fmt.full1(n) });
+
+    lineChart($('#chart-se-custo-metalurgia'), {
+      categories: catMet, formatX: monthLabel, formatY: fmt.brl, height: 280,
+      series: [
+        { label: 'Baixo', color: 'var(--series-4)', values: br.metalurgia_monthly.map(r => r.custo_baixo) },
+        { label: 'Médio', color: 'var(--series-3)', values: br.metalurgia_monthly.map(r => r.custo_medio) },
+        { label: 'Alto', color: 'var(--series-6)', values: br.metalurgia_monthly.map(r => r.custo_alto) },
+      ]
+    });
+
+    lineChart($('#chart-se-gasto-metalurgia'), {
+      categories: catMet, formatX: monthLabel, formatY: fmt.brl, height: 280,
+      series: [
+        { label: 'Brasil', color: 'var(--series-1)', values: br.metalurgia_monthly.map(r => r.gasto_medio), area: true },
+        { label: 'São Paulo', color: 'var(--series-5)', values: sp.metalurgia_monthly.map(r => r.gasto_medio) },
+      ]
+    });
+
+    $('#se-table-divisoes-sub').textContent = 'Brasil, ' + monthLabel(br.divisoes_latest.ano * 100 + br.divisoes_latest.mes, true);
+    dataTable($('#table-se-divisoes'), {
+      columns: [
+        { key: 'cnae', label: 'CNAE' },
+        { key: 'descricao', label: 'Divisão', format: titleCasePt },
+        { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
+        { key: 'custo_medio', label: 'Custo médio', align: 'right', format: n => fmt.brl(n) + '/MWh' },
+        { key: 'gasto_medio', label: 'Gasto estimado', align: 'right', format: fmt.brlFull },
+        { key: 'participacao_pct', label: 'Participação', align: 'right', format: n => fmt.pct(n) },
+        { key: 'fator_carga', label: 'Fator de carga', align: 'right', format: fmt.full1 },
+      ],
+      rows: divisoesBr,
+    });
+
+    dataTable($('#table-se-metalurgia'), {
+      columns: [
+        { key: 'k', label: 'Mês', format: monthLabel },
+        { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
+        { key: 'custo_medio', label: 'Custo médio', align: 'right', format: n => fmt.brl(n) + '/MWh' },
+        { key: 'gasto_medio', label: 'Gasto estimado', align: 'right', format: fmt.brlFull },
+        { key: 'participacao_pct', label: 'Participação', align: 'right', format: n => fmt.pct(n) },
+      ],
+      rows: [...br.metalurgia_monthly].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes)).map(r => ({ ...r, k: r.ano * 100 + r.mes })),
+      pageSize: 12,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -714,6 +757,7 @@
     const dataView = $('#data-view');
     const filterRow = $('#filter-row');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
+    const setorEletricoView = $('#setor-eletrico-view');
     const pdiView = $('#pdi-view');
     const relatoriosView = $('#relatorios-view');
     const referenciasView = $('#referencias-view');
@@ -725,6 +769,7 @@
       filterRow.hidden = !isData;
       sectionNav.style.display = isData ? '' : 'none';
       sectionNavList.style.display = isData ? '' : 'none';
+      setorEletricoView.hidden = state.view !== 'setor-eletrico';
       pdiView.hidden = state.view !== 'pdi';
       relatoriosView.hidden = state.view !== 'relatorios';
       referenciasView.hidden = state.view !== 'referencias';
@@ -782,10 +827,9 @@
     { target: 'block-emprego', num: '03', title: 'Emprego formal', sub: 'Vínculos, escolaridade, ocupação e remuneração (RAIS).' },
     { target: 'block-caged', num: '04', title: 'CAGED', sub: 'Admissões e desligamentos mensais.' },
     { target: 'block-comex', num: '05', title: 'Comércio exterior', sub: 'Exportação e importação, Comex e Comtrade.' },
-    { target: 'block-energia', num: '06', title: 'Energia', sub: 'Consumo no mercado livre, CCEE.' },
-    { target: 'block-bndes', num: '07', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
-    { target: 'block-decom', num: '08', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
-    { target: 'block-estudos-especiais', num: '09', title: 'Estudos especiais', sub: 'Em construção.' },
+    { target: 'block-bndes', num: '06', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
+    { target: 'block-decom', num: '07', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
+    { target: 'block-estudos-especiais', num: '08', title: 'Estudos especiais', sub: 'Em construção.' },
     { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
   ];
   function renderSectorSummary() {
@@ -817,7 +861,7 @@
 
   function renderCharts() {
     renderProducao(); renderFinanceiro(); renderEmprego(); renderCaged();
-    renderComex(); renderEnergia(); renderBndes(); renderDecom();
+    renderComex(); renderBndes(); renderDecom();
   }
   function renderAll() {
     renderCharts();
@@ -836,6 +880,7 @@
       setupViewTabs();
       setupPeriodSlider();
       renderReferencias(data);
+      renderSetorEletrico(data);
       renderAll();
     })
     .catch(err => {

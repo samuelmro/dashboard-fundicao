@@ -22,7 +22,7 @@ def data():
 
 
 def test_top_level_schema(data):
-    assert set(data.keys()) == {'meta', 'shared', 'sectors'}
+    assert set(data.keys()) == {'meta', 'shared', 'sectors', 'setor_eletrico'}
     assert set(data['sectors'].keys()) == {'2451', '2452'}
 
 
@@ -82,9 +82,18 @@ def test_yearly_and_monthly_series_are_chronological(data, cnae):
     is_sorted_by(data['shared']['producao']['aco_gusa'], lambda r: r['ano'] * 100 + r['mes'])
     is_sorted_by(data['shared']['producao']['aco_gusa_dessaz'], lambda r: r['ano'] * 100 + r['mes'])
     is_sorted_by(data['shared']['financeiro']['fundicao_24_5'], lambda r: r['ano'])
-    is_sorted_by(data['shared']['energia_metalurgia_aproximado'], lambda r: r['ano'] * 100 + r['mes'])
     is_sorted_by(s['rais']['uf_yearly_total'], lambda r: r['ano'])
     is_sorted_by(s['rais']['massa_nacional_yearly'], lambda r: r['ano'])
     is_sorted_by(s['caged']['saldo_monthly_national'], lambda r: r['ano'] * 100 + r['mes'])
     is_sorted_by(s['comex']['yearly'], lambda r: r['ano'])
     is_sorted_by(s['bndes']['yearly'], lambda r: r['ano'])
+
+
+@pytest.mark.parametrize('uf', ['brasil', 'sp'])
+def test_setor_eletrico_has_data(data, uf):
+    scope = data['setor_eletrico'][uf]
+    assert len(scope['total_monthly']) > 0
+    assert len(scope['metalurgia_monthly']) > 0
+    assert len(scope['divisoes_latest']['items']) == 24
+    is_sorted_by(scope['total_monthly'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(scope['metalurgia_monthly'], lambda r: r['ano'] * 100 + r['mes'])

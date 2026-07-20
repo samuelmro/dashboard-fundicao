@@ -208,19 +208,8 @@ def read_financeiro(name):
 
 
 # ---------------------------------------------------------------------------
-# SHARED: Energia (proxy Metalurgia) + Macro + DECOM
+# SHARED: Macro + DECOM
 # ---------------------------------------------------------------------------
-def build_energia_aproximado():
-    df = read_csv('Consumo_Energia_CCEE_Metalurgia_e_Produtos_Metal_APROXIMADO.csv')
-    rows = [
-        {'ano': to_int(r.Ano), 'mes': to_int(r.Mes),
-         'consumo_livre_acl': to_num(r.Consumo_Livre_ACL),
-         'consumo_autoprodutor_acl': to_num(r.Consumo_Autoprodutor_ACL)}
-        for r in df.itertuples(index=False)
-    ]
-    return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
-
-
 def build_macro():
     df = read_csv('Indicadores_Macro_e_Inflacao.csv')
     df = df[df['ano'] >= 1990]
@@ -241,6 +230,62 @@ def build_decom():
     })
     cols = ['ncm', 'pais', 'status', 'aliquota', 'data_inicio', 'data_resolucao', 'circular']
     return [{k: clean(v) for k, v in row.items()} for row in df[cols].to_dict('records')]
+
+
+# ---------------------------------------------------------------------------
+# SETOR ELÉTRICO: consumo/custo de energia de toda a indústria de
+# transformação (24 divisões CNAE), Brasil x São Paulo. Fonte própria,
+# formato diferente dos demais CSVs (separador decimal '.', não ',').
+# ---------------------------------------------------------------------------
+def build_setor_eletrico():
+    df = pd.read_csv(SRC_DIR / 'energia_industria_transformacao_sp_brasil_2012-2026.csv',
+                      sep=';', decimal='.', encoding='utf-8-sig')
+    num_cols = ['FATOR_CARGA_ASSUMIDO', 'CONSUMO_MWH', 'CUSTO_TOTAL_RS_MWH_BAIXO',
+                'CUSTO_TOTAL_RS_MWH_MEDIO', 'CUSTO_TOTAL_RS_MWH_ALTO', 'GASTO_ESTIMADO_RS_BAIXO',
+                'GASTO_ESTIMADO_RS_MEDIO', 'GASTO_ESTIMADO_RS_ALTO', 'PARTICIPACAO_PCT_SETOR']
+    for c in num_cols:
+        df[c] = pd.to_numeric(df[c], errors='coerce')
+
+    def build_scope(uf):
+        sub = df[df['UF'] == uf]
+
+        total_monthly = sorted([
+            {'ano': to_int(ano), 'mes': to_int(mes), 'consumo_mwh': to_num(g['CONSUMO_MWH'].sum())}
+            for (ano, mes), g in sub.groupby(['ANO', 'MES'])
+        ], key=lambda r: r['ano'] * 100 + r['mes'])
+
+        met = sub[sub['CNAE_DIVISAO'] == 24].sort_values(['ANO', 'MES'])
+        metalurgia_monthly = [
+            {'ano': to_int(r.ANO), 'mes': to_int(r.MES), 'consumo_mwh': to_num(r.CONSUMO_MWH),
+             'custo_baixo': to_num(r.CUSTO_TOTAL_RS_MWH_BAIXO), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
+             'custo_alto': to_num(r.CUSTO_TOTAL_RS_MWH_ALTO),
+             'gasto_baixo': to_num(r.GASTO_ESTIMADO_RS_BAIXO), 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO),
+             'gasto_alto': to_num(r.GASTO_ESTIMADO_RS_ALTO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR)}
+            for r in met.itertuples(index=False)
+        ]
+
+        ano_max = int(sub['ANO'].max())
+        mes_max = int(sub[sub['ANO'] == ano_max]['MES'].max())
+        latest = sub[(sub['ANO'] == ano_max) & (sub['MES'] == mes_max)].sort_values('CONSUMO_MWH', ascending=False)
+        divisoes_latest = {
+            'ano': ano_max, 'mes': mes_max,
+            'items': [
+                {'cnae': to_int(r.CNAE_DIVISAO), 'descricao': r.CNAE_DIVISAO_DESCRICAO,
+                 'consumo_mwh': to_num(r.CONSUMO_MWH), 'custo_medio': to_num(r.CUSTO_TOTAL_RS_MWH_MEDIO),
+                 'gasto_medio': to_num(r.GASTO_ESTIMADO_RS_MEDIO), 'participacao_pct': to_num(r.PARTICIPACAO_PCT_SETOR),
+                 'fator_carga': to_num(r.FATOR_CARGA_ASSUMIDO)}
+                for r in latest.itertuples(index=False)
+            ],
+        }
+
+        return {'total_monthly': total_monthly, 'metalurgia_monthly': metalurgia_monthly,
+                'divisoes_latest': divisoes_latest}
+
+    return {
+        'coverage': monthly_coverage([{'ano': to_int(r.ANO), 'mes': to_int(r.MES)} for r in df.itertuples(index=False)]),
+        'brasil': build_scope('BR'),
+        'sp': build_scope('SP'),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -489,15 +534,6 @@ def build_sector(cnae, label):
     }
     comtrade = {'brazil_yearly': brazil_yearly, 'world_yearly': world_yearly, 'top_partners_latest': top_partners_latest}
 
-    # --- Energia CCEE exata ---
-    en_df = read_csv(f'Consumo_Energia_CCEE_Exato_{cnae}.csv')
-    exato_monthly = sorted(
-        [{'ano': to_int(r.Ano), 'mes': to_int(r.Mes), 'consumo_acl_mwh': to_num(r.Consumo_ACL_MWh),
-          'consumo_total_mwh': to_num(r.Consumo_Total_MWh)}
-         for r in en_df.itertuples(index=False)],
-        key=lambda r: r['ano'] * 100 + r['mes']
-    )
-
     # --- BNDES ---
     bndes_df = read_csv(f'BNDES_Desembolsos_{cnae}.csv')
     bndes_df['UF'] = bndes_df['UF'].astype(str).str.strip()
@@ -559,7 +595,6 @@ def build_sector(cnae, label):
             'top_paises_latest': top_paises_latest, 'top_paises_yearly': top_paises_yearly,
         },
         'comtrade': comtrade,
-        'energia': {'coverage': monthly_coverage(exato_monthly), 'exato_monthly': exato_monthly},
         'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total, 'porte_total': bndes_porte_total,
                   'table': bndes_table},
     }
@@ -574,9 +609,9 @@ def main():
     metalurgia_indice, aco_gusa, aco_gusa_dessaz = build_producao()
     fin_metalurgia = read_financeiro('Dados_Financeiros_Metalurgia_24.csv')
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
-    energia_aprox = build_energia_aproximado()
     macro = build_macro()
     decom = build_decom()
+    setor_eletrico = build_setor_eletrico()
 
     sector_2451 = build_sector('2451', 'Fundição de ferro e aço')
     sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos')
@@ -593,11 +628,11 @@ def main():
             'producao': {'metalurgia_indice': metalurgia_indice, 'aco_gusa': aco_gusa,
                          'aco_gusa_dessaz': aco_gusa_dessaz},
             'financeiro': {'metalurgia_24': fin_metalurgia, 'fundicao_24_5': fin_fundicao},
-            'energia_metalurgia_aproximado': energia_aprox,
             'macro': macro,
             'decom': decom,
         },
         'sectors': {'2451': sector_2451, '2452': sector_2452},
+        'setor_eletrico': setor_eletrico,
     }
 
     OUT_DIR.mkdir(exist_ok=True)
