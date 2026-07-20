@@ -14,7 +14,7 @@
     { from: 202002, to: 202006, label: 'Covid-19 2020' },
   ];
 
-  const state = { sector: '2451', view: '2451', lo: 2016, hi: 2026, uf: 'ALL', data: null };
+  const state = { sector: '2451', view: 'home', lo: 2016, hi: 2026, uf: 'ALL', data: null };
   const $ = (sel, root) => (root || document).querySelector(sel);
   const MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'com', 'para', 'a', 'o', 'no', 'na']);
   function titleCasePt(s) {
@@ -654,27 +654,31 @@
     sel.addEventListener('change', () => { state.uf = sel.value; renderAll(); });
   }
 
-  // 4 abas mutuamente exclusivas: 2451 e 2452 mostram o painel de dados
-  // (trocando o setor); PD&I e Referências trocam para uma página estática,
-  // escondendo o painel de dados e a barra de filtros (não fazem sentido ali).
+  // Duas listas de botões: sector-tabs (2451/2452) e view-tabs (home) + foot-tabs
+  // (pdi/referencias) formam juntas as 5 "vistas" mutuamente exclusivas.
+  // home mostra KPIs+atalhos; 2451/2452 mostram o painel de dados (trocando
+  // o setor); pdi/referencias trocam para uma página estática.
   function setupViewTabs() {
-    const btns = document.querySelectorAll('#view-tabs button');
+    const allBtns = Array.from(document.querySelectorAll('#view-tabs button, #sector-tabs button, #foot-tabs button'));
     const dataView = $('#data-view');
     const filterRow = $('#filter-row');
+    const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
     const pdiView = $('#pdi-view');
     const referenciasView = $('#referencias-view');
 
     function applyVisibility() {
-      const isData = state.view === '2451' || state.view === '2452';
+      const isData = state.view === '2451' || state.view === '2452' || state.view === 'home';
       dataView.hidden = !isData;
       filterRow.hidden = !isData;
+      sectionNav.style.display = isData ? '' : 'none';
+      sectionNavList.style.display = isData ? '' : 'none';
       pdiView.hidden = state.view !== 'pdi';
       referenciasView.hidden = state.view !== 'referencias';
     }
 
-    btns.forEach(b => b.addEventListener('click', () => {
+    allBtns.forEach(b => b.addEventListener('click', () => {
       if (b.dataset.view === state.view) return;
-      btns.forEach(x => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+      allBtns.forEach(x => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
       b.classList.add('active'); b.setAttribute('aria-selected', 'true');
       state.view = b.dataset.view;
       if (state.view === '2451' || state.view === '2452') {
@@ -684,22 +688,87 @@
       applyVisibility();
     }));
 
+    setupSectionNav();
     applyVisibility();
+  }
+
+  function scrollToBlock(id) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const headerH = document.querySelector('.site-header').offsetHeight + document.querySelector('.filter-row').offsetHeight;
+    const top = target.getBoundingClientRect().top + window.scrollY - headerH - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  // Navegação "nesta seção" na sidebar: clique rola até o bloco (sem usar
+  // scrollIntoView, para não afetar o resto da página) e o botão ativo
+  // acompanha a posição de leitura via IntersectionObserver.
+  function setupSectionNav() {
+    const btns = Array.from(document.querySelectorAll('#section-nav button'));
+    const headerH = document.querySelector('.site-header').offsetHeight + document.querySelector('.filter-row').offsetHeight;
+    btns.forEach(b => b.addEventListener('click', () => scrollToBlock(b.dataset.target)));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const btn = btns.find(b => b.dataset.target === entry.target.id);
+        if (!btn) return;
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    }, { rootMargin: `-${headerH + 20}px 0px -70% 0px` });
+    btns.forEach(b => { const el = document.getElementById(b.dataset.target); if (el) observer.observe(el); });
+  }
+
+  // ---------------------------------------------------------------------
+  // Resumo do setor: KPIs de destaque + lista clicável para cada dado
+  // ---------------------------------------------------------------------
+  const SECTION_META = [
+    { target: 'block-producao', num: '01', title: 'Produção física', sub: 'Aço bruto, ferro-gusa e laminados, mensal.' },
+    { target: 'block-financeiro', num: '02', title: 'Financeiro', sub: 'VBPI, VTI, receita e custos, PIA/IBGE.' },
+    { target: 'block-emprego', num: '03', title: 'Emprego formal', sub: 'Vínculos, escolaridade, ocupação e remuneração (RAIS).' },
+    { target: 'block-caged', num: '04', title: 'CAGED', sub: 'Admissões e desligamentos mensais.' },
+    { target: 'block-comex', num: '05', title: 'Comércio exterior', sub: 'Exportação e importação, Comex e Comtrade.' },
+    { target: 'block-energia', num: '06', title: 'Energia', sub: 'Consumo no mercado livre, CCEE.' },
+    { target: 'block-bndes', num: '07', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
+    { target: 'block-decom', num: '08', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
+    { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
+  ];
+  function renderSectorSummary() {
+    const s = csS(), sh = shared();
+    const producaoLatest = last(sh.producao.aco_gusa);
+    const raisLatest = last(s.rais.uf_yearly_total);
+    const comexLatest = s.comex.yearly.find(r => r.ano === s.comex.top_paises_latest.ano) || last(s.comex.yearly);
+    const bndesTotal = s.bndes.yearly.reduce((a, r) => a + (r.valor_desembolsado || 0), 0);
+    const kpis = [
+      { label: 'Aço bruto (último mês)', value: fmt.compact(producaoLatest.aco_bruto) + ' t', sub: monthLabel(producaoLatest.ano * 100 + producaoLatest.mes, true) },
+      { label: 'Vínculos empregatícios', value: fmt.full(raisLatest.vinculos), sub: 'RAIS ' + raisLatest.ano },
+      { label: 'Exportação', value: fmt.usd(comexLatest.exportacao_usd), sub: 'Comex ' + comexLatest.ano },
+      { label: 'BNDES desembolsado', value: fmt.brl(bndesTotal), sub: 'Acumulado 2002–2026' },
+    ];
+    $('#sector-kpis').innerHTML = kpis.map(k => `<div class="kpi-stat"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+    $('#sector-section-list').innerHTML = SECTION_META.map(sec => `<button type="button" class="sector-section-row" data-target="${sec.target}"><span class="ssr-num">${sec.num}</span><span class="ssr-text"><span class="ssr-title">${sec.title}</span><span class="ssr-sub">${sec.sub}</span></span><span class="ssr-arrow">↓</span></button>`).join('');
+    $('#sector-section-list').querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => scrollToBlock(btn.dataset.target)));
   }
 
   function setupPeriodSlider() {
     const def = state.data.meta.periodo_slider_padrao;
     state.lo = def.inicio; state.hi = def.fim;
-    const mount = $('#period-slider-mount');
-    const labels = $('#period-labels');
-    labels.textContent = state.lo + ' – ' + state.hi;
-    createRangeSlider(mount, {
-      min: 1980, max: CURRENT_YEAR, valueMin: state.lo, valueMax: state.hi,
-      onChange(lo, hi) {
-        state.lo = lo; state.hi = hi;
-        labels.textContent = lo + ' – ' + hi;
-        renderCharts();
-      }
+    const loSel = $('#period-lo-select'), hiSel = $('#period-hi-select');
+    const years = []; for (let y = 1980; y <= CURRENT_YEAR; y++) years.push(y);
+    function fillOptions(sel, selected) {
+      sel.innerHTML = years.map(y => `<option value="${y}"${y === selected ? ' selected' : ''}>${y}</option>`).join('');
+    }
+    fillOptions(loSel, state.lo);
+    fillOptions(hiSel, state.hi);
+    loSel.addEventListener('change', () => {
+      state.lo = Math.min(Number(loSel.value), state.hi);
+      loSel.value = state.lo;
+      renderCharts();
+    });
+    hiSel.addEventListener('change', () => {
+      state.hi = Math.max(Number(hiSel.value), state.lo);
+      hiSel.value = state.hi;
+      renderCharts();
     });
   }
 
@@ -710,6 +779,7 @@
   function renderAll() {
     renderCharts();
     renderGargalos();
+    renderSectorSummary();
   }
 
   // ---------------------------------------------------------------------
@@ -723,8 +793,7 @@
       setupViewTabs();
       setupPeriodSlider();
       renderReferencias(data);
-      renderCharts();
-      renderGargalos();
+      renderAll();
     })
     .catch(err => {
       document.querySelector('.wrap').innerHTML = '<p style="padding:40px;color:var(--bad)">Não foi possível carregar os dados (data/data.json). Detalhe: ' + err.message + '</p>';

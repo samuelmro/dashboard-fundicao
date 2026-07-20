@@ -9,37 +9,55 @@
 </head>
 <body>
 
-<header class="site-header">
-  <div class="header-inner">
-    <div class="header-title">
-      <div class="header-title-row">
-        <h1>Painel do Setor de Fundição</h1>
-        <span class="header-cnae-tag">CNAE 2451 / 2452</span>
-      </div>
-      <p>Produção, emprego, financeiro, comércio exterior, energia, BNDES e DECOM: leitura executiva do setor a partir de dados públicos consolidados.</p>
-    </div>
-    <div class="header-media">
-      <img src="assets/header/fiesp-predio.jpg" alt="Sede da FIESP, Avenida Paulista, São Paulo">
-      <div class="header-media-credit">
-        <span class="realizacao-label">Realização</span>
-        <span class="realizacao-orgs">SENAI · FIESP</span>
-      </div>
-    </div>
+<div class="app-shell">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <img src="assets/logos/logo-fiesp.webp" alt="FIESP">
+    <span class="divider"></span>
+    <img src="assets/logos/logo-senai.jpg" alt="SENAI">
   </div>
-  <nav class="view-tabs" id="view-tabs" role="tablist" aria-label="Navegação principal">
-    <button type="button" data-view="2451" class="active" role="tab" aria-selected="true">Ferro e aço (2451)</button>
+
+  <nav class="sidebar-nav" id="view-tabs" role="tablist" aria-label="Navegação principal">
+    <button type="button" data-view="home" class="active" role="tab" aria-selected="true">Início</button>
+  </nav>
+
+  <div class="sidebar-section-label">Setor</div>
+  <nav class="sidebar-nav sidebar-nav-sector" id="sector-tabs" role="tablist" aria-label="Setor">
+    <button type="button" data-view="2451" role="tab" aria-selected="false">Ferro e aço (2451)</button>
     <button type="button" data-view="2452" role="tab" aria-selected="false">Não ferrosos (2452)</button>
+  </nav>
+
+  <div class="sidebar-section-label" id="section-nav-label">Nesta seção</div>
+  <nav class="sidebar-nav sidebar-nav-sections" id="section-nav">
+    <button type="button" data-target="block-producao">01 · Produção física</button>
+    <button type="button" data-target="block-financeiro">02 · Financeiro</button>
+    <button type="button" data-target="block-emprego">03 · Emprego formal</button>
+    <button type="button" data-target="block-caged">04 · CAGED</button>
+    <button type="button" data-target="block-comex">05 · Comércio exterior</button>
+    <button type="button" data-target="block-energia">06 · Energia</button>
+    <button type="button" data-target="block-bndes">07 · BNDES</button>
+    <button type="button" data-target="block-decom">08 · DECOM</button>
+    <button type="button" data-target="block-gargalos">Gargalos do setor</button>
+  </nav>
+
+  <nav class="sidebar-nav sidebar-nav-foot" id="foot-tabs" role="tablist" aria-label="Outras seções">
     <button type="button" data-view="pdi" role="tab" aria-selected="false">PD&amp;I</button>
     <button type="button" data-view="referencias" role="tab" aria-selected="false">Referências</button>
   </nav>
-</header>
+
+  <div class="sidebar-credit">Realização <strong>FIESP · SENAI</strong></div>
+</aside>
+
+<div class="main-col">
+<header class="site-header"></header>
 
 <div class="filter-row" id="filter-row">
   <div class="filter-row-inner">
     <div class="filter-group">
-      <label for="period-lo">Período</label>
-      <span id="period-slider-mount"></span>
-      <span class="range-labels" id="period-labels">2016 – 2026</span>
+      <label for="period-lo-select">Período</label>
+      <select id="period-lo-select"></select>
+      <span class="period-dash">–</span>
+      <select id="period-hi-select"></select>
     </div>
     <div class="filter-group">
       <label for="uf-select">Estado</label>
@@ -53,7 +71,12 @@
 
 <div class="wrap">
 
-<div id="data-view">
+<div id="data-view" hidden>
+
+  <div class="sector-summary" id="sector-summary">
+    <div class="kpi-row" id="sector-kpis"></div>
+    <div class="sector-section-list" id="sector-section-list"></div>
+  </div>
 
   <!-- ============ 01. PRODUÇÃO FÍSICA ============ -->
   <section class="section" id="block-producao">
@@ -464,9 +487,10 @@
 </footer>
 
 </div>
+</div>
+</div>
 
 <script src="js/charts.js"></script>
-<script src="js/range-slider.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
