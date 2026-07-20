@@ -275,8 +275,7 @@ a:hover { color: var(--accent); }
   margin-top: 6px; font-size: 0.74rem; color: var(--text-secondary);
 }
 .legend-item { display: flex; align-items: center; gap: 6px; }
-.legend-swatch { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-.legend-swatch.area { width: 10px; height: 10px; border-radius: 3px; }
+.legend-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 
 /* Donut: SVG é quadrado (viewBox 1:1) e não pode herdar o width:100% de
    .chart-svg, senão estica até a largura do container (grave em blocos

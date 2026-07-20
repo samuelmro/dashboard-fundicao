@@ -150,7 +150,7 @@
       const el = document.createElement('div');
       el.className = 'legend-item';
       const sw = document.createElement('span');
-      sw.className = 'legend-swatch' + (it.area ? ' area' : '');
+      sw.className = 'legend-swatch';
       sw.style.background = it.color;
       el.appendChild(sw);
       const txt = document.createElement('span');
@@ -303,7 +303,7 @@
     }
 
     container.appendChild(svg);
-    renderLegend(container, series.map(s => ({ label: s.label, color: s.color, area: s.area })));
+    renderLegend(container, series.map(s => ({ label: s.label, color: s.color })));
   }
 
   function clientPosFromEvent(evt, svgNode) {
