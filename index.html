@@ -42,6 +42,7 @@
 
   <nav class="sidebar-nav sidebar-nav-foot" id="foot-tabs" role="tablist" aria-label="Outras seções">
     <button type="button" data-view="pdi" role="tab" aria-selected="false">PD&amp;I</button>
+    <button type="button" data-view="estudos" role="tab" aria-selected="false">Estudos especiais</button>
     <button type="button" data-view="referencias" role="tab" aria-selected="false">Referências</button>
   </nav>
 
@@ -71,10 +72,11 @@
 
 <div class="wrap">
 
+<div id="home-view"></div><!-- /#home-view -->
+
 <div id="data-view" hidden>
 
   <div class="sector-summary" id="sector-summary">
-    <div class="kpi-row" id="sector-kpis"></div>
     <div class="sector-section-list" id="sector-section-list"></div>
   </div>
 
@@ -459,16 +461,24 @@
   <p class="pdi-intro">Em construção.</p>
 </div><!-- /#pdi-view -->
 
+<!-- ============ ESTUDOS ESPECIAIS ============ -->
+<div id="estudos-view" hidden>
+  <div class="section-header">
+    <h2>Estudos especiais</h2>
+  </div>
+  <p class="pdi-intro">Em construção.</p>
+</div><!-- /#estudos-view -->
+
 <!-- ============ REFERÊNCIAS ============ -->
 <div id="referencias-view" hidden>
   <div class="section-header">
     <h2>Referências: fontes e metodologia</h2>
   </div>
-  <p class="pdi-intro">Esta seção documenta a origem de cada indicador, o período coberto e limitações técnicas relevantes.</p>
+  <p class="pdi-intro">Esta seção documenta a origem de cada indicador, o período coberto e limitações técnicas relevantes. Cada fonte é marcada com o(s) setor(es) a que se aplica, para manter a rastreabilidade conforme novos setores forem adicionados ao painel.</p>
   <h4>Fontes por bloco</h4>
   <div class="pdi-table-wrap">
     <table class="pdi-table" id="referencias-table">
-      <thead><tr><th>Bloco</th><th>Base de dados</th><th>Cobertura</th><th>Observação técnica</th></tr></thead>
+      <thead><tr><th>Setor</th><th>Bloco</th><th>Base de dados</th><th>Cobertura</th><th>Observação técnica</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>

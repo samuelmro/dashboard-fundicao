@@ -625,20 +625,21 @@
   function renderReferencias(data) {
     const cagedCov = data.sectors['2451'].caged.coverage;
     const energiaCov = data.sectors['2451'].energia.coverage;
+    const AMBOS = 'Ferro e aço (2451) e Não ferrosos (2452)';
     const rows = [
-      ['Produção física', 'Instituto Aço Brasil (IBS) + IBGE, PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', '1980–2026 (mensal)', 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.'],
-      ['Emprego formal', 'RAIS (vínculos, faixa de tamanho, escolaridade, ocupação, tempo de emprego, massa salarial)', '2006–2025 (anual)', 'Quebra metodológica em 2022 (eSocial) nos perfis detalhados.'],
-      ['CAGED', 'CAGED (saldo, salário, tipo de movimentação por UF/CNAE)', `${cagedCov.inicio} a ${cagedCov.fim} (mensal)`, 'Cobertura calculada dinamicamente a partir da base carregada.'],
-      ['Financeiro', 'IBGE, PIA-Empresa (Metalurgia e Fundição 24.5)', '2007–2023 (anual)', 'Valores em R$ mil convertidos para R$ na exibição. Fundição 24.5 combina 2451+2452.'],
-      ['Comércio exterior', 'MDIC, Comex Stat (exportação/importação por país e UF)', '2006/2016–2026 (anual)', 'Dado oficial brasileiro, específico por CNAE.'],
-      ['Comércio exterior', 'UN Comtrade (comércio mundial por código HS)', '2015–2024 (anual)', 'Proxy por HS (não existe CNAE em bases internacionais); usado só para contexto Brasil x Mundo.'],
-      ['Energia', 'CCEE, consumo no mercado livre (exato por CNAE)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Janela curta: histórico só existe a partir dessa data.'],
-      ['Energia', 'CCEE, consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
-      ['BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
-      ['DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
-      ['Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.']
+      [AMBOS, 'Produção física', 'Instituto Aço Brasil (IBS) + IBGE, PIM-PF (Metalurgia geral e Aço/Ferro-gusa)', '1980–2026 (mensal)', 'Nível "metalurgia"/produto, não é exclusivo de 2451/2452.'],
+      [AMBOS, 'Emprego formal', 'RAIS (vínculos, faixa de tamanho, escolaridade, ocupação, tempo de emprego, massa salarial)', '2006–2025 (anual)', 'Quebra metodológica em 2022 (eSocial) nos perfis detalhados.'],
+      [AMBOS, 'CAGED', 'CAGED (saldo, salário, tipo de movimentação por UF/CNAE)', `${cagedCov.inicio} a ${cagedCov.fim} (mensal)`, 'Cobertura calculada dinamicamente a partir da base carregada.'],
+      [AMBOS, 'Financeiro', 'IBGE, PIA-Empresa (Metalurgia e Fundição 24.5)', '2007–2023 (anual)', 'Valores em R$ mil convertidos para R$ na exibição. Fundição 24.5 combina 2451+2452.'],
+      [AMBOS, 'Comércio exterior', 'MDIC, Comex Stat (exportação/importação por país e UF)', '2006/2016–2026 (anual)', 'Dado oficial brasileiro, específico por CNAE.'],
+      [AMBOS, 'Comércio exterior', 'UN Comtrade (comércio mundial por código HS)', '2015–2024 (anual)', 'Proxy por HS (não existe CNAE em bases internacionais); usado só para contexto Brasil x Mundo.'],
+      [AMBOS, 'Energia', 'CCEE, consumo no mercado livre (exato por CNAE)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Janela curta: histórico só existe a partir dessa data.'],
+      [AMBOS, 'Energia', 'CCEE, consumo "Metalurgia e Produtos de Metal" (aproximado, com quebra Livre/Autoprodutor)', `${energiaCov.inicio} a ${energiaCov.fim} (mensal)`, 'Categoria mais ampla que 2451/2452, única fonte disponível para a quebra Livre/Autoprodutor.'],
+      [AMBOS, 'BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
+      ['Ferro e aço (2451)', 'DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
+      [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.']
     ];
-    $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
   }
 
   // ---------------------------------------------------------------------
@@ -655,24 +656,29 @@
   }
 
   // Duas listas de botões: sector-tabs (2451/2452) e view-tabs (home) + foot-tabs
-  // (pdi/referencias) formam juntas as 5 "vistas" mutuamente exclusivas.
-  // home mostra KPIs+atalhos; 2451/2452 mostram o painel de dados (trocando
-  // o setor); pdi/referencias trocam para uma página estática.
+  // (pdi/estudos/referencias) formam juntas as 6 "vistas" mutuamente exclusivas.
+  // home fica vazia (reservada para conteúdo futuro); 2451/2452 mostram o
+  // painel de dados (trocando o setor); pdi/estudos/referencias trocam para
+  // uma página estática.
   function setupViewTabs() {
     const allBtns = Array.from(document.querySelectorAll('#view-tabs button, #sector-tabs button, #foot-tabs button'));
+    const homeView = $('#home-view');
     const dataView = $('#data-view');
     const filterRow = $('#filter-row');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
     const pdiView = $('#pdi-view');
+    const estudosView = $('#estudos-view');
     const referenciasView = $('#referencias-view');
 
     function applyVisibility() {
-      const isData = state.view === '2451' || state.view === '2452' || state.view === 'home';
+      const isData = state.view === '2451' || state.view === '2452';
+      homeView.hidden = state.view !== 'home';
       dataView.hidden = !isData;
       filterRow.hidden = !isData;
       sectionNav.style.display = isData ? '' : 'none';
       sectionNavList.style.display = isData ? '' : 'none';
       pdiView.hidden = state.view !== 'pdi';
+      estudosView.hidden = state.view !== 'estudos';
       referenciasView.hidden = state.view !== 'referencias';
     }
 
@@ -734,18 +740,6 @@
     { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
   ];
   function renderSectorSummary() {
-    const s = csS(), sh = shared();
-    const producaoLatest = last(sh.producao.aco_gusa);
-    const raisLatest = last(s.rais.uf_yearly_total);
-    const comexLatest = s.comex.yearly.find(r => r.ano === s.comex.top_paises_latest.ano) || last(s.comex.yearly);
-    const bndesTotal = s.bndes.yearly.reduce((a, r) => a + (r.valor_desembolsado || 0), 0);
-    const kpis = [
-      { label: 'Aço bruto (último mês)', value: fmt.compact(producaoLatest.aco_bruto) + ' t', sub: monthLabel(producaoLatest.ano * 100 + producaoLatest.mes, true) },
-      { label: 'Vínculos empregatícios', value: fmt.full(raisLatest.vinculos), sub: 'RAIS ' + raisLatest.ano },
-      { label: 'Exportação', value: fmt.usd(comexLatest.exportacao_usd), sub: 'Comex ' + comexLatest.ano },
-      { label: 'BNDES desembolsado', value: fmt.brl(bndesTotal), sub: 'Acumulado 2002–2026' },
-    ];
-    $('#sector-kpis').innerHTML = kpis.map(k => `<div class="kpi-stat"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
     $('#sector-section-list').innerHTML = SECTION_META.map(sec => `<button type="button" class="sector-section-row" data-target="${sec.target}"><span class="ssr-num">${sec.num}</span><span class="ssr-text"><span class="ssr-title">${sec.title}</span><span class="ssr-sub">${sec.sub}</span></span><span class="ssr-arrow">↓</span></button>`).join('');
     $('#sector-section-list').querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => scrollToBlock(btn.dataset.target)));
   }

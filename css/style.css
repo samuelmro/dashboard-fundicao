@@ -181,21 +181,8 @@ a:hover { color: var(--accent); }
   min-width: 0;
 }
 
-/* ---------- Sector summary: KPIs + lista clicável para cada dado ---------- */
+/* ---------- Sector summary: menu de navegação para cada dado ---------- */
 .sector-summary { margin-bottom: 8px; }
-.kpi-row {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  margin-bottom: 8px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-@media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
-.kpi-stat { min-width: 0; padding: 18px 24px 18px 0; margin-right: 24px; border-right: 1px solid var(--border); }
-.kpi-stat:last-child { border-right: none; margin-right: 0; }
-.kpi-stat .kpi-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-.kpi-stat .kpi-value { font-size: 1.6rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
-.kpi-stat .kpi-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 4px; }
-
 .sector-section-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 24px; margin-bottom: 36px; }
 @media (max-width: 900px) { .sector-section-list { grid-template-columns: repeat(2, 1fr); } }
 .sector-section-row {
