@@ -604,12 +604,13 @@
     const ctBr = filterAnnual(s.comtrade.brazil_yearly, bs.lo, bs.hi);
     const ctWorld = filterAnnual(s.comtrade.world_yearly, bs.lo, bs.hi);
     const catCt = annualCategories([ctBr, ctWorld]);
-    lineChart($('#chart-comex-mundo'), {
-      categories: catCt, formatY: fmt.usd, height: 280,
-      series: [
-        { label: 'Exportação do Brasil', color: 'var(--series-1)', values: seriesAnnual(ctBr, 'export_usd', catCt) },
-        { label: 'Exportação mundial (contexto)', color: 'var(--series-8)', values: seriesAnnual(ctWorld, 'export_usd', catCt) }
-      ]
+    // Eixos independentes: exportação do Brasil é ordens de grandeza menor
+    // que a mundial (milhões x bilhões) — no mesmo eixo linear, a linha do
+    // Brasil ficava achatada perto de zero e só a linha mundial aparecia.
+    dualAxisLineChart($('#chart-comex-mundo'), {
+      categories: catCt, formatYLeft: fmt.usd, formatYRight: fmt.usd, height: 280,
+      seriesLeft: { label: 'Exportação do Brasil', color: 'var(--series-1)', values: seriesAnnual(ctBr, 'export_usd', catCt) },
+      seriesRight: { label: 'Exportação mundial (contexto)', color: 'var(--series-8)', values: seriesAnnual(ctWorld, 'export_usd', catCt) },
     });
 
     const participacaoMundo = catCt.map(ano => {
