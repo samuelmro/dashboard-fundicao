@@ -421,6 +421,92 @@
   }
 
   // ---------------------------------------------------------------------
+  // Ranking em barras horizontais — 1 barra por item, com grade numérica de
+  // verdade (não é uma lista em HTML) e linha de referência tracejada
+  // opcional (ex.: valor nacional), pra responder "onde eu estou perto da
+  // média" de cara, não só "quem é maior que quem".
+  // opts: { items:[{label,value,color,tooltip?}], formatVal, reference?:
+  //         {value,label}, rowHeight, onClick, tooltipExtra(item) }
+  // ---------------------------------------------------------------------
+  function hBarChart(container, opts) {
+    container.innerHTML = '';
+    const { items, formatVal = fmt.compact, reference, rowHeight = 26, onClick, tooltipExtra } = opts;
+    if (!items.length) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    const width = 600;
+    const margin = { top: reference ? 24 : 10, right: 56, bottom: 22, left: 138 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = items.length * rowHeight;
+    const height = margin.top + innerH + margin.bottom;
+
+    const values = items.map(i => i.value || 0).concat(reference ? [reference.value] : []);
+    const ticks = niceTicks(Math.min(0, ...values), Math.max(...values, 1), 4);
+    const xLo = ticks[0], xHi = ticks[ticks.length - 1];
+    const xScale = v => margin.left + ((v - xLo) / (xHi - xLo || 1)) * innerW;
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg', role: 'img' });
+
+    ticks.forEach(t => {
+      const x = xScale(t);
+      svg.appendChild(svgEl('line', { x1: x, x2: x, y1: margin.top, y2: margin.top + innerH, class: t === 0 ? 'baseline' : 'gridline' }));
+      const lbl = svgEl('text', { x, y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
+      lbl.textContent = formatVal(t);
+      svg.appendChild(lbl);
+    });
+
+    items.forEach((it, i) => {
+      const y = margin.top + i * rowHeight;
+      const yc = y + rowHeight / 2;
+      const barH = Math.min(16, rowHeight - 10);
+      const x0 = xScale(Math.min(0, it.value || 0)), x1 = xScale(Math.max(0, it.value || 0));
+
+      const lbl = svgEl('text', { x: margin.left - 8, y: yc + 3, 'text-anchor': 'end', class: 'axis-label hbar-label' });
+      lbl.textContent = it.label;
+      svg.appendChild(lbl);
+
+      svg.appendChild(svgEl('rect', {
+        x: Math.min(x0, x1), y: yc - barH / 2, width: Math.max(1.5, Math.abs(x1 - x0)), height: barH,
+        fill: it.color || 'var(--series-1)', rx: 2, class: 'bar-mark',
+      }));
+
+      const val = svgEl('text', { x: x1 + 6, y: yc + 3, 'text-anchor': 'start', class: 'hbar-val' });
+      val.textContent = formatVal(it.value);
+      svg.appendChild(val);
+
+      const hit = svgEl('rect', { x: margin.left, y, width: innerW, height: rowHeight, class: 'hit-area', tabindex: 0 });
+      hit.style.cursor = onClick ? 'pointer' : 'default';
+      const rows = [{ label: it.label, color: it.color, value: formatVal(it.value) }];
+      if (tooltipExtra) rows.push(...tooltipExtra(it));
+      const onEnter = (evt) => {
+        const pos = clientPosFromEvent(evt, hit);
+        showTooltip(pos.x, pos.y, it.label, rows);
+      };
+      hit.addEventListener('pointerenter', onEnter);
+      hit.addEventListener('pointermove', onEnter);
+      hit.addEventListener('pointerleave', hideTooltip);
+      hit.addEventListener('focus', onEnter);
+      hit.addEventListener('blur', hideTooltip);
+      if (onClick) hit.addEventListener('click', () => onClick(it));
+      svg.appendChild(hit);
+    });
+
+    if (reference) {
+      const xr = xScale(reference.value);
+      svg.appendChild(svgEl('line', {
+        x1: xr, x2: xr, y1: margin.top - 6, y2: margin.top + innerH,
+        stroke: 'var(--text-muted)', 'stroke-width': 1.5, 'stroke-dasharray': '4 3',
+      }));
+      const lbl = svgEl('text', { x: xr, y: margin.top - 10, 'text-anchor': 'middle', class: 'axis-label' });
+      lbl.textContent = reference.label;
+      svg.appendChild(lbl);
+    }
+
+    container.appendChild(svg);
+  }
+
+  // ---------------------------------------------------------------------
   // Linha com dois eixos Y (esquerda/direita) — ex.: VBPI x VTI
   // opts: { seriesLeft:{label,color,values}, seriesRight:{label,color,values},
   //         categories, formatYLeft, formatYRight, formatX, height }
@@ -750,5 +836,5 @@
     container.appendChild(ul);
   }
 
-  window.Charts = { lineChart, barChart, dualAxisLineChart, waterfallChart, donutChart, dataTable, rankList, fmt, hideTooltip };
+  window.Charts = { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, dataTable, rankList, fmt, hideTooltip };
 })();

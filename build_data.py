@@ -272,8 +272,12 @@ def build_energia_industrial():
         [{'ano': to_int(r.ANO), 'mes': to_int(r.MES)} for r in df[['ANO', 'MES']].drop_duplicates().itertuples(index=False)]
     )
 
+    ordem_cnae = [d['cnae'] for d in divisoes]
     energia_dir = OUT_DIR / 'energia'
     energia_dir.mkdir(parents=True, exist_ok=True)
+
+    # Por divisão (as 24), série completa nos 28 UFs — alimenta os gráficos
+    # de tendência/ranking que comparam UFs para um setor já escolhido.
     for d in divisoes:
         sub = df[df['CNAE_DIVISAO'] == d['cnae']]
         obj = {}
@@ -286,6 +290,17 @@ def build_energia_industrial():
             ]
         with open(energia_dir / f"serie-cnae-{d['cnae']}.json", 'w', encoding='utf-8') as f:
             json.dump(obj, f, ensure_ascii=False, separators=(',', ':'), default=np_default)
+
+    # Por UF (as 28), participação (%) das 24 divisões em cada mês, na ordem
+    # fixa de `divisoes` — alimenta o gráfico de composição setorial "de um
+    # estado por vez" (drill-down ao clicar num estado do ranking).
+    for uf, g in df.groupby('UF'):
+        by_month = {}
+        for (ano, mes), gg in g.groupby(['ANO', 'MES']):
+            part_por_cnae = {int(r.CNAE_DIVISAO): to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF) for r in gg.itertuples(index=False)}
+            by_month[str(ano * 100 + mes)] = [part_por_cnae.get(c) for c in ordem_cnae]
+        with open(energia_dir / f'composicao-uf-{uf}.json', 'w', encoding='utf-8') as f:
+            json.dump(by_month, f, ensure_ascii=False, separators=(',', ':'), default=np_default)
 
     return {
         'coverage': coverage,

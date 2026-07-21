@@ -317,6 +317,8 @@ a:hover { color: var(--accent); }
 /* chart svg */
 .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
 .chart-svg .axis-label { fill: var(--text-muted); font-size: 10px; }
+.chart-svg .hbar-label { fill: var(--text-secondary); font-size: 9.5px; }
+.chart-svg .hbar-val { fill: var(--text-primary); font-size: 9.5px; font-variant-numeric: tabular-nums; }
 .chart-svg .gridline { stroke: var(--gridline); stroke-width: 1; }
 .chart-svg .baseline { stroke: var(--baseline); stroke-width: 1; }
 .chart-svg .hit-area { fill: transparent; }

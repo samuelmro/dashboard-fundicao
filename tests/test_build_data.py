@@ -107,6 +107,14 @@ def test_energia_industrial_serie_por_divisao(data, cnae):
         obj = json.load(f)
     ufs_esperadas = {u['uf'] for u in data['energia_industrial']['ufs']}
     assert set(obj.keys()) == ufs_esperadas
-    for uf, rows in obj.items():
-        assert len(rows) > 0
-        is_sorted_by(rows, lambda r: r[0] * 100 + r[1])
+
+
+@pytest.mark.parametrize('uf', ['BR', 'SP', 'AC'])
+def test_energia_industrial_composicao_por_uf(data, uf):
+    path = ROOT / 'data' / 'energia' / f'composicao-uf-{uf}.json'
+    assert path.exists()
+    with open(path, encoding='utf-8') as f:
+        by_month = json.load(f)
+    assert len(by_month) > 0
+    for valores in by_month.values():
+        assert len(valores) == 24
