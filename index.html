@@ -53,27 +53,6 @@
 <div class="main-col">
 <header class="site-header"></header>
 
-<div class="filter-row" id="filter-row">
-  <div class="filter-row-inner">
-    <div class="filter-group">
-      <label for="period-lo-select">Período</label>
-      <select id="period-lo-select"></select>
-      <span class="period-dash">–</span>
-      <select id="period-hi-select"></select>
-    </div>
-    <div class="filter-group">
-      <label id="uf-label">Estados</label>
-      <div class="multiselect" id="uf-multiselect">
-        <button type="button" class="multiselect-btn" id="uf-btn" aria-haspopup="listbox" aria-expanded="false"></button>
-        <div class="multiselect-panel" id="uf-panel" hidden></div>
-      </div>
-    </div>
-    <div class="filter-group">
-      <button type="button" class="table-export-btn" id="clear-filters">Limpar filtros</button>
-    </div>
-  </div>
-</div>
-
 <div class="wrap">
 
 <div id="home-view"></div><!-- /#home-view -->
@@ -91,6 +70,15 @@
       <h2>Produção física</h2>
     </div>
     <p class="section-note">Dado nacional (IBGE/PIM-PF e Instituto Aço Brasil), sem abertura por estado, vale igualmente para os dois segmentos (2451/2452).</p>
+    <div class="block-filter">
+      <div class="block-filter-item">
+        <span>Período</span>
+        <select id="producao-lo-select"></select>
+        <span class="period-dash">–</span>
+        <select id="producao-hi-select"></select>
+      </div>
+      <button type="button" class="block-filter-clear" id="producao-clear">Limpar</button>
+    </div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-producao-acogusa"></div>
@@ -136,7 +124,7 @@
       <span class="section-num">02</span>
       <h2>Financeiro</h2>
     </div>
-    <p class="section-note">Fonte: IBGE/PIA-Empresa, 2007–2023, série completa, não filtrada pelo período selecionado acima. A base "Fundição" (24.5) reúne 2451+2452 sem abertura entre eles; "Metalurgia" (24) é o grupo mais amplo.</p>
+    <p class="section-note">Fonte: IBGE/PIA-Empresa, 2007–2023, sempre em série completa (sem filtro de período). A base "Fundição" (24.5) reúne 2451+2452 sem abertura entre eles; "Metalurgia" (24) é o grupo mais amplo.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-financeiro-vbpi-vti"></div>
@@ -189,7 +177,23 @@
       <span class="section-num">03</span>
       <h2>Emprego formal (RAIS)</h2>
     </div>
-    <p class="section-note">A partir de 2022 a metodologia de coleta mudou (base eSocial); perfis detalhados (escolaridade, ocupação, tempo de emprego) têm quebra de série entre 2021 e 2022. Estados são multi-seleção (filtro no topo); clique numa barra do ranking por UF para adicionar aquele estado ao filtro.</p>
+    <p class="section-note">A partir de 2022 a metodologia de coleta mudou (base eSocial); perfis detalhados (escolaridade, ocupação, tempo de emprego) têm quebra de série entre 2021 e 2022. Clique numa barra do ranking por UF para adicionar aquele estado ao filtro abaixo.</p>
+    <div class="block-filter">
+      <div class="block-filter-item">
+        <span>Período</span>
+        <select id="emprego-lo-select"></select>
+        <span class="period-dash">–</span>
+        <select id="emprego-hi-select"></select>
+      </div>
+      <div class="block-filter-item">
+        <span>Estados</span>
+        <div class="multiselect" id="emprego-uf-multiselect">
+          <button type="button" class="multiselect-btn" id="emprego-uf-btn" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="multiselect-panel" id="emprego-uf-panel" hidden></div>
+        </div>
+      </div>
+      <button type="button" class="block-filter-clear" id="emprego-clear">Limpar</button>
+    </div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-emprego-rais"></div>
@@ -285,6 +289,22 @@
       <h2>CAGED: dinâmica de curto prazo</h2>
     </div>
     <p class="section-note" id="caged-coverage-note">Granularidade mensal (admissões/desligamentos), que a RAIS não oferece.</p>
+    <div class="block-filter">
+      <div class="block-filter-item">
+        <span>Período</span>
+        <select id="caged-lo-select"></select>
+        <span class="period-dash">–</span>
+        <select id="caged-hi-select"></select>
+      </div>
+      <div class="block-filter-item">
+        <span>Estados</span>
+        <div class="multiselect" id="caged-uf-multiselect">
+          <button type="button" class="multiselect-btn" id="caged-uf-btn" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="multiselect-panel" id="caged-uf-panel" hidden></div>
+        </div>
+      </div>
+      <button type="button" class="block-filter-clear" id="caged-clear">Limpar</button>
+    </div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-caged-saldo"></div>
@@ -337,7 +357,20 @@
       <span class="section-num">05</span>
       <h2>Comércio exterior</h2>
     </div>
-    <p class="section-note">Gráficos de Brasil x UF seguem o estado em foco (o último marcado no filtro de estados); clique numa barra do ranking por UF para trocar o foco.</p>
+    <p class="section-note">O gráfico de exportação x importação segue o estado escolhido abaixo (ou clique numa barra do ranking por UF para trocar).</p>
+    <div class="block-filter">
+      <div class="block-filter-item">
+        <span>Período</span>
+        <select id="comex-lo-select"></select>
+        <span class="period-dash">–</span>
+        <select id="comex-hi-select"></select>
+      </div>
+      <div class="block-filter-item">
+        <span>Estado</span>
+        <select id="comex-uf-select"></select>
+      </div>
+      <button type="button" class="block-filter-clear" id="comex-clear">Limpar</button>
+    </div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-comex-brasil"></div>
@@ -405,7 +438,7 @@
       <span class="section-num">06</span>
       <h2>BNDES</h2>
     </div>
-    <p class="section-note">Desembolsos já são específicos do segmento selecionado (2451/2452). Os 3 primeiros gráficos mostram sempre o histórico completo (2002-2026), sem responder ao filtro de período ou de estado — desembolso do BNDES não é distribuído uniformemente Brasil afora, então comparar estados só faz sentido no ranking abaixo (clique numa barra para adicionar aquele estado ao filtro).</p>
+    <p class="section-note">Desembolsos já são específicos do segmento selecionado (2451/2452). Sempre em série completa (2002-2026), sem filtro de período ou estado — desembolso do BNDES não é distribuído uniformemente Brasil afora, então o ranking por UF abaixo já é o retrato certo (não uma comparação recortável).</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-bndes-ano"></div>

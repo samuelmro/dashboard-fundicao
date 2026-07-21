@@ -202,6 +202,33 @@ a:hover { color: var(--accent); }
 .multiselect-option:hover { background: var(--surface-2); }
 .multiselect-option input { margin: 0; flex-shrink: 0; }
 
+/* ---------- Filtro por bloco (Produção/Emprego/CAGED/Comex): cada seção
+   tem cobertura de dado diferente, um único filtro global no topo não dava
+   pra representar isso direito. Linha compacta, discreta, não é mais uma
+   barra fixa de topo. ---------- */
+.block-filter {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 16px;
+  font-size: 0.72rem; color: var(--text-muted);
+  padding: 10px 0 18px; margin: -8px 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+.block-filter-item { display: flex; align-items: center; gap: 6px; }
+.block-filter select {
+  font: inherit; font-size: 0.72rem; padding: 3px 6px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface-1); color: var(--text-secondary);
+}
+.block-filter .multiselect-btn {
+  font-size: 0.72rem; padding: 3px 24px 3px 8px; min-width: 90px;
+}
+.block-filter .multiselect-option { font-size: 0.76rem; }
+.block-filter-clear {
+  font: inherit; font-size: 0.72rem; color: var(--accent-dark);
+  background: none; border: none; cursor: pointer; padding: 0;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.block-filter-clear:hover { color: var(--accent); }
+
 /* ---------- Toolbar de tabela (export CSV) ---------- */
 .table-export-btn {
   background: none; border: 1px solid var(--border); color: var(--text-secondary);
