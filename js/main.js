@@ -812,18 +812,25 @@
           combos.push({ uf, cnae, rows, label: multiCnae ? `${ufInfo[uf]} · ${titleCasePt(divInfo[cnae].descricao)}` : ufInfo[uf] });
         });
       });
-      const catTempo = combos.length ? combos[0].rows.map(r => r[0] * 100 + r[1]) : [];
 
-      $('#ei-consumo-sub').textContent = `MWh por mês, ${nomesSelecionados}`;
+      // Brasil fica de fora das 2 linhas de tendência: é o agregado
+      // nacional, com magnitude bem maior que qualquer estado sozinho —
+      // numa mesma escala linear, ele esmaga as linhas dos estados lá
+      // embaixo perto de zero. Continua disponível na tabela e como
+      // referência no ranking de custo.
+      const combosGrafico = combos.filter(c => c.uf !== 'BR');
+      const catTempo = combosGrafico.length ? combosGrafico[0].rows.map(r => r[0] * 100 + r[1]) : [];
+
+      $('#ei-consumo-sub').textContent = `MWh por mês, ${nomesSelecionados}${combos.length !== combosGrafico.length ? ' (Brasil fora do gráfico, ver tabela)' : ''}`;
       lineChart($('#chart-ei-consumo'), {
         categories: catTempo, formatX: monthLabel, formatY: fmt.mwh, height: 280,
-        series: combos.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[2]), area: i === 0 })),
+        series: combosGrafico.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[2]), area: i === 0 })),
       });
 
-      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomesSelecionados}`;
+      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomesSelecionados}${combos.length !== combosGrafico.length ? ' (Brasil fora do gráfico, ver tabela)' : ''}`;
       lineChart($('#chart-ei-custo-tempo'), {
         categories: catTempo, formatX: monthLabel, formatY: fmt.brl, height: 280,
-        series: combos.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[3]) })),
+        series: combosGrafico.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[3]) })),
       });
 
       // Ranking: todos os 27 estados (sem Brasil, que é o agregado), custo
