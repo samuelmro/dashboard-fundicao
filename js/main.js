@@ -676,10 +676,14 @@
       k = m === 12 ? (a + 1) * 100 + 1 : k + 1;
     }
 
-    const stateEI = { ufs: new Set(['SP', 'BR']), cnae: 24, lo: anoMesLo0, hi: anoMesHi0, focoUf: 'SP' };
+    const stateEI = {
+      ufs: new Set(['SP', 'BR']), cnaes: new Set([24]),
+      focoUf: 'SP', focoCnae: 24, lo: anoMesLo0, hi: anoMesHi0,
+    };
     const ufInfo = {}; ei.ufs.forEach(u => { ufInfo[u.uf] = u.nome; });
     const divInfo = {}; ei.divisoes.forEach(d => { divInfo[d.cnae] = d; });
     const ufsOrdenadas = () => ei.ufs.map(u => u.uf).filter(uf => stateEI.ufs.has(uf));
+    const cnaesOrdenadas = () => ei.divisoes.map(d => d.cnae).filter(c => stateEI.cnaes.has(c));
 
     async function ensureCnae(cnae) {
       if (!cache[cnae]) cache[cnae] = await fetch(`data/energia/serie-cnae-${cnae}.json`).then(r => r.json());
@@ -699,9 +703,11 @@
           ${u.nome}
         </label>`).join('');
       ufPanel.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
-        if (inp.checked) stateEI.ufs.add(inp.value);
-        else if (stateEI.ufs.size > 1) stateEI.ufs.delete(inp.value);
-        else inp.checked = true; // sempre pelo menos 1 estado selecionado
+        if (inp.checked) { stateEI.ufs.add(inp.value); stateEI.focoUf = inp.value; }
+        else if (stateEI.ufs.size > 1) {
+          stateEI.ufs.delete(inp.value);
+          if (stateEI.focoUf === inp.value) stateEI.focoUf = ufsOrdenadas()[0];
+        } else inp.checked = true; // sempre pelo menos 1 estado selecionado
         syncUfBtn();
         update();
       }));
@@ -723,12 +729,42 @@
     renderUfPanel();
     syncUfBtn();
 
-    // ---- Setor (CNAE): select único, 24 opções ----
-    const cnaeSel = $('#ei-cnae-select');
-    cnaeSel.innerHTML = ei.divisoes.map(d =>
-      `<option value="${d.cnae}"${d.cnae === stateEI.cnae ? ' selected' : ''}>${d.cnae} · ${titleCasePt(d.descricao)}</option>`
-    ).join('');
-    cnaeSel.addEventListener('change', () => { stateEI.cnae = Number(cnaeSel.value); update(); });
+    // ---- Setores (CNAE): multi-select em dropdown de checkboxes, mesmo
+    // widget dos estados — dá pra comparar setor igual dá pra comparar UF.
+    const cnaeBtn = $('#ei-cnae-btn'), cnaePanel = $('#ei-cnae-panel');
+    function renderCnaePanel() {
+      cnaePanel.innerHTML = ei.divisoes.map(d => `
+        <label class="multiselect-option">
+          <input type="checkbox" value="${d.cnae}"${stateEI.cnaes.has(d.cnae) ? ' checked' : ''}>
+          ${d.cnae} · ${titleCasePt(d.descricao)}
+        </label>`).join('');
+      cnaePanel.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
+        const cnae = Number(inp.value);
+        if (inp.checked) { stateEI.cnaes.add(cnae); stateEI.focoCnae = cnae; }
+        else if (stateEI.cnaes.size > 1) {
+          stateEI.cnaes.delete(cnae);
+          if (stateEI.focoCnae === cnae) stateEI.focoCnae = cnaesOrdenadas()[0];
+        } else inp.checked = true; // sempre pelo menos 1 setor selecionado
+        syncCnaeBtn();
+        update();
+      }));
+    }
+    function syncCnaeBtn() {
+      const sel = cnaesOrdenadas();
+      cnaeBtn.textContent = sel.length <= 2 ? sel.map(c => titleCasePt(divInfo[c].descricao)).join(', ') : sel.length + ' setores selecionados';
+    }
+    cnaeBtn.addEventListener('click', () => {
+      const abrir = cnaePanel.hidden;
+      cnaePanel.hidden = !abrir;
+      cnaeBtn.setAttribute('aria-expanded', String(abrir));
+    });
+    document.addEventListener('click', (evt) => {
+      if (!$('#ei-cnae-multiselect').contains(evt.target)) {
+        cnaePanel.hidden = true; cnaeBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    renderCnaePanel();
+    syncCnaeBtn();
 
     // ---- Período: mês/ano inicial e final ----
     const loSel = $('#ei-period-lo-select'), hiSel = $('#ei-period-hi-select');
@@ -759,73 +795,80 @@
     }
     $('#ei-export-csv').addEventListener('click', () => toCsv(tableRowsAtual));
 
-    function corUf(uf, i) {
-      if (uf === 'BR') return 'var(--series-1)';
-      if (uf === 'SP') return 'var(--series-3)';
-      return CORES[(i + 2) % CORES.length];
-    }
-
     async function update() {
-      const cnaeAlvo = stateEI.cnae;
-      const serie = await ensureCnae(cnaeAlvo);
-      if (cnaeAlvo !== stateEI.cnae) return; // usuário trocou de novo antes do fetch voltar
-      const divisao = divInfo[stateEI.cnae];
-      const nomeDivisao = titleCasePt(divisao.descricao);
+      const cnaesSel = cnaesOrdenadas();
+      const cnaesAlvo = cnaesSel.join(',');
+      const seriesPorCnae = {};
+      await Promise.all(cnaesSel.map(async c => { seriesPorCnae[c] = await ensureCnae(c); }));
+      if (cnaesOrdenadas().join(',') !== cnaesAlvo) return; // usuário trocou de novo antes do fetch voltar
       const ufsSel = ufsOrdenadas();
       const inRange = rows => rows.filter(r => (r[0] * 100 + r[1]) >= stateEI.lo && (r[0] * 100 + r[1]) <= stateEI.hi);
-      const tooltipFatorCarga = () => [{ label: 'Fator de carga (premissa)', value: fmt.full1(divisao.fator_carga) }];
+      const multiCnae = cnaesSel.length > 1;
+      const nomesSelecionados = cnaesSel.map(c => titleCasePt(divInfo[c].descricao)).join(', ');
 
-      const seriesPorUf = ufsSel.map(uf => ({ uf, rows: inRange(serie[uf] || []) }));
-      const catTempo = seriesPorUf.length ? seriesPorUf[0].rows.map(r => r[0] * 100 + r[1]) : [];
+      // Combinações estado x setor selecionados — 1 linha por combinação
+      // nos gráficos de tendência (se só 1 setor estiver marcado, o rótulo
+      // fica só o nome do estado, igual antes).
+      const combos = [];
+      ufsSel.forEach(uf => {
+        cnaesSel.forEach(cnae => {
+          const rows = inRange((seriesPorCnae[cnae] && seriesPorCnae[cnae][uf]) || []);
+          combos.push({ uf, cnae, rows, label: multiCnae ? `${ufInfo[uf]} · ${titleCasePt(divInfo[cnae].descricao)}` : ufInfo[uf] });
+        });
+      });
+      const catTempo = combos.length ? combos[0].rows.map(r => r[0] * 100 + r[1]) : [];
 
-      $('#ei-consumo-sub').textContent = `MWh por mês, ${nomeDivisao}`;
+      $('#ei-consumo-sub').textContent = `MWh por mês, ${nomesSelecionados}`;
       lineChart($('#chart-ei-consumo'), {
         categories: catTempo, formatX: monthLabel, formatY: fmt.mwh, height: 280,
-        series: seriesPorUf.map((s, i) => ({ label: ufInfo[s.uf], color: corUf(s.uf, i), values: s.rows.map(r => r[2]), area: i === 0 })),
-        tooltipExtra: tooltipFatorCarga,
+        series: combos.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[2]), area: i === 0 })),
       });
 
-      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomeDivisao}`;
+      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomesSelecionados}`;
       lineChart($('#chart-ei-custo-tempo'), {
         categories: catTempo, formatX: monthLabel, formatY: fmt.brl, height: 280,
-        series: seriesPorUf.map((s, i) => ({ label: ufInfo[s.uf], color: corUf(s.uf, i), values: s.rows.map(r => r[3]) })),
-        tooltipExtra: tooltipFatorCarga,
+        series: combos.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[3]) })),
       });
 
       // Ranking: todos os 27 estados (sem Brasil, que é o agregado), custo
-      // no mês final do período selecionado, do mais barato ao mais caro.
-      // Linha tracejada marca o valor do Brasil como referência: quem está
-      // mais barato que a média nacional fica verde, mais caro fica
-      // vermelho — SP sempre com a cor de destaque, não entra nessa escala.
+      // do setor em foco (o último marcado/clicado nos setores), no mês
+      // final do período selecionado, do mais barato ao mais caro. Linha
+      // tracejada marca o valor do Brasil como referência: mais barato que
+      // a média nacional fica verde, mais caro fica vermelho. Estados
+      // marcados no filtro ficam na cor de destaque, fora dessa escala —
+      // assim o ranking mostra direto onde estão os estados escolhidos.
+      const divisaoFoco = divInfo[stateEI.focoCnae];
+      const serieFoco = seriesPorCnae[stateEI.focoCnae];
       const estados = ei.ufs.filter(u => u.uf !== 'BR');
-      const rowsBrCusto = serie['BR'] || [];
+      const rowsBrCusto = serieFoco['BR'] || [];
       const refCustoRow = rowsBrCusto.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rowsBrCusto[rowsBrCusto.length - 1];
       const refCusto = refCustoRow ? refCustoRow[3] : null;
       const itemsRanking = estados.map(u => {
-        const rows = serie[u.uf] || [];
+        const rows = serieFoco[u.uf] || [];
         const row = rows.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rows[rows.length - 1];
         return row ? { uf: u.uf, label: u.nome, value: row[3] } : null;
       }).filter(Boolean).sort((a, b) => a.value - b.value);
-      $('#ei-ranking-custo-sub').textContent = `R$/MWh, ${nomeDivisao}, ${monthLabel(stateEI.hi, true)}, SP em destaque`;
+      $('#ei-ranking-custo-title').textContent = 'Ranking de estados por custo de energia: ' + titleCasePt(divisaoFoco.descricao);
+      $('#ei-ranking-custo-sub').textContent = `R$/MWh, ${monthLabel(stateEI.hi, true)}, estados marcados no filtro em destaque`;
       hBarChart($('#rank-ei-custo-estados'), {
         items: itemsRanking.map(it => ({
           uf: it.uf, label: it.label, value: it.value,
-          color: it.uf === 'SP' ? 'var(--series-3)' : (refCusto != null && it.value <= refCusto ? 'var(--good)' : 'var(--bad)'),
+          color: stateEI.ufs.has(it.uf) ? 'var(--series-3)' : (refCusto != null && it.value <= refCusto ? 'var(--good)' : 'var(--bad)'),
         })),
         formatVal: n => fmt.brl(n) + '/MWh',
         reference: refCusto != null ? { value: refCusto, label: 'Brasil: ' + fmt.brl(refCusto) + '/MWh' } : null,
-        tooltipExtra: () => [{ label: 'Fator de carga (premissa)', value: fmt.full1(divisao.fator_carga) }],
+        tooltipExtra: () => [{ label: 'Fator de carga (premissa)', value: fmt.full1(divisaoFoco.fator_carga) }],
         onClick: (it) => { stateEI.ufs.add(it.uf); stateEI.focoUf = it.uf; renderUfPanel(); syncUfBtn(); update(); },
       });
 
-      // Composição setorial de um estado por vez (o foco: SP por padrão, ou
-      // o último estado clicado no ranking acima) — top 7 divisões +
-      // outras. Evita empilhar muitos estados juntos (virava um mosaico
-      // difícil de comparar); um estado de cada vez com só 8 fatias é
-      // limpo, e já conecta com o clique no ranking de custo.
-      const focoAlvo = stateEI.focoUf;
-      const composicaoUf = await ensureComposicaoUf(focoAlvo);
-      if (focoAlvo !== stateEI.focoUf || cnaeAlvo !== stateEI.cnae) return; // usuário mudou de novo antes do fetch voltar
+      // Composição setorial de um estado por vez (o foco: o último estado
+      // marcado/clicado) — top 7 divisões + outras. Evita empilhar muitos
+      // estados juntos (virava um mosaico difícil de comparar); um estado
+      // de cada vez com só 8 fatias é limpo. Divisões marcadas no filtro
+      // de setores ficam destacadas, e clicar numa fatia marca esse setor.
+      const focoUfAlvo = stateEI.focoUf;
+      const composicaoUf = await ensureComposicaoUf(focoUfAlvo);
+      if (focoUfAlvo !== stateEI.focoUf || cnaesOrdenadas().join(',') !== cnaesAlvo) return; // mudou de novo antes do fetch voltar
       const linhaComposicao = composicaoUf[String(stateEI.hi)];
       const itemsComposicao = ei.divisoes.map((d, idx) => ({
         cnae: d.cnae, label: titleCasePt(d.descricao), value: (linhaComposicao && linhaComposicao[idx]) || 0,
@@ -834,18 +877,25 @@
       const outras = itemsComposicao.slice(7).reduce((a, it) => a + it.value, 0);
       const itemsComposicaoFinal = [...top7, { cnae: null, label: 'Outras divisões', value: outras }];
       $('#ei-composicao-title').textContent = 'Composição setorial: ' + ufInfo[stateEI.focoUf];
-      $('#ei-composicao-sub').textContent = `% do consumo industrial por divisão CNAE, ${monthLabel(stateEI.hi, true)}. Clique num estado do ranking ao lado para trocar.`;
+      $('#ei-composicao-sub').textContent = `% do consumo industrial por divisão CNAE, ${monthLabel(stateEI.hi, true)}. Clique num estado do ranking ou numa divisão aqui pra mudar o foco.`;
       rankList($('#rank-ei-composicao'), itemsComposicaoFinal.map((it, i) => ({
-        label: it.label, value: it.value,
-        color: it.cnae === stateEI.cnae ? 'var(--series-3)' : CORES[i % CORES.length],
-      })), { formatVal: n => fmt.pct(n) });
+        cnae: it.cnae, label: it.label, value: it.value,
+        color: it.cnae != null && stateEI.cnaes.has(it.cnae) ? 'var(--series-3)' : CORES[i % CORES.length],
+      })), {
+        formatVal: n => fmt.pct(n),
+        onClick: (it) => {
+          if (it.cnae == null) return; // "Outras divisões" não é 1 setor clicável
+          stateEI.cnaes.add(it.cnae); stateEI.focoCnae = it.cnae;
+          renderCnaePanel(); syncCnaeBtn(); update();
+        },
+      });
 
-      // Tabela filtrada: UF x mês, para os estados e o período selecionados.
+      // Tabela filtrada: estado x setor x mês, para tudo que está marcado.
       const linhas = [];
-      ufsSel.forEach(uf => {
-        inRange(serie[uf] || []).forEach(r => {
+      combos.forEach(c => {
+        c.rows.forEach(r => {
           linhas.push({
-            uf, uf_nome: ufInfo[uf], setor: nomeDivisao, k: r[0] * 100 + r[1],
+            uf: c.uf, uf_nome: ufInfo[c.uf], setor: titleCasePt(divInfo[c.cnae].descricao), k: r[0] * 100 + r[1],
             consumo_mwh: r[2], custo_rs_mwh: r[3], gasto_rs: r[2] * r[3], participacao_pct: r[4],
           });
         });

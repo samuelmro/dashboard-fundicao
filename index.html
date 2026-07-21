@@ -483,8 +483,11 @@
         </div>
       </div>
       <div class="filter-group">
-        <label for="ei-cnae-select">Setor (CNAE)</label>
-        <select id="ei-cnae-select"></select>
+        <label id="ei-cnae-label">Setores (CNAE)</label>
+        <div class="multiselect" id="ei-cnae-multiselect">
+          <button type="button" class="multiselect-btn" id="ei-cnae-btn" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="multiselect-panel" id="ei-cnae-panel" hidden></div>
+        </div>
       </div>
       <div class="filter-group">
         <label for="ei-period-lo-select">Período</label>
@@ -498,7 +501,7 @@
     <div class="section-header">
       <h2>Energia Industrial: consumo e custo de energia na indústria de transformação</h2>
     </div>
-    <p class="section-note">27 estados + Brasil, 24 divisões da indústria de transformação (CNAE 10 a 33), jan/2012 a abr/2026. Clique numa barra do ranking ou da composição setorial para adicionar aquele estado ao filtro.</p>
+    <p class="section-note">27 estados + Brasil, 24 divisões da indústria de transformação (CNAE 10 a 33), jan/2012 a abr/2026. Estados e setores são multi-seleção; clique numa barra do ranking ou da composição para adicionar aquele item ao filtro correspondente.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-ei-consumo"></div>
@@ -510,7 +513,7 @@
       <div class="exhibit">
         <div id="rank-ei-custo-estados"></div>
         <div class="exhibit-caption">
-          <div class="exhibit-title">Ranking de estados por custo de energia</div>
+          <div class="exhibit-title" id="ei-ranking-custo-title">Ranking de estados por custo de energia</div>
           <div class="exhibit-sub" id="ei-ranking-custo-sub">R$/MWh, do mais barato ao mais caro, SP em destaque</div>
         </div>
       </div>
