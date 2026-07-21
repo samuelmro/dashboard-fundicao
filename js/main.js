@@ -64,6 +64,16 @@
   // reais, igual ao padrão já usado em Energia Industrial.
   function ufFiltroLista() { return [{ uf: 'BR', nome: 'Brasil' }, ...state.data.meta.uf_lista]; }
   function ufsOrdenadas() { return ufFiltroLista().map(u => u.uf).filter(uf => state.ufs.has(uf)); }
+  // Exclui BR das linhas de tendência quando estados reais também estão
+  // selecionados: BR é o agregado nacional, magnitude bem maior que 1 estado
+  // sozinho, e esmaga as linhas menores perto de zero num eixo linear
+  // compartilhado (mesmo problema já corrigido em Energia Industrial). As
+  // tabelas completas não são filtradas por state.ufs, então BR sumir do
+  // gráfico não tira informação de lugar nenhum. Só mantém BR no gráfico
+  // quando é a única seleção (visão nacional pura, comportamento padrão).
+  function combosParaGrafico(combos, ufsSel) {
+    return (ufsSel.includes('BR') && ufsSel.length > 1) ? combos.filter(c => c.uf !== 'BR') : combos;
+  }
 
   // ---------------------------------------------------------------------
   // 01 — Produção física
@@ -217,12 +227,13 @@
         : s.rais.uf_yearly.filter(r => r.uf === uf);
       return { uf, nome: ufName(uf), rows: filterAnnual(rows, state.lo, state.hi) };
     });
-    const catRais = annualCategories(combos.map(c => c.rows));
+    const combosGrafico = combosParaGrafico(combos, ufsSel);
+    const catRais = annualCategories(combosGrafico.map(c => c.rows));
     lineChart($('#chart-emprego-rais'), {
       categories: catRais, formatY: fmt.full, height: 280,
-      series: combos.map((c, i) => ({
+      series: combosGrafico.map((c, i) => ({
         label: c.nome, color: CORES[i % CORES.length],
-        values: seriesAnnual(c.rows, 'vinculos', catRais), area: combos.length === 1,
+        values: seriesAnnual(c.rows, 'vinculos', catRais), area: combosGrafico.length === 1,
       })),
     });
 
@@ -251,7 +262,7 @@
 
     lineChart($('#chart-emprego-razao'), {
       categories: catRais, formatY: fmt.full1, height: 280,
-      series: combos.map((c, i) => ({
+      series: combosGrafico.map((c, i) => ({
         label: c.nome, color: CORES[i % CORES.length],
         values: catRais.map(ano => { const r = c.rows.find(x => x.ano === ano); return r && r.estabelecimentos ? r.vinculos / r.estabelecimentos : null; }),
       })),
@@ -359,12 +370,13 @@
       const rows = uf === 'BR' ? s.caged.saldo_monthly_national : s.caged.saldo_uf_monthly.filter(r => r.uf === uf);
       return { uf, nome: ufName(uf), rows: filterMonthly(rows, state.lo, state.hi) };
     });
-    const catSaldo = monthlyCategories(combosSaldo.map(c => c.rows));
+    const combosSaldoGrafico = combosParaGrafico(combosSaldo, ufsSel);
+    const catSaldo = monthlyCategories(combosSaldoGrafico.map(c => c.rows));
     lineChart($('#chart-caged-saldo'), {
       categories: catSaldo, formatX: monthLabel, formatY: fmt.full, height: 280,
-      series: combosSaldo.map((c, i) => ({
+      series: combosSaldoGrafico.map((c, i) => ({
         label: c.nome, color: CORES[i % CORES.length],
-        values: seriesMonthly(c.rows, 'saldo', catSaldo), area: combosSaldo.length === 1,
+        values: seriesMonthly(c.rows, 'saldo', catSaldo), area: combosSaldoGrafico.length === 1,
       })),
     });
 
@@ -377,20 +389,34 @@
       ]
     });
 
-    const tipoBreak = s.caged.tipo_movimentacao_breakdown_total.filter(t => /desligamento/i.test(t.tipo)).slice(0, 8);
-    barChart($('#chart-caged-tipo'), {
-      categories: tipoBreak.map(t => t.tipo.replace(/^Desligamento\s*/i, '')), formatY: fmt.full, height: 280,
-      series: [{ label: 'Quantidade', color: 'var(--series-6)', values: tipoBreak.map(t => t.quantidade) }]
+    // Rótulos curtos: a categoria completa ("Desligamento por demissão sem
+    // justa causa, térm de contrato prz det, térm contrato") não cabe como
+    // rótulo de gráfico — usa uma versão resumida, igual ao padrão já usado
+    // em LABELS_TEMPO mais abaixo.
+    const LABELS_DESLIGAMENTO = {
+      'Desligamento por demissão sem justa causa, térm de contrato prz det, térm contrato': 'Sem justa causa / fim de contrato',
+      'Desligamento a pedido': 'A pedido do empregado',
+      'Desligamento por demissão com justa causa': 'Com justa causa',
+      'Desligamento por morte': 'Óbito',
+      'Desligamento por acordo empregado e empregador': 'Acordo mútuo',
+      'Desligamento por aposentadoria': 'Aposentadoria',
+    };
+    const tipoBreak = s.caged.tipo_movimentacao_breakdown_total.filter(t => /desligamento/i.test(t.tipo))
+      .sort((a, b) => b.quantidade - a.quantidade);
+    hBarChart($('#chart-caged-tipo'), {
+      items: tipoBreak.map(t => ({ label: LABELS_DESLIGAMENTO[t.tipo] || t.tipo, value: t.quantidade, color: 'var(--series-6)' })),
+      formatVal: fmt.full,
     });
 
     const combosSalario = ufsSel.map(uf => {
       const rows = uf === 'BR' ? s.caged.salario_monthly_national : s.caged.salario_uf_monthly.filter(r => r.uf === uf);
       return { uf, nome: ufName(uf), rows: filterMonthly(rows, state.lo, state.hi) };
     });
-    const catSalario = monthlyCategories(combosSalario.map(c => c.rows));
+    const combosSalarioGrafico = combosParaGrafico(combosSalario, ufsSel);
+    const catSalario = monthlyCategories(combosSalarioGrafico.map(c => c.rows));
     lineChart($('#chart-caged-massa-salarial'), {
       categories: catSalario, formatX: monthLabel, formatY: fmt.brl, height: 280,
-      series: combosSalario.map((c, i) => ({
+      series: combosSalarioGrafico.map((c, i) => ({
         label: c.nome, color: CORES[i % CORES.length],
         values: seriesMonthly(c.rows, 'massa_salarial', catSalario),
       })),
@@ -537,25 +563,22 @@
   function renderBndes() {
     const s = csS();
 
-    // Combos: 1 linha por estado marcado no filtro (BR usa o total nacional
-    // já existente); mesmo padrão de renderEmprego/renderCaged.
-    const ufsSel = ufsOrdenadas();
-    const combosBndes = ufsSel.map(uf => {
-      const rows = uf === 'BR' ? s.bndes.yearly : s.bndes.uf_yearly.filter(r => r.uf === uf);
-      return { uf, nome: ufName(uf), rows: filterAnnual(rows, state.lo, state.hi) };
-    });
-    const catBndes = annualCategories(combosBndes.map(c => c.rows));
+    // BNDES não responde ao filtro de período nem ao de estado nestes 3
+    // exhibits (desembolso anual, porte ao longo do tempo, concentração):
+    // dado anual e esparso, cortar pelo período padrão (2016-2026) escondia
+    // a maior parte do histórico (2002-2026) — mesmo motivo pelo qual
+    // Financeiro (PIA) também é exibido sempre em série completa. Comparar
+    // por estado não faz sentido aqui (desembolso não é distribuído
+    // uniformemente Brasil afora); quem quer ver por estado usa o ranking
+    // abaixo, que já é o lugar certo pra isso.
     lineChart($('#chart-bndes-ano'), {
-      categories: catBndes, formatY: fmt.brl, height: 280,
-      series: combosBndes.map((c, i) => ({
-        label: c.nome, color: CORES[i % CORES.length],
-        values: seriesAnnual(c.rows, 'valor_desembolsado', catBndes), area: combosBndes.length === 1,
-      })),
+      categories: s.bndes.yearly.map(r => r.ano), formatY: fmt.brl, height: 280,
+      series: [{ label: 'Desembolsado', color: 'var(--series-8)', values: s.bndes.yearly.map(r => r.valor_desembolsado), area: true }],
     });
 
-    // Ranking: todos os estados com dado, acumulado no período. Sem linha de
-    // referência (desembolso é um total absoluto, Brasil = soma dos
-    // estados). Clicar numa barra adiciona aquele estado ao filtro.
+    // Ranking: todos os estados com dado, acumulado no histórico completo.
+    // Sem linha de referência (desembolso é um total absoluto, Brasil = soma
+    // dos estados). Clicar numa barra adiciona aquele estado ao filtro.
     hBarChart($('#rank-bndes-uf'), {
       items: s.bndes.uf_total.map(i => ({
         uf: i.uf, label: i.nome_uf, value: i.valor_desembolsado,
@@ -567,23 +590,22 @@
 
     // Desembolso por porte ao longo do tempo (barra empilhada) + concentração (donut) —
     // as duas leituras que a tabela de 200+ linhas não deixa claras de cara.
-    const bndesTableFiltrado = s.bndes.table.filter(r => r.ano >= state.lo && r.ano <= state.hi);
-    const catsPorte = Array.from(new Set(bndesTableFiltrado.map(r => r.ano))).sort((a, b) => a - b);
-    const seriesPorte = PORTES_ORDEM.filter(p => bndesTableFiltrado.some(r => r.porte === p)).map(porte => ({
+    const catsPorte = Array.from(new Set(s.bndes.table.map(r => r.ano))).sort((a, b) => a - b);
+    const seriesPorte = PORTES_ORDEM.filter(p => s.bndes.table.some(r => r.porte === p)).map(porte => ({
       label: titleCasePt(porte), color: CORES_PORTE[porte] || 'var(--series-1)',
-      values: catsPorte.map(ano => bndesTableFiltrado
+      values: catsPorte.map(ano => s.bndes.table
         .filter(r => r.ano === ano && r.porte === porte)
         .reduce((a, r) => a + (r.valor_desembolsado || 0), 0))
     }));
     barChart($('#chart-bndes-porte'), { categories: catsPorte, formatY: fmt.brl, height: 280, stacked: true, series: seriesPorte });
 
     const totalPorte = {};
-    bndesTableFiltrado.forEach(r => { totalPorte[r.porte] = (totalPorte[r.porte] || 0) + (r.valor_desembolsado || 0); });
+    s.bndes.table.forEach(r => { totalPorte[r.porte] = (totalPorte[r.porte] || 0) + (r.valor_desembolsado || 0); });
     const totalGeral = Object.values(totalPorte).reduce((a, v) => a + v, 0);
     const grandePct = totalGeral ? ((totalPorte.GRANDE || 0) / totalGeral) * 100 : null;
     $('#bndes-concentracao-sub').textContent = grandePct != null
-      ? `Grande porte: ${fmt.full1(grandePct)}% do desembolsado no período`
-      : 'Acumulado no período selecionado';
+      ? `Grande porte: ${fmt.full1(grandePct)}% do desembolsado (todo o histórico)`
+      : 'Acumulado no histórico completo';
     donutChart($('#chart-bndes-concentracao'), {
       formatVal: fmt.brl, size: 200,
       items: PORTES_ORDEM.filter(p => totalPorte[p]).map(p => ({ label: titleCasePt(p), value: totalPorte[p], color: CORES_PORTE[p] }))
@@ -767,8 +789,8 @@
     }
 
     const stateEI = {
-      ufs: new Set(['SP', 'BR']), cnaes: new Set([24]),
-      focoUf: 'SP', focoCnae: 24, lo: anoMesLo0, hi: anoMesHi0,
+      ufs: new Set(['SP', 'BR']), cnaes: new Set([10]),
+      focoUf: 'SP', focoCnae: 10, lo: anoMesLo0, hi: anoMesHi0,
     };
     const ufInfo = {}; ei.ufs.forEach(u => { ufInfo[u.uf] = u.nome; });
     const divInfo = {}; ei.divisoes.forEach(d => { divInfo[d.cnae] = d; });
@@ -866,12 +888,12 @@
     loSel.addEventListener('change', () => { stateEI.lo = Math.min(Number(loSel.value), stateEI.hi); loSel.value = stateEI.lo; update(); });
     hiSel.addEventListener('change', () => { stateEI.hi = Math.max(Number(hiSel.value), stateEI.lo); hiSel.value = stateEI.hi; update(); });
 
-    // ---- Limpar filtros: volta ao estado padrão (SP+Brasil, Metalurgia, período completo) ----
+    // ---- Limpar filtros: volta ao estado padrão (SP+Brasil, 1ª divisão CNAE, período completo) ----
     $('#ei-clear-filters').addEventListener('click', () => {
       stateEI.ufs = new Set(['SP', 'BR']);
-      stateEI.cnaes = new Set([24]);
+      stateEI.cnaes = new Set([10]);
       stateEI.focoUf = 'SP';
-      stateEI.focoCnae = 24;
+      stateEI.focoCnae = 10;
       stateEI.lo = anoMesLo0;
       stateEI.hi = anoMesHi0;
       renderUfPanel(); syncUfBtn();

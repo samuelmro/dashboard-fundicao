@@ -107,13 +107,6 @@ def test_rais_ocupacao_detalhada(data, cnae):
     assert len(ocup['items']) > 0
 
 
-@pytest.mark.parametrize('cnae', ['2451', '2452'])
-def test_bndes_uf_yearly(data, cnae):
-    uf_yearly = data['sectors'][cnae]['bndes']['uf_yearly']
-    assert len(uf_yearly) > 0
-    is_sorted_by(uf_yearly, lambda r: r['ano'])
-
-
 def test_energia_industrial_schema(data):
     ei = data['energia_industrial']
     assert len(ei['ufs']) == 28  # 27 estados + Brasil

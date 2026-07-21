@@ -414,6 +414,13 @@ def build_sector(cnae, label):
 
     caged_salario = with_competencia(load_caged('caged_fundicao_salario_mensal_uf_cnae.csv'))
     caged_salario['Salario_Mensal'] = pd.to_numeric(caged_salario['Salario_Mensal'], errors='coerce')
+    # Erro de digitação isolado na fonte (ex.: Santa Catarina/2451, Jun/2025 =
+    # R$33,4 milhões contra ~R$2-3 mil em todos os outros meses do mesmo
+    # estado — 10.000x fora da curva): descarta linhas > 15x a mediana
+    # daquele estado antes de somar, senão 1 ponto ruim esmaga a escala do
+    # gráfico inteiro.
+    mediana_por_uf = caged_salario.groupby('UF')['Salario_Mensal'].transform('median')
+    caged_salario.loc[caged_salario['Salario_Mensal'] > mediana_por_uf * 15, 'Salario_Mensal'] = np.nan
     # Soma entre UFs: cada linha já é uma massa salarial por UF/mês (varia com o
     # tamanho do estado, de centenas a centenas de milhares — não é um salário
     # médio por trabalhador), então o total nacional é a soma, não a média.
@@ -523,19 +530,22 @@ def build_sector(cnae, label):
         'importacao': top_paises('Importação', ano_top_comex),
     }
 
-    # Top 8 destinos de exportação (por valor total no período) + série anual ("Outros" = resto)
+    # Top 3 destinos de exportação (por valor total no período) + série anual
+    # ("Outros" = resto). Era top 8 + outros (9 cores empilhadas), ilegível;
+    # top 3 é o suficiente pra contar a história de concentração/diversificação
+    # sem virar um mosaico de cores.
     exp_df = comex_df[comex_df['Fluxo'] == 'Exportação']
-    top8_countries = list(
-        exp_df.groupby('Pais')['Valor_US_FOB'].sum().sort_values(ascending=False).head(8).index
+    top_countries = list(
+        exp_df.groupby('Pais')['Valor_US_FOB'].sum().sort_values(ascending=False).head(3).index
     )
     by_year_country = exp_df.groupby(['Ano', 'Pais'])['Valor_US_FOB'].sum().reset_index()
-    top_paises_yearly = {'paises': top8_countries, 'yearly': []}
+    top_paises_yearly = {'paises': top_countries, 'yearly': []}
     for ano in sorted(exp_df['Ano'].unique().tolist()):
         yr = by_year_country[by_year_country['Ano'] == ano]
         total_ano = to_num(yr['Valor_US_FOB'].sum()) or 0.0
         row = {'ano': to_int(ano)}
         soma_top = 0.0
-        for pais in top8_countries:
+        for pais in top_countries:
             v = yr[yr['Pais'] == pais]['Valor_US_FOB']
             val = to_num(v.iloc[0]) if len(v) else 0.0
             row[pais] = val or 0.0
@@ -599,20 +609,6 @@ def build_sector(cnae, label):
         bndes_uf_total = [{'uf': r.uf, 'nome_uf': r.nome_uf, 'valor_desembolsado': to_num(r.valor)}
                            for r in bt.itertuples(index=False)]
 
-    uf_yearly_rows = []
-    for r in bndes_df.itertuples(index=False):
-        ufi = resolve_uf(r.UF)
-        if ufi:
-            uf_yearly_rows.append({'ano': int(r.Ano), 'uf': ufi[0], 'nome_uf': ufi[1],
-                                    'valor_desembolsado': r.Valor_Desembolsado})
-    bndes_uf_yearly = []
-    if uf_yearly_rows:
-        buy = (pd.DataFrame(uf_yearly_rows).groupby(['ano', 'uf', 'nome_uf'])['valor_desembolsado'].sum()
-               .reset_index().sort_values(['ano', 'uf']))
-        bndes_uf_yearly = [{'ano': to_int(r.ano), 'uf': r.uf, 'nome_uf': r.nome_uf,
-                             'valor_desembolsado': to_num(r.valor_desembolsado)}
-                            for r in buy.itertuples(index=False)]
-
     bp = (bndes_df.groupby('Porte')['Valor_Desembolsado'].sum()
           .reset_index().sort_values('Valor_Desembolsado', ascending=False))
     bndes_porte_total = [{'porte': r.Porte, 'valor_desembolsado': to_num(r.Valor_Desembolsado)}
@@ -652,7 +648,7 @@ def build_sector(cnae, label):
             'top_paises_latest': top_paises_latest, 'top_paises_yearly': top_paises_yearly,
         },
         'comtrade': comtrade,
-        'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total, 'uf_yearly': bndes_uf_yearly,
+        'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total,
                   'porte_total': bndes_porte_total, 'table': bndes_table},
     }
 
