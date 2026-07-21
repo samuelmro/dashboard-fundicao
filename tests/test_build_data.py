@@ -89,6 +89,31 @@ def test_yearly_and_monthly_series_are_chronological(data, cnae):
     is_sorted_by(s['bndes']['yearly'], lambda r: r['ano'])
 
 
+@pytest.mark.parametrize('cnae', ['2451', '2452'])
+def test_caged_uf_monthly_series(data, cnae):
+    caged = data['sectors'][cnae]['caged']
+    assert len(caged['saldo_uf_monthly']) > 0
+    assert len(caged['salario_uf_monthly']) > 0
+    assert set(caged['saldo_uf_monthly'][0].keys()) == {'ano', 'mes', 'uf', 'saldo'}
+    assert set(caged['salario_uf_monthly'][0].keys()) == {'ano', 'mes', 'uf', 'massa_salarial'}
+    is_sorted_by(caged['saldo_uf_monthly'], lambda r: r['ano'] * 100 + r['mes'])
+    is_sorted_by(caged['salario_uf_monthly'], lambda r: r['ano'] * 100 + r['mes'])
+
+
+@pytest.mark.parametrize('cnae', ['2451', '2452'])
+def test_rais_ocupacao_detalhada(data, cnae):
+    ocup = data['sectors'][cnae]['rais']['ocupacao_detalhada_latest']
+    assert ocup['ano'] > 0
+    assert len(ocup['items']) > 0
+
+
+@pytest.mark.parametrize('cnae', ['2451', '2452'])
+def test_bndes_uf_yearly(data, cnae):
+    uf_yearly = data['sectors'][cnae]['bndes']['uf_yearly']
+    assert len(uf_yearly) > 0
+    is_sorted_by(uf_yearly, lambda r: r['ano'])
+
+
 def test_energia_industrial_schema(data):
     ei = data['energia_industrial']
     assert len(ei['ufs']) == 28  # 27 estados + Brasil

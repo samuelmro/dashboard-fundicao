@@ -352,6 +352,7 @@ def build_sector(cnae, label):
     # --- Perfis detalhados RAIS (retrato do último ano) ---
     escolaridade_latest = latest_breakdown(f'rais_vinc_fundicao_escolaridade_{cnae}.csv')
     ocupacao_agrupada_latest = latest_breakdown(f'rais_vinc_fundicao_ocupacao_agrupada_{cnae}.csv')
+    ocupacao_detalhada_latest = latest_breakdown(f'rais_vinc_fundicao_ocupacao_{cnae}.csv')
     tempo_emprego_latest = latest_breakdown(f'rais_vinc_fundicao_tempo_emprego_{cnae}.csv')
 
     # --- Escolaridade como série completa (para área empilhada) ---
@@ -425,16 +426,34 @@ def build_sector(cnae, label):
         for r in salario_monthly_national.itertuples(index=False)
     ]
 
+    salario_uf_rows = []
+    for r in caged_salario.itertuples(index=False):
+        ufi = resolve_uf(r.UF)
+        if ufi:
+            salario_uf_rows.append({'ano': int(r.cyr), 'mes': int(r.cmo), 'uf': ufi[0], 'massa_salarial': r.Salario_Mensal})
+    salario_uf_monthly = []
+    if salario_uf_rows:
+        salario_uf_df = pd.DataFrame(salario_uf_rows).groupby(['ano', 'mes', 'uf'])['massa_salarial'].sum().reset_index()
+        salario_uf_monthly = sorted([
+            {'ano': to_int(r.ano), 'mes': to_int(r.mes), 'uf': r.uf, 'massa_salarial': to_num(r.massa_salarial)}
+            for r in salario_uf_df.itertuples(index=False)
+        ], key=lambda x: (x['ano'] * 100 + x['mes'], x['uf']))
+
+    # Granularidade mensal por UF (a fonte já tem UF+competência; antes só
+    # virava total anual, perdendo a abertura mensal que o filtro de período
+    # do dashboard principal usa para as demais séries CAGED).
     saldo_uf_rows = []
     for r in caged_saldo.itertuples(index=False):
         ufi = resolve_uf(r.UF)
         if ufi:
-            saldo_uf_rows.append({'ano': int(r.cyr), 'uf': ufi[0], 'saldo': r.Saldo_Movimentacao})
-    saldo_uf_yearly = []
+            saldo_uf_rows.append({'ano': int(r.cyr), 'mes': int(r.cmo), 'uf': ufi[0], 'saldo': r.Saldo_Movimentacao})
+    saldo_uf_monthly = []
     if saldo_uf_rows:
-        saldo_uf_df = pd.DataFrame(saldo_uf_rows).groupby(['ano', 'uf'])['saldo'].sum().reset_index()
-        saldo_uf_yearly = [{'ano': to_int(r.ano), 'uf': r.uf, 'saldo': to_int(r.saldo)}
-                            for r in saldo_uf_df.itertuples(index=False)]
+        saldo_uf_df = pd.DataFrame(saldo_uf_rows).groupby(['ano', 'mes', 'uf'])['saldo'].sum().reset_index()
+        saldo_uf_monthly = sorted([
+            {'ano': to_int(r.ano), 'mes': to_int(r.mes), 'uf': r.uf, 'saldo': to_int(r.saldo)}
+            for r in saldo_uf_df.itertuples(index=False)
+        ], key=lambda x: (x['ano'] * 100 + x['mes'], x['uf']))
 
     tipomov_all = read_csv('caged_fundicao_tipo_movimentacao_mensal_cnae.csv')
     tipomov_all = tipomov_all[tipomov_all['cnae_subclasse'].astype(str).str.strip() == cnae]
@@ -580,6 +599,20 @@ def build_sector(cnae, label):
         bndes_uf_total = [{'uf': r.uf, 'nome_uf': r.nome_uf, 'valor_desembolsado': to_num(r.valor)}
                            for r in bt.itertuples(index=False)]
 
+    uf_yearly_rows = []
+    for r in bndes_df.itertuples(index=False):
+        ufi = resolve_uf(r.UF)
+        if ufi:
+            uf_yearly_rows.append({'ano': int(r.Ano), 'uf': ufi[0], 'nome_uf': ufi[1],
+                                    'valor_desembolsado': r.Valor_Desembolsado})
+    bndes_uf_yearly = []
+    if uf_yearly_rows:
+        buy = (pd.DataFrame(uf_yearly_rows).groupby(['ano', 'uf', 'nome_uf'])['valor_desembolsado'].sum()
+               .reset_index().sort_values(['ano', 'uf']))
+        bndes_uf_yearly = [{'ano': to_int(r.ano), 'uf': r.uf, 'nome_uf': r.nome_uf,
+                             'valor_desembolsado': to_num(r.valor_desembolsado)}
+                            for r in buy.itertuples(index=False)]
+
     bp = (bndes_df.groupby('Porte')['Valor_Desembolsado'].sum()
           .reset_index().sort_values('Valor_Desembolsado', ascending=False))
     bndes_porte_total = [{'porte': r.Porte, 'valor_desembolsado': to_num(r.Valor_Desembolsado)}
@@ -601,6 +634,7 @@ def build_sector(cnae, label):
             'tamanho_yearly': tamanho_yearly,
             'escolaridade_latest': escolaridade_latest, 'escolaridade_yearly': escolaridade_yearly,
             'ocupacao_agrupada_latest': ocupacao_agrupada_latest,
+            'ocupacao_detalhada_latest': ocupacao_detalhada_latest,
             'tempo_emprego_latest': tempo_emprego_latest,
             'massa_uf_latest': massa_uf_latest, 'massa_nacional_yearly': massa_nacional_yearly,
         },
@@ -608,7 +642,8 @@ def build_sector(cnae, label):
             'coverage': monthly_coverage(saldo_monthly_national),
             'saldo_monthly_national': saldo_monthly_national,
             'salario_monthly_national': salario_monthly_national,
-            'saldo_uf_yearly': saldo_uf_yearly,
+            'saldo_uf_monthly': saldo_uf_monthly,
+            'salario_uf_monthly': salario_uf_monthly,
             'tipo_movimentacao_monthly': tipo_movimentacao_monthly,
             'tipo_movimentacao_breakdown_total': tipo_movimentacao_breakdown_total,
         },
@@ -617,8 +652,8 @@ def build_sector(cnae, label):
             'top_paises_latest': top_paises_latest, 'top_paises_yearly': top_paises_yearly,
         },
         'comtrade': comtrade,
-        'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total, 'porte_total': bndes_porte_total,
-                  'table': bndes_table},
+        'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total, 'uf_yearly': bndes_uf_yearly,
+                  'porte_total': bndes_porte_total, 'table': bndes_table},
     }
 
 

@@ -14,7 +14,7 @@
     { from: 202002, to: 202006, label: 'Covid-19 2020' },
   ];
 
-  const state = { sector: '2451', view: 'home', lo: 2016, hi: 2026, uf: 'ALL', data: null };
+  const state = { sector: '2451', view: 'home', lo: 2016, hi: 2026, ufs: new Set(['BR']), focoUf: 'BR', data: null };
   const $ = (sel, root) => (root || document).querySelector(sel);
   const MINUSC = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'com', 'para', 'a', 'o', 'no', 'na']);
   function titleCasePt(s) {
@@ -55,9 +55,15 @@
   function csS() { return state.data.sectors[state.sector]; }
   function shared() { return state.data.shared; }
   function ufName(uf) {
+    if (uf === 'BR') return 'Brasil';
     const found = state.data.meta.uf_lista.find(u => u.uf === uf);
     return found ? found.nome : uf;
   }
+  // "BR" é um pseudo-estado (agregado nacional já calculado nas séries do
+  // pipeline, não soma dos estados reais) selecionável junto dos 27 estados
+  // reais, igual ao padrão já usado em Energia Industrial.
+  function ufFiltroLista() { return [{ uf: 'BR', nome: 'Brasil' }, ...state.data.meta.uf_lista]; }
+  function ufsOrdenadas() { return ufFiltroLista().map(u => u.uf).filter(uf => state.ufs.has(uf)); }
 
   // ---------------------------------------------------------------------
   // 01 — Produção física
@@ -199,19 +205,25 @@
   // ---------------------------------------------------------------------
   function renderEmprego() {
     const s = csS();
-    const ufSel = state.uf;
 
-    let raisRows, raisLabel;
-    if (ufSel === 'ALL') {
-      raisRows = s.rais.uf_yearly_total; raisLabel = 'Vínculos (Brasil)';
-    } else {
-      raisRows = s.rais.uf_yearly.filter(r => r.uf === ufSel).map(r => ({ ano: r.ano, vinculos: r.vinculos }));
-      raisLabel = 'Vínculos (' + ufSel + ')';
-    }
-    raisRows = filterAnnual(raisRows, state.lo, state.hi);
+    // Combos: 1 linha por estado marcado no filtro (BR usa o total nacional
+    // já calculado no pipeline, não a soma dos estados reais selecionados) —
+    // mesmo padrão de renderEnergiaIndustrial, aplicado aqui às 2 séries
+    // anuais que já têm abertura por UF na fonte (vínculos e estabelecimentos).
+    const ufsSel = ufsOrdenadas();
+    const combos = ufsSel.map(uf => {
+      const rows = uf === 'BR'
+        ? s.rais.uf_yearly_total
+        : s.rais.uf_yearly.filter(r => r.uf === uf);
+      return { uf, nome: ufName(uf), rows: filterAnnual(rows, state.lo, state.hi) };
+    });
+    const catRais = annualCategories(combos.map(c => c.rows));
     lineChart($('#chart-emprego-rais'), {
-      categories: raisRows.map(r => r.ano), formatY: fmt.full, height: 280,
-      series: [{ label: raisLabel, color: 'var(--series-2)', values: raisRows.map(r => r.vinculos), area: true }]
+      categories: catRais, formatY: fmt.full, height: 280,
+      series: combos.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: seriesAnnual(c.rows, 'vinculos', catRais), area: combos.length === 1,
+      })),
     });
 
     const tamRows = filterAnnual(s.rais.tamanho_yearly, state.lo, state.hi);
@@ -223,17 +235,26 @@
     }));
     barChart($('#chart-emprego-tamanho'), { categories: catsTam, formatY: fmt.full, height: 280, stacked: true, series: seriesTam });
 
+    // Ranking: todos os estados com dado no ano mais recente (sem linha de
+    // referência — vínculos é um total absoluto, e o "Brasil" é a soma dos
+    // estados, não uma taxa comparável como o custo de energia). Estados
+    // marcados no filtro ficam destacados; clicar numa barra adiciona aquele
+    // estado ao filtro.
     const totalLatest = last(s.rais.uf_yearly_total);
-    const ufRanking = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos).slice(0, 8);
-    $('#emprego-uf-sub').textContent = 'Ano de ' + totalLatest.ano;
-    rankList($('#rank-emprego-uf'), ufRanking.map(r => ({
-      label: r.nome_uf, value: r.vinculos, color: r.uf === state.uf ? 'var(--series-3)' : 'var(--series-2)'
-    })), { formatVal: fmt.full });
+    const ufRanking = s.rais.uf_yearly.filter(r => r.ano === totalLatest.ano).sort((a, b) => b.vinculos - a.vinculos);
+    $('#emprego-uf-sub').textContent = 'Ano de ' + totalLatest.ano + ', clique numa barra para adicionar ao filtro';
+    hBarChart($('#rank-emprego-uf'), {
+      items: ufRanking.map(r => ({ uf: r.uf, label: r.nome_uf, value: r.vinculos, color: state.ufs.has(r.uf) ? 'var(--series-3)' : 'var(--series-2)' })),
+      formatVal: fmt.full,
+      onClick: (it) => { state.ufs.add(it.uf); state.focoUf = it.uf; renderUfPanel(); syncUfBtn(); renderAll(); },
+    });
 
-    const razaoRows = filterAnnual(s.rais.uf_yearly_total, state.lo, state.hi);
     lineChart($('#chart-emprego-razao'), {
-      categories: razaoRows.map(r => r.ano), formatY: fmt.full1, height: 280,
-      series: [{ label: 'Vínculos por estabelecimento', color: 'var(--series-2)', values: razaoRows.map(r => r.estabelecimentos ? r.vinculos / r.estabelecimentos : null) }]
+      categories: catRais, formatY: fmt.full1, height: 280,
+      series: combos.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: catRais.map(ano => { const r = c.rows.find(x => x.ano === ano); return r && r.estabelecimentos ? r.vinculos / r.estabelecimentos : null; }),
+      })),
     });
 
     const escRows = filterAnnual(s.rais.escolaridade_yearly, state.lo, state.hi);
@@ -309,6 +330,17 @@
       rows: ufTableRows.map(r => ({ ...r, razao: r.estabelecimentos ? r.vinculos / r.estabelecimentos : null })),
       pageSize: 10,
     });
+
+    const ocupDet = s.rais.ocupacao_detalhada_latest;
+    $('#emprego-ocupacao-detalhada-sub').textContent = 'RAIS, sem agrupamento, retrato de ' + ocupDet.ano + '. Clique no cabeçalho para ordenar.';
+    dataTable($('#table-emprego-ocupacao-detalhada'), {
+      columns: [
+        { key: 'categoria', label: 'Ocupação', format: titleCasePt },
+        { key: 'frequencia', label: 'Vínculos', align: 'right', format: fmt.full },
+      ],
+      rows: ocupDet.items,
+      pageSize: 15,
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -317,12 +349,23 @@
   function renderCaged() {
     const s = csS();
 
-    $('#caged-coverage-note').textContent = `Granularidade mensal (admissões/desligamentos), que a RAIS não oferece. Cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}.`;
+    $('#caged-coverage-note').textContent = `Granularidade mensal (admissões/desligamentos), que a RAIS não oferece. Cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}. Estados são multi-seleção (filtro no topo); clique numa barra do ranking por UF para adicionar aquele estado ao filtro.`;
 
-    const saldoRows = filterMonthly(s.caged.saldo_monthly_national, state.lo, state.hi);
+    // Combos: 1 linha por estado marcado no filtro (mesmo padrão de
+    // renderEmprego/renderEnergiaIndustrial), usando as séries mensais por
+    // UF do CAGED (BR usa o total nacional já existente).
+    const ufsSel = ufsOrdenadas();
+    const combosSaldo = ufsSel.map(uf => {
+      const rows = uf === 'BR' ? s.caged.saldo_monthly_national : s.caged.saldo_uf_monthly.filter(r => r.uf === uf);
+      return { uf, nome: ufName(uf), rows: filterMonthly(rows, state.lo, state.hi) };
+    });
+    const catSaldo = monthlyCategories(combosSaldo.map(c => c.rows));
     lineChart($('#chart-caged-saldo'), {
-      categories: saldoRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.full, height: 280,
-      series: [{ label: 'Saldo líquido', color: 'var(--series-2)', values: saldoRows.map(r => r.saldo), area: true }]
+      categories: catSaldo, formatX: monthLabel, formatY: fmt.full, height: 280,
+      series: combosSaldo.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: seriesMonthly(c.rows, 'saldo', catSaldo), area: combosSaldo.length === 1,
+      })),
     });
 
     const tipoMonthly = filterMonthly(s.caged.tipo_movimentacao_monthly, state.lo, state.hi);
@@ -340,20 +383,37 @@
       series: [{ label: 'Quantidade', color: 'var(--series-6)', values: tipoBreak.map(t => t.quantidade) }]
     });
 
-    const salarioRows = filterMonthly(s.caged.salario_monthly_national, state.lo, state.hi);
+    const combosSalario = ufsSel.map(uf => {
+      const rows = uf === 'BR' ? s.caged.salario_monthly_national : s.caged.salario_uf_monthly.filter(r => r.uf === uf);
+      return { uf, nome: ufName(uf), rows: filterMonthly(rows, state.lo, state.hi) };
+    });
+    const catSalario = monthlyCategories(combosSalario.map(c => c.rows));
     lineChart($('#chart-caged-massa-salarial'), {
-      categories: salarioRows.map(r => r.ano * 100 + r.mes), formatX: monthLabel, formatY: fmt.brl, height: 280,
-      series: [{ label: 'Massa salarial', color: 'var(--series-3)', values: salarioRows.map(r => r.massa_salarial) }]
+      categories: catSalario, formatX: monthLabel, formatY: fmt.brl, height: 280,
+      series: combosSalario.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: seriesMonthly(c.rows, 'massa_salarial', catSalario),
+      })),
     });
 
-    const saldoUfRows = s.caged.saldo_uf_yearly.filter(r => r.ano >= state.lo && r.ano <= state.hi);
+    // Ranking: soma do saldo no período selecionado, todos os estados com
+    // dado. Referência em zero é natural aqui (positivo = contratou líquido,
+    // negativo = demitiu líquido) — diferente de vínculos/desembolso, que
+    // são totais absolutos sem um "zero" comparável.
+    const saldoUfRows = s.caged.saldo_uf_monthly.filter(r => r.ano >= state.lo && r.ano <= state.hi);
     const saldoPorUf = {};
     saldoUfRows.forEach(r => { saldoPorUf[r.uf] = (saldoPorUf[r.uf] || 0) + r.saldo; });
     const saldoUfSorted = Object.entries(saldoPorUf).map(([uf, saldo]) => ({ uf, saldo }))
       .sort((a, b) => Math.abs(b.saldo) - Math.abs(a.saldo));
-    rankList($('#rank-caged-saldo-uf'), saldoUfSorted.slice(0, 8).map(r => ({
-      label: ufName(r.uf), value: r.saldo, color: r.saldo >= 0 ? 'var(--series-4)' : 'var(--series-6)'
-    })), { formatVal: fmt.full });
+    hBarChart($('#rank-caged-saldo-uf'), {
+      items: saldoUfSorted.map(r => ({
+        uf: r.uf, label: ufName(r.uf), value: r.saldo,
+        color: state.ufs.has(r.uf) ? 'var(--series-3)' : (r.saldo >= 0 ? 'var(--good)' : 'var(--bad)'),
+      })),
+      formatVal: fmt.full,
+      reference: { value: 0, label: 'Zero' },
+      onClick: (it) => { state.ufs.add(it.uf); state.focoUf = it.uf; renderUfPanel(); syncUfBtn(); renderAll(); },
+    });
 
     dataTable($('#table-caged-uf'), {
       columns: [
@@ -372,11 +432,11 @@
     const s = csS();
     const ufAvailable = new Set(s.comex.uf_yearly.map(r => r.uf));
     let rows, note = '';
-    if (state.uf === 'ALL' || !ufAvailable.has(state.uf)) {
+    if (state.focoUf === 'BR' || !ufAvailable.has(state.focoUf)) {
       rows = filterAnnual(s.comex.yearly, state.lo, state.hi);
-      if (state.uf !== 'ALL') note = 'Estado sem dado detalhado nesta base; mostrando total nacional do setor.';
+      if (state.focoUf !== 'BR') note = 'Estado sem dado detalhado nesta base; mostrando total nacional do setor.';
     } else {
-      const ufRows = s.comex.uf_yearly.filter(r => r.uf === state.uf);
+      const ufRows = s.comex.uf_yearly.filter(r => r.uf === state.focoUf);
       const years = annualCategories([ufRows]);
       rows = years.map(ano => {
         const exp = ufRows.find(r => r.ano === ano && r.fluxo === 'Exportação');
@@ -386,6 +446,7 @@
       rows = filterAnnual(rows, state.lo, state.hi);
     }
     $('#comex-uf-note') && ($('#comex-uf-note').textContent = note);
+    $('#comex-foco-sub').textContent = 'US$ FOB por ano, ' + ufName(state.focoUf);
     const cat = rows.map(r => r.ano);
     barChart($('#chart-comex-brasil'), {
       categories: cat, formatY: fmt.usd, height: 280,
@@ -439,6 +500,16 @@
     rankList($('#rank-comex-paises'), top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-4)' });
 
     const ufAnoMax = Math.max(...s.comex.uf_yearly.map(r => r.ano));
+    const rankExpUf = Array.from(new Set(s.comex.uf_yearly.map(r => r.uf))).map(uf => {
+      const exp = s.comex.uf_yearly.find(r => r.uf === uf && r.ano === ufAnoMax && r.fluxo === 'Exportação');
+      return exp ? { uf, label: exp.nome_uf, value: exp.valor_usd } : null;
+    }).filter(Boolean).sort((a, b) => b.value - a.value);
+    $('#comex-uf-rank-sub').textContent = 'UF de origem do produto, exportação de ' + ufAnoMax + '. Clique numa barra para trocar o foco.';
+    hBarChart($('#rank-comex-uf'), {
+      items: rankExpUf.map(r => ({ uf: r.uf, label: r.label, value: r.value, color: state.ufs.has(r.uf) ? 'var(--series-3)' : 'var(--series-4)' })),
+      formatVal: fmt.usd,
+      onClick: (it) => { state.ufs.add(it.uf); state.focoUf = it.uf; renderUfPanel(); syncUfBtn(); renderAll(); },
+    });
     $('#comex-uf-table-sub').textContent = 'Ano de ' + ufAnoMax + ', principais UFs produtoras';
     const ufNomes = Array.from(new Set(s.comex.uf_yearly.map(r => r.nome_uf)));
     const ufTableRows = ufNomes.map(nome_uf => {
@@ -465,15 +536,34 @@
 
   function renderBndes() {
     const s = csS();
-    const bndesY = filterAnnual(s.bndes.yearly, state.lo, state.hi);
-    barChart($('#chart-bndes-ano'), {
-      categories: bndesY.map(r => r.ano), formatY: fmt.brl, height: 280,
-      series: [{ label: 'Desembolsado', color: 'var(--series-8)', values: bndesY.map(r => r.valor_desembolsado) }]
+
+    // Combos: 1 linha por estado marcado no filtro (BR usa o total nacional
+    // já existente); mesmo padrão de renderEmprego/renderCaged.
+    const ufsSel = ufsOrdenadas();
+    const combosBndes = ufsSel.map(uf => {
+      const rows = uf === 'BR' ? s.bndes.yearly : s.bndes.uf_yearly.filter(r => r.uf === uf);
+      return { uf, nome: ufName(uf), rows: filterAnnual(rows, state.lo, state.hi) };
+    });
+    const catBndes = annualCategories(combosBndes.map(c => c.rows));
+    lineChart($('#chart-bndes-ano'), {
+      categories: catBndes, formatY: fmt.brl, height: 280,
+      series: combosBndes.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: seriesAnnual(c.rows, 'valor_desembolsado', catBndes), area: combosBndes.length === 1,
+      })),
     });
 
-    rankList($('#rank-bndes-uf'), s.bndes.uf_total.slice(0, 8).map(i => ({
-      label: i.nome_uf, value: i.valor_desembolsado, color: i.uf === state.uf ? 'var(--series-3)' : 'var(--series-8)'
-    })), { formatVal: fmt.brl });
+    // Ranking: todos os estados com dado, acumulado no período. Sem linha de
+    // referência (desembolso é um total absoluto, Brasil = soma dos
+    // estados). Clicar numa barra adiciona aquele estado ao filtro.
+    hBarChart($('#rank-bndes-uf'), {
+      items: s.bndes.uf_total.map(i => ({
+        uf: i.uf, label: i.nome_uf, value: i.valor_desembolsado,
+        color: state.ufs.has(i.uf) ? 'var(--series-3)' : 'var(--series-8)',
+      })),
+      formatVal: fmt.brl,
+      onClick: (it) => { state.ufs.add(it.uf); state.focoUf = it.uf; renderUfPanel(); syncUfBtn(); renderAll(); },
+    });
 
     // Desembolso por porte ao longo do tempo (barra empilhada) + concentração (donut) —
     // as duas leituras que a tabela de 200+ linhas não deixa claras de cara.
@@ -925,14 +1015,56 @@
   // ---------------------------------------------------------------------
   // Filtros: UF select, sector switch, period slider
   // ---------------------------------------------------------------------
-  function populateUfSelect() {
-    const sel = $('#uf-select');
-    state.data.meta.uf_lista.forEach(u => {
-      const opt = document.createElement('option');
-      opt.value = u.uf; opt.textContent = u.nome;
-      sel.appendChild(opt);
+  // Estados: multi-select em dropdown de checkboxes (mesmo padrão de
+  // renderEnergiaIndustrial) + "foco" (o último marcado/clicado), usado
+  // pelos gráficos que só conseguem mostrar 1 estado por vez (Comex).
+  function renderUfPanel() {
+    const panel = $('#uf-panel');
+    panel.innerHTML = ufFiltroLista().map(u => `
+      <label class="multiselect-option">
+        <input type="checkbox" value="${u.uf}"${state.ufs.has(u.uf) ? ' checked' : ''}>
+        ${u.nome}
+      </label>`).join('');
+    panel.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
+      if (inp.checked) { state.ufs.add(inp.value); state.focoUf = inp.value; }
+      else if (state.ufs.size > 1) {
+        state.ufs.delete(inp.value);
+        if (state.focoUf === inp.value) state.focoUf = ufsOrdenadas()[0];
+      } else inp.checked = true; // sempre pelo menos 1 estado selecionado
+      syncUfBtn();
+      renderAll();
+    }));
+  }
+  function syncUfBtn() {
+    const sel = ufsOrdenadas();
+    $('#uf-btn').textContent = sel.length <= 3 ? sel.map(uf => ufName(uf)).join(', ') : sel.length + ' estados selecionados';
+  }
+  function setupUfFilter() {
+    const ufBtn = $('#uf-btn'), ufPanel = $('#uf-panel');
+    ufBtn.addEventListener('click', () => {
+      const abrir = ufPanel.hidden;
+      ufPanel.hidden = !abrir;
+      ufBtn.setAttribute('aria-expanded', String(abrir));
     });
-    sel.addEventListener('change', () => { state.uf = sel.value; renderAll(); });
+    document.addEventListener('click', (evt) => {
+      if (!$('#uf-multiselect').contains(evt.target)) {
+        ufPanel.hidden = true; ufBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    renderUfPanel();
+    syncUfBtn();
+  }
+  function setupClearFilters() {
+    $('#clear-filters').addEventListener('click', () => {
+      const def = state.data.meta.periodo_slider_padrao;
+      state.ufs = new Set(['BR']);
+      state.focoUf = 'BR';
+      state.lo = def.inicio; state.hi = def.fim;
+      $('#period-lo-select').value = state.lo;
+      $('#period-hi-select').value = state.hi;
+      renderUfPanel(); syncUfBtn();
+      renderAll();
+    });
   }
 
   // Duas listas de botões: sector-tabs (2451/2452) e view-tabs (home) + foot-tabs
@@ -1065,7 +1197,8 @@
     .then(r => r.json())
     .then(data => {
       state.data = data;
-      populateUfSelect();
+      setupUfFilter();
+      setupClearFilters();
       setupViewTabs();
       setupPeriodSlider();
       renderReferencias(data);

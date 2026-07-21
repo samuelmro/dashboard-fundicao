@@ -62,11 +62,14 @@
       <select id="period-hi-select"></select>
     </div>
     <div class="filter-group">
-      <label for="uf-select">Estado</label>
-      <select id="uf-select">
-        <option value="ALL">Brasil (todos os estados)</option>
-      </select>
-      <span class="filter-note" id="uf-filter-note"></span>
+      <label id="uf-label">Estados</label>
+      <div class="multiselect" id="uf-multiselect">
+        <button type="button" class="multiselect-btn" id="uf-btn" aria-haspopup="listbox" aria-expanded="false"></button>
+        <div class="multiselect-panel" id="uf-panel" hidden></div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <button type="button" class="table-export-btn" id="clear-filters">Limpar filtros</button>
     </div>
   </div>
 </div>
@@ -186,7 +189,7 @@
       <span class="section-num">03</span>
       <h2>Emprego formal (RAIS)</h2>
     </div>
-    <p class="section-note">A partir de 2022 a metodologia de coleta mudou (base eSocial); perfis detalhados (escolaridade, ocupação, tempo de emprego) têm quebra de série entre 2021 e 2022.</p>
+    <p class="section-note">A partir de 2022 a metodologia de coleta mudou (base eSocial); perfis detalhados (escolaridade, ocupação, tempo de emprego) têm quebra de série entre 2021 e 2022. Estados são multi-seleção (filtro no topo); clique numa barra do ranking por UF para adicionar aquele estado ao filtro.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-emprego-rais"></div>
@@ -266,6 +269,13 @@
         <div class="exhibit-sub" id="emprego-uf-table-sub">Ano mais recente</div>
       </div>
     </div>
+    <div class="exhibit-block">
+      <div id="table-emprego-ocupacao-detalhada"></div>
+      <div class="exhibit-caption">
+        <div class="exhibit-title">Ocupações detalhadas, retrato do último ano</div>
+        <div class="exhibit-sub" id="emprego-ocupacao-detalhada-sub">RAIS, sem agrupamento (mais granular que o ranking acima), clique no cabeçalho para ordenar</div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ 04. CAGED ============ -->
@@ -327,12 +337,13 @@
       <span class="section-num">05</span>
       <h2>Comércio exterior</h2>
     </div>
+    <p class="section-note">Gráficos de Brasil x UF seguem o estado em foco (o último marcado no filtro de estados); clique numa barra do ranking por UF para trocar o foco.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-comex-brasil"></div>
         <div class="exhibit-caption">
           <div class="exhibit-title">Exportação x importação</div>
-          <div class="exhibit-sub">Brasil, US$ FOB por ano</div>
+          <div class="exhibit-sub" id="comex-foco-sub">US$ FOB por ano, estado em foco</div>
         </div>
         <p class="filter-note" id="comex-uf-note"></p>
       </div>
@@ -371,6 +382,13 @@
           <div class="exhibit-sub" id="comex-paises-sub">Exportação, último ano completo</div>
         </div>
       </div>
+      <div class="exhibit">
+        <div id="rank-comex-uf"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">Ranking de exportação por UF</div>
+          <div class="exhibit-sub" id="comex-uf-rank-sub">UF de origem do produto, último ano completo. Clique numa barra para trocar o foco.</div>
+        </div>
+      </div>
     </div>
     <div class="exhibit-block">
       <div id="table-comex-uf"></div>
@@ -387,7 +405,7 @@
       <span class="section-num">06</span>
       <h2>BNDES</h2>
     </div>
-    <p class="section-note">Desembolsos já são específicos do segmento selecionado (2451/2452).</p>
+    <p class="section-note">Desembolsos já são específicos do segmento selecionado (2451/2452). Estados são multi-seleção (filtro no topo); clique numa barra do ranking por UF para adicionar aquele estado ao filtro.</p>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-bndes-ano"></div>
