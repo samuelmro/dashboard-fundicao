@@ -776,24 +776,20 @@
     loSel.addEventListener('change', () => { stateEI.lo = Math.min(Number(loSel.value), stateEI.hi); loSel.value = stateEI.lo; update(); });
     hiSel.addEventListener('change', () => { stateEI.hi = Math.max(Number(hiSel.value), stateEI.lo); hiSel.value = stateEI.hi; update(); });
 
-    // ---- Exportar CSV (dados filtrados, tal como carregados) ----
-    let tableRowsAtual = [];
-    function toCsv(rows) {
-      const cols = [
-        ['UF', r => r.uf_nome], ['Setor', r => r.setor], ['Mês', r => monthLabel(r.k)],
-        ['Consumo (MWh)', r => r.consumo_mwh], ['Custo (R$/MWh)', r => r.custo_rs_mwh],
-        ['Gasto (R$)', r => r.gasto_rs], ['Participação (%)', r => r.participacao_pct],
-      ];
-      const esc = v => { const s = String(v == null ? '' : v); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-      const linhas = [cols.map(c => esc(c[0])).join(';'), ...rows.map(r => cols.map(c => esc(c[1](r))).join(';'))];
-      const blob = new Blob(['\ufeff' + linhas.join('\n')], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'energia_industrial.csv';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-    $('#ei-export-csv').addEventListener('click', () => toCsv(tableRowsAtual));
+    // ---- Limpar filtros: volta ao estado padrão (SP+Brasil, Metalurgia, período completo) ----
+    $('#ei-clear-filters').addEventListener('click', () => {
+      stateEI.ufs = new Set(['SP', 'BR']);
+      stateEI.cnaes = new Set([24]);
+      stateEI.focoUf = 'SP';
+      stateEI.focoCnae = 24;
+      stateEI.lo = anoMesLo0;
+      stateEI.hi = anoMesHi0;
+      renderUfPanel(); syncUfBtn();
+      renderCnaePanel(); syncCnaeBtn();
+      fillMonthOptions(loSel, stateEI.lo);
+      fillMonthOptions(hiSel, stateEI.hi);
+      update();
+    });
 
     async function update() {
       const cnaesSel = cnaesOrdenadas();
@@ -901,7 +897,6 @@
         });
       });
       linhas.sort((a, b) => b.k - a.k);
-      tableRowsAtual = linhas;
       dataTable($('#table-ei-dados'), {
         columns: [
           { key: 'uf_nome', label: 'UF' },
