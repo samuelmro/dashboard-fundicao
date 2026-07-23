@@ -876,7 +876,9 @@
     // Importação vinda da China, % do total, por CNAE.
     const rowsChina1 = s1.comex.importacao_china_resto_yearly;
     const rowsChina2 = s2.comex.importacao_china_resto_yearly;
-    const catChina = annualCategories([rowsChina1, rowsChina2]);
+    // 2016 em diante: é a partir daí que o 2451 tem dado de comex, então é a
+    // janela onde a comparação entre os dois CNAEs realmente existe.
+    const catChina = annualCategories([rowsChina1, rowsChina2]).filter(ano => ano >= 2016);
     const pctChina = (rows) => catChina.map(ano => {
       const r = rows.find(x => x.ano === ano);
       if (!r) return null;
@@ -892,7 +894,7 @@
     });
 
     // Exportação: ferro/aço x não ferrosos.
-    const catExp = annualCategories([s1.comex.yearly, s2.comex.yearly]);
+    const catExp = annualCategories([s1.comex.yearly, s2.comex.yearly]).filter(ano => ano >= 2016);
     lineChart($('#pdi-chart-exportacao'), {
       categories: catExp, formatY: fmt.usd, height: 260,
       series: [

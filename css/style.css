@@ -338,7 +338,7 @@ a:hover { color: var(--accent); }
    .chart-svg, senão estica até a largura do container (grave em blocos
    full-width). Layout donut + legenda lado a lado, usando o espaço extra. */
 .donut-chart-wrap { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
-.donut-chart-wrap .chart-svg.donut-svg { width: 180px; height: 180px; flex-shrink: 0; }
+.donut-chart-wrap .chart-svg.donut-svg { width: 260px; height: 260px; flex-shrink: 0; }
 .donut-chart-wrap .legend { margin-top: 0; flex: 1; min-width: 200px; }
 
 /* chart svg */
@@ -438,6 +438,9 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
   text-transform: uppercase; letter-spacing: 0.06em;
 }
 .pdi-note { color: var(--text-secondary); font-size: 0.81rem; line-height: 1.65; margin: 0 0 8px; }
+.pdi-list { margin: 0 0 12px; padding-left: 20px; color: var(--text-secondary); font-size: 0.81rem; line-height: 1.65; }
+.pdi-list li { margin-bottom: 6px; }
+.pdi-list li:last-child { margin-bottom: 0; }
 .pdi-cta {
   margin: 32px 0 8px;
   padding: 20px 24px;
