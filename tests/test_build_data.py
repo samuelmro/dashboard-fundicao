@@ -49,6 +49,15 @@ def test_core_series_not_empty(data, cnae):
     assert len(s['bndes']['table']) > 0
 
 
+@pytest.mark.parametrize('cnae', ['2451', '2452'])
+def test_comex_importacao_china_resto(data, cnae):
+    rows = data['sectors'][cnae]['comex']['importacao_china_resto_yearly']
+    assert len(rows) > 0
+    for r in rows:
+        assert set(r.keys()) == {'ano', 'china_usd', 'resto_usd'}
+    is_sorted_by(rows, lambda r: r['ano'])
+
+
 def test_producao_has_laminados(data):
     rows = data['shared']['producao']['aco_gusa']
     assert len(rows) > 0

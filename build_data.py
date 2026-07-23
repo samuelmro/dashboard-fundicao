@@ -553,6 +553,19 @@ def build_sector(cnae, label):
         row['Outros'] = round(total_ano - soma_top, 2)
         top_paises_yearly['yearly'].append(row)
 
+    # Importação: China x resto do mundo, série anual. Mede a pressão de
+    # peças fundidas chinesas mais baratas sobre o mercado interno (usado no
+    # case de PD&I para o setor).
+    imp_df = comex_df[comex_df['Fluxo'] == 'Importação']
+    importacao_china_resto_yearly = []
+    for ano in sorted(imp_df['Ano'].unique().tolist()):
+        yr = imp_df[imp_df['Ano'] == ano]
+        total_ano_imp = to_num(yr['Valor_US_FOB'].sum()) or 0.0
+        china = to_num(yr[yr['Pais'] == 'China']['Valor_US_FOB'].sum()) or 0.0
+        importacao_china_resto_yearly.append({
+            'ano': to_int(ano), 'china_usd': china, 'resto_usd': round(total_ano_imp - china, 2),
+        })
+
     # --- Comtrade global (agregação pesada: ~250k linhas) ---
     ct_df = read_csv(f'Comtrade_Global_Fundicao_{cnae}.csv')
     ct_df['Valor_US_FOB'] = pd.to_numeric(ct_df['Valor_US_FOB'], errors='coerce')
@@ -646,6 +659,7 @@ def build_sector(cnae, label):
         'comex': {
             'yearly': comex_yearly, 'uf_yearly': comex_uf_yearly,
             'top_paises_latest': top_paises_latest, 'top_paises_yearly': top_paises_yearly,
+            'importacao_china_resto_yearly': importacao_china_resto_yearly,
         },
         'comtrade': comtrade,
         'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total,

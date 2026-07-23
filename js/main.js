@@ -863,6 +863,152 @@
   }
 
   // ---------------------------------------------------------------------
+  // PD&I: case setorial de fundição, montado uma vez com dados já
+  // carregados (sem filtro, é um material de apoio de venda, não um
+  // dashboard exploratório). Combina os dois CNAEs onde faz sentido tratar
+  // "fundição" como um setor só (escolaridade, saldo de contratações,
+  // BNDES); mantém 2451 e 2452 separados onde a diferença entre os dois é
+  // o próprio ponto (comércio exterior).
+  // ---------------------------------------------------------------------
+  function renderPdi(data) {
+    const s1 = data.sectors['2451'], s2 = data.sectors['2452'];
+
+    // Importação vinda da China, % do total, por CNAE.
+    const rowsChina1 = s1.comex.importacao_china_resto_yearly;
+    const rowsChina2 = s2.comex.importacao_china_resto_yearly;
+    const catChina = annualCategories([rowsChina1, rowsChina2]);
+    const pctChina = (rows) => catChina.map(ano => {
+      const r = rows.find(x => x.ano === ano);
+      if (!r) return null;
+      const total = r.china_usd + r.resto_usd;
+      return total ? (r.china_usd / total) * 100 : null;
+    });
+    lineChart($('#pdi-chart-china'), {
+      categories: catChina, formatY: n => fmt.pct(n), height: 260,
+      series: [
+        { label: 'Ferro e aço (2451)', color: 'var(--series-6)', values: pctChina(rowsChina1) },
+        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: pctChina(rowsChina2) },
+      ],
+    });
+
+    // Exportação: ferro/aço x não ferrosos.
+    const catExp = annualCategories([s1.comex.yearly, s2.comex.yearly]);
+    lineChart($('#pdi-chart-exportacao'), {
+      categories: catExp, formatY: fmt.usd, height: 260,
+      series: [
+        { label: 'Ferro e aço (2451)', color: 'var(--series-1)', values: seriesAnnual(s1.comex.yearly, 'exportacao_usd', catExp) },
+        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: seriesAnnual(s2.comex.yearly, 'exportacao_usd', catExp) },
+      ],
+    });
+
+    // Participação do Brasil no comércio mundial (Comtrade), por CNAE.
+    function participacaoMundial(sec, cat) {
+      const br = new Map(sec.comtrade.brazil_yearly.map(r => [r.ano, r.export_usd]));
+      const wd = new Map(sec.comtrade.world_yearly.map(r => [r.ano, r.export_usd]));
+      return cat.map(ano => {
+        const b = br.get(ano), w = wd.get(ano);
+        return (b != null && w) ? (b / w) * 100 : null;
+      });
+    }
+    const catMundial = annualCategories([s1.comtrade.brazil_yearly, s2.comtrade.brazil_yearly]);
+    lineChart($('#pdi-chart-mundial'), {
+      categories: catMundial, formatY: n => fmt.pct(n), height: 260,
+      series: [
+        { label: 'Ferro e aço (2451)', color: 'var(--series-1)', values: participacaoMundial(s1, catMundial) },
+        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: participacaoMundial(s2, catMundial) },
+      ],
+    });
+
+    // Custo da energia na metalurgia (CNAE 24) em SP, média anual. Reaproveita
+    // o mesmo arquivo lazy da aba Energia Industrial (fetch avulso, sem
+    // filtro nem cache compartilhado, é a única vez que essa página usa).
+    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
+      const sp = obj['SP'] || [];
+      const porAno = {};
+      sp.forEach(([ano, , , custo]) => { if (custo != null) (porAno[ano] = porAno[ano] || []).push(custo); });
+      const anos = Object.keys(porAno).map(Number).sort((a, b) => a - b);
+      const vals = anos.map(a => porAno[a].reduce((x, y) => x + y, 0) / porAno[a].length);
+      lineChart($('#pdi-chart-energia'), {
+        categories: anos, formatY: n => fmt.brl(n) + '/MWh', height: 260,
+        series: [{ label: 'Custo médio', color: 'var(--series-8)', values: vals, area: true }],
+      });
+    });
+
+    // Escolaridade combinada (2451+2452), agrupada em 3 faixas, % dos vínculos por ano.
+    function baldeEscolaridade(categoria) {
+      if (/analfabeto|fundamental|5[ºª]/i.test(categoria)) return 'Fundamental ou menos';
+      if (/m[ée]dio/i.test(categoria)) return 'Médio';
+      if (/superior/i.test(categoria)) return 'Superior';
+      return null;
+    }
+    const escPorAno = {};
+    [s1, s2].forEach(sec => sec.rais.escolaridade_yearly.forEach(r => {
+      const balde = baldeEscolaridade(r.categoria);
+      if (!balde) return;
+      escPorAno[r.ano] = escPorAno[r.ano] || {};
+      escPorAno[r.ano][balde] = (escPorAno[r.ano][balde] || 0) + r.frequencia;
+    }));
+    const anosEsc = Object.keys(escPorAno).map(Number).sort((a, b) => a - b);
+    const BALDES = ['Fundamental ou menos', 'Médio', 'Superior'];
+    const CORES_BALDE = { 'Fundamental ou menos': 'var(--series-6)', 'Médio': 'var(--series-8)', 'Superior': 'var(--series-4)' };
+    lineChart($('#pdi-chart-escolaridade'), {
+      categories: anosEsc, formatY: n => fmt.pct(n), height: 260, stacked: true,
+      series: BALDES.map(b => ({
+        label: b, color: CORES_BALDE[b],
+        values: anosEsc.map(a => {
+          const total = BALDES.reduce((acc, bb) => acc + (escPorAno[a][bb] || 0), 0);
+          return total ? ((escPorAno[a][b] || 0) / total) * 100 : 0;
+        }),
+      })),
+    });
+
+    // Saldo de contratações (admissões menos desligamentos) por ano, fundição combinada.
+    const saldoPorAno = {};
+    [s1, s2].forEach(sec => sec.caged.tipo_movimentacao_monthly.forEach(r => {
+      saldoPorAno[r.ano] = (saldoPorAno[r.ano] || 0) + (r.admissoes || 0) - (r.desligamentos || 0);
+    }));
+    const anosSaldo = Object.keys(saldoPorAno).map(Number).sort((a, b) => a - b);
+    barChart($('#pdi-chart-saldo'), {
+      categories: anosSaldo, formatY: fmt.full, height: 260,
+      series: [{ label: 'Saldo de contratações', color: 'var(--series-2)', values: anosSaldo.map(a => saldoPorAno[a]) }],
+    });
+
+    // Margem operacional da Fundição 24.5 (já combina 2451+2452 na fonte).
+    const finF = data.shared.financeiro.fundicao_24_5;
+    lineChart($('#pdi-chart-margem'), {
+      categories: finF.map(r => r.ano), formatY: n => fmt.pct(n), height: 260,
+      series: [{
+        label: 'Margem operacional', color: 'var(--series-3)', area: true,
+        values: finF.map(r => (r.receita_liquida_total && r.custos_despesas_totais != null)
+          ? ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100 : null),
+      }],
+    });
+
+    // BNDES por porte, concentração combinada (2451+2452), histórico completo.
+    const portePorTotal = {};
+    [s1, s2].forEach(sec => sec.bndes.porte_total.forEach(p => {
+      portePorTotal[p.porte] = (portePorTotal[p.porte] || 0) + p.valor_desembolsado;
+    }));
+    donutChart($('#pdi-chart-bndes'), {
+      formatVal: fmt.brl, size: 190,
+      items: PORTES_ORDEM.filter(p => portePorTotal[p]).map(p => ({ label: titleCasePt(p), value: portePorTotal[p], color: CORES_PORTE[p] })),
+    });
+
+    // Funil ilustrativo: não é dado real de nenhuma empresa, é um modelo pra
+    // ancorar a conversa (a legenda no HTML já deixa isso explícito).
+    waterfallChart($('#pdi-chart-funil'), {
+      formatY: n => fmt.pct(n), height: 260,
+      items: [
+        { label: 'Margem atual (referência baixa do setor)', value: 5 },
+        { label: 'Eficiência energética', value: 2 },
+        { label: 'Redução de refugo', value: 2 },
+        { label: 'Ligas / produtos especiais', value: 4 },
+        { label: 'Margem com projeto de PD&I', value: 13, isTotal: true },
+      ],
+    });
+  }
+
+  // ---------------------------------------------------------------------
   // Energia Industrial: consumo/custo de energia da indústria de
   // transformação inteira — 27 estados + Brasil, 24 divisões CNAE.
   // Filtros: estados (multi-select), setor (CNAE, single-select) e período
@@ -1290,6 +1436,7 @@
       setupBlockFilters();
       setupViewTabs();
       renderReferencias(data);
+      renderPdi(data);
       renderEnergiaIndustrial(data);
       renderAll();
     })
