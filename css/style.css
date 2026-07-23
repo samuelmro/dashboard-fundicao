@@ -450,6 +450,7 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 #pdi-view .pdi-note { font-size: 0.92rem; line-height: 1.75; margin-bottom: 18px; }
 #pdi-view .pdi-list { font-size: 0.92rem; line-height: 1.75; margin-bottom: 20px; }
 #pdi-view .pdi-list li { margin-bottom: 10px; }
+.pdi-sector-list { margin: 0 0 36px; border-top: 1px solid var(--border); padding-top: 4px; }
 .pdi-cta {
   margin: 32px 0 8px;
   padding: 20px 24px;

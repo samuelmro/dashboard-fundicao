@@ -1008,6 +1008,13 @@
         { label: 'Margem com projeto de PD&I', value: 13, isTotal: true },
       ],
     });
+
+    // Índice de setores: hoje só Fundição, mas a lista já existe pra crescer
+    // conforme mais setores entrarem no painel (cada um vira uma nova linha
+    // aqui, igual ao "Nesta seção" da página inicial).
+    $('#pdi-sector-list').querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => scrollToBlock(btn.dataset.target));
+    });
   }
 
   // ---------------------------------------------------------------------
