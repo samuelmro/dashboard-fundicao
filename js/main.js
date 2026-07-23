@@ -1009,10 +1009,10 @@
       ],
     });
 
-    // Índice de setores: hoje só Fundição, mas a lista já existe pra crescer
-    // conforme mais setores entrarem no painel (cada um vira uma nova linha
-    // aqui, igual ao "Nesta seção" da página inicial).
-    $('#pdi-sector-list').querySelectorAll('button').forEach(btn => {
+    // Índice de setores de PD&I: vive na barra lateral (#pdi-section-nav),
+    // igual ao "Nesta seção" que já existe pra dentro de um setor. Hoje só
+    // Fundição; cada setor novo vira mais um botão ali.
+    $('#pdi-section-nav').querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => scrollToBlock(btn.dataset.target));
     });
   }
@@ -1345,6 +1345,7 @@
     const homeView = $('#home-view');
     const dataView = $('#data-view');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
+    const pdiSectionNav = $('#pdi-section-nav-label'), pdiSectionNavList = $('#pdi-section-nav');
     const energiaIndustrialView = $('#energia-industrial-view');
     const pdiView = $('#pdi-view');
     const relatoriosView = $('#relatorios-view');
@@ -1352,12 +1353,15 @@
 
     function applyVisibility() {
       const isData = state.view === '2451' || state.view === '2452';
+      const isPdi = state.view === 'pdi';
       homeView.hidden = state.view !== 'home';
       dataView.hidden = !isData;
       sectionNav.style.display = isData ? '' : 'none';
       sectionNavList.style.display = isData ? '' : 'none';
+      pdiSectionNav.style.display = isPdi ? '' : 'none';
+      pdiSectionNavList.style.display = isPdi ? '' : 'none';
       energiaIndustrialView.hidden = state.view !== 'energia-industrial';
-      pdiView.hidden = state.view !== 'pdi';
+      pdiView.hidden = !isPdi;
       relatoriosView.hidden = state.view !== 'relatorios';
       referenciasView.hidden = state.view !== 'referencias';
     }
