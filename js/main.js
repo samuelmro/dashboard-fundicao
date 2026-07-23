@@ -1335,13 +1335,16 @@
     });
   }
 
-  // Duas listas de botões: sector-tabs (2451/2452) e view-tabs (home) + foot-tabs
-  // (pdi/relatorios/referencias) formam juntas as 6 "vistas" mutuamente exclusivas.
+  // view-tabs (home) + sector-tabs (2451/2452) + foot-tabs-top/bottom (energia
+  // industrial/pdi/relatorios/referencias, partido em dois grupos só pro
+  // submenu de setores de PD&I poder ficar colado embaixo do botão PD&I,
+  // igual ao "Nesta seção" colado embaixo de "Setor") formam juntas as 6
+  // "vistas" mutuamente exclusivas.
   // home fica vazia (reservada para conteúdo futuro); 2451/2452 mostram o
   // painel de dados (trocando o setor); pdi/relatorios/referencias trocam para
   // uma página estática.
   function setupViewTabs() {
-    const allBtns = Array.from(document.querySelectorAll('#view-tabs button, #sector-tabs button, #foot-tabs button'));
+    const allBtns = Array.from(document.querySelectorAll('#view-tabs button, #sector-tabs button, #foot-tabs-top button, #foot-tabs-bottom button'));
     const homeView = $('#home-view');
     const dataView = $('#data-view');
     const sectionNav = $('#section-nav-label'), sectionNavList = $('#section-nav');
