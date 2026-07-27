@@ -343,6 +343,14 @@ a:hover { color: var(--accent); }
 
 /* chart svg */
 .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Estudos especiais: essas 4 leituras usam .exhibit-block (largura total),
+   diferente do resto do painel (onde full-width é só pra tabela). O SVG do
+   gráfico mantém a proporção de design (600 de largura x altura definida em
+   JS) e estica a altura junto quando o container é muito largo, ficando
+   desproporcional. Trava a largura pra manter a proporção pretendida. */
+#ee-chart-exposicao-china, #ee-chart-bndes-percapita,
+#ee-chart-produtividade, #ee-chart-producao-emprego { max-width: 700px; }
 .chart-svg .axis-label { fill: var(--text-muted); font-size: 10px; }
 .chart-svg .hbar-label { fill: var(--text-secondary); font-size: 9.5px; }
 .chart-svg .hbar-val { fill: var(--text-primary); font-size: 9.5px; font-variant-numeric: tabular-nums; }
