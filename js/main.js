@@ -895,6 +895,18 @@
     $('#ee-evidence-rodrik').innerHTML = (ultEmprego && ultProd && catRodrik.length)
       ? `Desde ${catRodrik[0]}, o emprego do setor está em <strong>${fmt.full1(ultEmprego.valor)}</strong> (base 100) e a produção da metalurgia em <strong>${fmt.full1(ultProd.valor)}</strong> — as duas linhas não precisam andar juntas, e isso é esperado num setor que ganha produtividade.`
       : '';
+
+    // Panorama do setor: resumo executivo no topo da seção, sintetizando os
+    // 5 achados acima com os mesmos números já calculados (conclusão
+    // primeiro, detalhe depois — mesmo princípio de um research note).
+    $('#ee-sumario-texto').innerHTML = `Onde a concorrência aperta, para onde vai o crédito, como o setor está estruturado e o que isso diz sobre produtividade e emprego: um retrato de <strong>${s.label}</strong> a partir do dado público, sem filtro.`;
+    const bullets = [];
+    if (topExp) bullets.push(`<strong>Concorrência externa:</strong> ${topExp.label} é o estado mais exposto ao choque de importação chinesa (${fmt.full1(topExp.value)} p.p.); a China ganhou ${fmt.full1(choqueNacional)} p.p. de participação nas importações do setor desde ${anoChinaBase}.`);
+    if (topInv) bullets.push(`<strong>Crédito:</strong> ${topInv.label} concentra o maior desembolso do BNDES por vínculo (${fmt.brl(topInv.value)} por trabalhador) — volume de crédito não é sinônimo de geração de emprego.`);
+    if (exportUf[0] && topExportShare != null) bullets.push(`<strong>Estrutura:</strong> a exportação é concentrada — ${exportUf[0].nome_uf} responde por ${fmt.full1(topExportShare)}% do valor exportado em ${anoExpUf}.`);
+    if (maiorQueda != null && maiorAlta != null) bullets.push(`<strong>Produtividade:</strong> a Fundição já oscilou de ${fmt.full1(maiorQueda)}% a +${fmt.full1(maiorAlta)}% de um ano para o outro.`);
+    if (ultEmprego && ultProd) bullets.push(`<strong>Emprego x produção:</strong> desde ${catRodrik[0]}, emprego em ${fmt.full1(ultEmprego.valor)} e produção da metalurgia em ${fmt.full1(ultProd.valor)} (base 100) — trajetórias que não precisam coincidir.`);
+    $('#ee-sumario-bullets').innerHTML = bullets.map(b => `<li>${b}</li>`).join('');
   }
 
   // ---------------------------------------------------------------------
@@ -1551,7 +1563,7 @@
     { target: 'block-comex', num: '05', title: 'Comércio exterior', sub: 'Exportação e importação, Comex e Comtrade.' },
     { target: 'block-bndes', num: '06', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
     { target: 'block-decom', num: '07', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
-    { target: 'block-estudos-especiais', num: '08', title: 'Estudos especiais', sub: 'Cinco modelos econômicos consagrados, aplicados aos dados do setor.' },
+    { target: 'block-estudos-especiais', num: '08', title: 'Estudos especiais', sub: 'Panorama do setor: concorrência, crédito, estrutura, produtividade e emprego.' },
     { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
   ];
   function renderSectorSummary() {
