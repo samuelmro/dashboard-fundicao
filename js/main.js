@@ -794,6 +794,24 @@
     const anoChinaBase = Math.min(...china.map(r => r.ano)), anoChinaFim = Math.max(...china.map(r => r.ano));
     const chinaBase = china.find(r => r.ano === anoChinaBase), chinaFim = china.find(r => r.ano === anoChinaFim);
     const choqueNacional = (chinaBase && chinaFim) ? chinaPct(chinaFim) - chinaPct(chinaBase) : 0;
+
+    // Contexto adicional: concentração das importações entre os principais
+    // fornecedores (não só o efeito China isolado) e, pra ferro e aço, as
+    // medidas de defesa comercial em vigor (dado de outra seção do painel).
+    const impTop = s.comex.top_paises_latest.importacao;
+    const impAno = s.comex.top_paises_latest.ano;
+    const impTop10Total = impTop.reduce((a, r) => a + r.valor_usd, 0);
+    const chinaImpTop = impTop.find(r => r.pais === 'China');
+    const pctChinaImpAtual = (chinaImpTop && impTop10Total) ? (chinaImpTop.valor_usd / impTop10Total) * 100 : null;
+    const decomAtivas = state.sector === '2451' ? sh.decom.filter(d => classifyDecomStatus(d.status).label === 'Medida ativa').length : null;
+    $('#ee-analise-china').innerHTML = (pctChinaImpAtual != null
+      ? `Em ${impAno}, a China já responde por <strong>${fmt.full1(pctChinaImpAtual)}%</strong> das importações do setor entre os 10 maiores fornecedores, o parceiro comercial mais relevante nessa ponta. `
+      : '')
+      + (state.sector === '2451'
+        ? `O Brasil mantém hoje <strong>${decomAtivas}</strong> medida${decomAtivas === 1 ? '' : 's'} de defesa comercial em vigor para produtos do setor, sinal de que essa pressão já é tratada como problema estrutural. `
+        : `Não há medidas de defesa comercial catalogadas para não ferrosos nesta base, o que deixa o setor sem essa camada de proteção caso a pressão se intensifique. `)
+      + `O gráfico a seguir isola o efeito específico da China, ponderando o peso de cada estado no emprego do setor pela intensidade desse choque desde ${anoChinaBase}.`;
+
     // Corta em 0,05 p.p. (não só > 0): um valor entre 0 e 0,05 arredonda pra
     // "0,0 p.p." no rótulo (fmt.full1), o que parecia estado sem dado — e
     // limita a 8 barras pra caber sem rolagem, mesmo padrão do resto do painel.
@@ -812,6 +830,21 @@
     // 2) Investimento (BNDES per capita) x emprego (Acemoglu & Restrepo, 2020, proxy).
     const anoFimVinc = Math.max(...anosRais);
     const vincFimPorUf = new Map(s.rais.uf_yearly.filter(r => r.ano === anoFimVinc).map(r => [r.uf, r.vinculos]));
+
+    // Contexto adicional: tamanho e concentração do crédito, não só o
+    // recorte por vínculo. totalPorteBn/grandePctBn são reaproveitados mais
+    // abaixo, no resumo executivo do topo da seção.
+    const bndesHistorico = s.bndes.yearly.reduce((a, r) => a + (r.valor_desembolsado || 0), 0);
+    const bndesRecentes = s.bndes.yearly.slice(-3);
+    const bndesMediaRecente = bndesRecentes.length ? bndesRecentes.reduce((a, r) => a + (r.valor_desembolsado || 0), 0) / bndesRecentes.length : null;
+    const totalPorteBn = {};
+    s.bndes.porte_total.forEach(p => { totalPorteBn[p.porte] = p.valor_desembolsado; });
+    const totalGeralBn = Object.values(totalPorteBn).reduce((a, v) => a + v, 0);
+    const grandePctBn = totalGeralBn ? ((totalPorteBn.GRANDE || 0) / totalGeralBn) * 100 : null;
+    $('#ee-analise-bndes').innerHTML = `O setor recebeu <strong>${fmt.brl(bndesHistorico)}</strong> em desembolsos do BNDES entre ${s.bndes.yearly[0].ano} e ${last(s.bndes.yearly).ano}, com média de <strong>${fmt.brl(bndesMediaRecente)}</strong> ao ano nos 3 exercícios mais recentes. `
+      + (grandePctBn != null ? `Desse total, <strong>${fmt.full1(grandePctBn)}%</strong> foi para empresas de grande porte, uma concentração que limita o acesso das empresas menores a essa linha de financiamento. ` : '')
+      + `O gráfico a seguir olha esse crédito pela ótica do emprego, dividindo o total acumulado de cada estado pelos vínculos mais recentes, para checar se o crédito realmente se traduziu em mais gente contratada.`;
+
     const percapita = s.bndes.uf_total
       .map(r => { const v = vincFimPorUf.get(r.uf); return v > 0 ? { uf: r.uf, label: r.nome_uf, value: r.valor_desembolsado / v } : null; })
       .filter(Boolean).sort((a, b) => b.value - a.value).slice(0, 8);
@@ -831,6 +864,23 @@
     const ORDEM_PORTE_TAM = ['De 1 a 4', 'De 5 a 9', 'De 10 a 19', 'De 20 a 49', 'De 50 a 99',
       'De 100 a 249', 'De 250 a 499', 'De 500 a 999', '1000 ou Mais'];
     const tamOrdenado = ORDEM_PORTE_TAM.map(faixa => tamLatest.find(r => r.faixa === faixa)).filter(Boolean);
+
+    // Contexto adicional: consolidação do número de estabelecimentos ao longo
+    // do tempo e escolaridade da mão de obra (outra seção do painel), que
+    // ajudam a explicar a heterogeneidade retratada nos dois gráficos abaixo.
+    const totBase = s.rais.uf_yearly_total.find(r => r.ano === anoBaseRais);
+    const totFim = s.rais.uf_yearly_total.find(r => r.ano === anoFimVinc);
+    const varEstab = (totBase && totBase.estabelecimentos) ? ((totFim.estabelecimentos - totBase.estabelecimentos) / totBase.estabelecimentos) * 100 : null;
+    const esc = s.rais.escolaridade_latest;
+    const totalEsc = esc.items.reduce((a, i) => a + i.frequencia, 0);
+    const baixaEsc = esc.items.filter(i => /analfabeto|fundamental|5ª/i.test(i.categoria)).reduce((a, i) => a + i.frequencia, 0);
+    const pctBaixaEsc = totalEsc ? (baixaEsc / totalEsc) * 100 : null;
+    $('#ee-analise-melitz').innerHTML = (totBase && totFim
+      ? `O número de estabelecimentos do setor foi de <strong>${fmt.full(totBase.estabelecimentos)}</strong> em ${anoBaseRais} para <strong>${fmt.full(totFim.estabelecimentos)}</strong> em ${anoFimVinc}, uma variação de ${fmt.full1(varEstab)}%, coerente com uma indústria de capital intensivo, em que crescer costuma significar produzir mais por planta, não necessariamente abrir mais unidades. `
+      : '')
+      + (pctBaixaEsc != null ? `Some a isso o fato de que <strong>${fmt.full1(pctBaixaEsc)}%</strong> da mão de obra (${esc.ano}) ainda tem no máximo o ensino fundamental completo, o que ajuda a explicar por que a adoção de processos mais automatizados avança devagar. ` : '')
+      + `Os dois gráficos a seguir mostram essa heterogeneidade por outro ângulo, como as empresas se distribuem por porte e como a atividade exportadora, que exige escala mínima, se concentra num grupo bem mais restrito de estados.`;
+
     barChart($('#ee-chart-porte'), {
       categories: tamOrdenado.map(r => r.faixa), formatY: fmt.full, height: 260,
       series: [{ label: 'Estabelecimentos', color: 'var(--series-2)', values: tamOrdenado.map(r => r.estabelecimentos) }],
@@ -854,6 +904,19 @@
     // 4) Instabilidade da produtividade (Hsieh & Klenow, 2009, proxy agregada).
     const finF = sh.financeiro.fundicao_24_5;
     const produtividadeF = finF.map(r => (r.vti != null && r.pessoal_ocupado) ? (r.vti * 1000) / r.pessoal_ocupado : null);
+
+    // Contexto adicional: produtividade da Fundição frente à Metalurgia como
+    // um todo (grupo mais amplo, mesma fonte), pra dar escala ao número.
+    const finMetal = sh.financeiro.metalurgia_24;
+    const metalLatest = last(finMetal);
+    const prodMetalLatest = (metalLatest && metalLatest.vti != null && metalLatest.pessoal_ocupado) ? (metalLatest.vti * 1000) / metalLatest.pessoal_ocupado : null;
+    const prodFundLatest = produtividadeF[produtividadeF.length - 1];
+    const gapProd = (prodMetalLatest && prodFundLatest) ? ((prodFundLatest - prodMetalLatest) / prodMetalLatest) * 100 : null;
+    $('#ee-analise-produtividade').innerHTML = (prodFundLatest != null && prodMetalLatest != null
+      ? `Em ${last(finF).ano}, a produtividade da Fundição (VTI por pessoal ocupado) chegou a <strong>${fmt.brl(prodFundLatest)}</strong>, ${gapProd >= 0 ? 'acima' : 'abaixo'} da média da Metalurgia como um todo, em <strong>${fmt.brl(prodMetalLatest)}</strong>, uma diferença de ${fmt.full1(Math.abs(gapProd))}%. `
+      : '')
+      + `O gráfico a seguir mostra a instabilidade dessa série ano a ano, o retrato mais próximo que os dados públicos permitem de má alocação de recursos dentro do setor.`;
+
     lineChart($('#ee-chart-produtividade'), {
       categories: finF.map(r => r.ano), formatY: fmt.brl, height: 260,
       series: [{ label: 'VTI / pessoal ocupado (Fundição 24.5)', color: 'var(--series-3)', values: produtividadeF, area: true }],
@@ -883,6 +946,18 @@
     const producaoIdx = anosProd.map((a, i) => ({ ano: a, valor: baseProdVal ? (prodAnualBruta[i] / baseProdVal) * 100 : null }));
     const anoInicioRodrik = Math.max(anoBaseTot, anoBaseProd);
     const catRodrik = annualCategories([empregoIdx, producaoIdx]).filter(a => a >= anoInicioRodrik);
+
+    // Contexto adicional: variação de emprego numa janela mais curta (últimos
+    // ~5 anos), pra separar o movimento recente da tendência de duas décadas.
+    const vincHistorico = s.rais.uf_yearly_total;
+    const vinc5 = vincHistorico[Math.max(0, vincHistorico.length - 6)];
+    const vincAtualTot = last(vincHistorico);
+    const varEmprego5 = (vinc5 && vinc5.vinculos) ? ((vincAtualTot.vinculos - vinc5.vinculos) / vinc5.vinculos) * 100 : null;
+    $('#ee-analise-rodrik').innerHTML = (varEmprego5 != null
+      ? `Nos últimos ${vincAtualTot.ano - vinc5.ano} anos, o emprego formal do setor ${varEmprego5 >= 0 ? 'cresceu' : 'recuou'} ${fmt.full1(Math.abs(varEmprego5))}%, enquanto a produção física da metalurgia (referência nacional, não exclusiva do setor) segue uma trajetória própria, historicamente menos volátil. `
+      : '')
+      + `O gráfico a seguir indexa as duas séries a partir de ${anoInicioRodrik}, o que permite comparar o ritmo de cada uma ao longo do tempo sem depender da unidade de medida original de nenhuma delas.`;
+
     lineChart($('#ee-chart-producao-emprego'), {
       categories: catRodrik, formatY: n => fmt.full1(n), height: 260,
       series: [
@@ -918,11 +993,7 @@
     const comexLatest = last(s.comex.yearly);
     const saldoComex = comexLatest ? comexLatest.exportacao_usd - comexLatest.importacao_usd : null;
 
-    const totalPorteBn = {};
-    s.bndes.porte_total.forEach(p => { totalPorteBn[p.porte] = p.valor_desembolsado; });
-    const totalGeralBn = Object.values(totalPorteBn).reduce((a, v) => a + v, 0);
-    const grandePctBn = totalGeralBn ? ((totalPorteBn.GRANDE || 0) / totalGeralBn) * 100 : null;
-
+    // totalPorteBn/grandePctBn já foram calculados lá em cima, na análise de crédito.
     $('#ee-sumario-texto').innerHTML = `${s.label} fechou ${anoAcoRef} com ${fmt.compact(producaoAnualRef)} toneladas de aço bruto produzidas no país e margem operacional de ${fmt.full1(margemLatest)}% na Fundição (24.5) em ${finLatest.ano}. `
       + `O emprego formal soma ${fmt.full(vincLatest.vinculos)} vínculos em ${vincLatest.ano}, uma variação de ${fmt.full1(varEmpregoLongo)}% desde ${vincBaseTotal.ano}, e o CAGED mostra saldo de ${fmt.full(saldo12m)} contratações líquidas nos últimos 12 meses. `
       + `O comércio exterior fechou ${comexLatest.ano} em ${saldoComex >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldoComex))}, com a concorrência chinesa como principal pressão externa, enquanto o crédito do BNDES para o setor segue concentrado nas grandes empresas, que respondem por ${fmt.full1(grandePctBn)}% do total desembolsado. `

@@ -350,7 +350,7 @@ a:hover { color: var(--accent); }
    JS) e estica a altura junto quando o container é muito largo, ficando
    desproporcional. Trava a largura pra manter a proporção pretendida. */
 #ee-chart-exposicao-china, #ee-chart-bndes-percapita,
-#ee-chart-produtividade, #ee-chart-producao-emprego { max-width: 700px; }
+#ee-chart-produtividade, #ee-chart-producao-emprego { max-width: 860px; width: 100%; margin: 0 auto; }
 .chart-svg .axis-label { fill: var(--text-muted); font-size: 10px; }
 .chart-svg .hbar-label { fill: var(--text-secondary); font-size: 9.5px; }
 .chart-svg .hbar-val { fill: var(--text-primary); font-size: 9.5px; font-variant-numeric: tabular-nums; }
