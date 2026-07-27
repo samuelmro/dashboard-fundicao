@@ -517,7 +517,71 @@
       <span class="section-num">08</span>
       <h2>Estudos especiais</h2>
     </div>
-    <p class="pdi-intro">Em construção.</p>
+    <p class="pdi-intro">Cinco leituras do setor a partir de modelos consagrados da economia, aplicados aos mesmos dados que o resto deste painel já usa. Não são as regressões originais dos papers (exigiriam microdado de empresa que não existe publicamente no Brasil); é a mesma lógica de cada modelo, alimentada com números reais, em gráficos simples, sem jargão.</p>
+
+    <h4>1. Quem sentiu mais a concorrência chinesa</h4>
+    <p class="pdi-note">Autor, Dorn &amp; Hanson (2013) mostraram que o choque de importação chinesa não afeta todo mundo do mesmo jeito: regiões onde o setor emprega proporcionalmente mais gente sentem o impacto de forma mais forte. Aplicando a mesma ideia aos estados brasileiros, a exposição varia bastante de um lugar para outro.</p>
+    <div class="exhibit-block">
+      <div id="ee-chart-exposicao-china"></div>
+      <div class="exhibit-caption">
+        <div class="exhibit-title">Exposição ao choque de importação chinesa, por estado</div>
+        <div class="exhibit-sub">Peso do estado no emprego do setor x variação da participação chinesa nas importações, do primeiro ao último ano disponível</div>
+      </div>
+    </div>
+    <p class="pdi-note" id="ee-evidence-china"></p>
+
+    <h4>2. Crédito não é a mesma coisa que emprego</h4>
+    <p class="pdi-note">Acemoglu &amp; Restrepo (2020) relacionam investimento em automação à variação de emprego local. Não existe dado de robôs por estado no Brasil, então uso o desembolso do BNDES por vínculo como proxy de intensidade de investimento (é uma aproximação mais fraca que o dado original). O padrão que importa: mais crédito não é garantia de mais emprego.</p>
+    <div class="exhibit-block">
+      <div id="ee-chart-bndes-percapita"></div>
+      <div class="exhibit-caption">
+        <div class="exhibit-title">Desembolso do BNDES por vínculo, por estado</div>
+        <div class="exhibit-sub">Acumulado 2002-2026 dividido pelos vínculos do ano mais recente, só estados com desembolso registrado</div>
+      </div>
+    </div>
+    <p class="pdi-note" id="ee-evidence-bndes"></p>
+
+    <h4>3. Nem toda fundição é igual</h4>
+    <p class="pdi-note">Melitz (2003) explica por que poucas empresas grandes convivem com muitas pequenas: só as mais produtivas aguentam o custo fixo de vender para fora. Nos dados do setor, a distribuição de estabelecimentos por porte e a concentração da exportação em poucos estados contam a mesma história.</p>
+    <div class="exhibit-grid">
+      <div class="exhibit">
+        <div id="ee-chart-porte"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">Estabelecimentos por porte</div>
+          <div class="exhibit-sub">Ano mais recente disponível na RAIS</div>
+        </div>
+      </div>
+      <div class="exhibit">
+        <div id="ee-chart-export-uf"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">Quem exporta: estados com maior valor exportado</div>
+          <div class="exhibit-sub">US$ FOB, ano mais recente, só estados com exportação registrada</div>
+        </div>
+      </div>
+    </div>
+    <p class="pdi-note" id="ee-evidence-melitz"></p>
+
+    <h4>4. A produtividade do setor não anda em linha reta</h4>
+    <p class="pdi-note">Hsieh &amp; Klenow (2009) usam a dispersão de produtividade entre empresas para medir o quanto uma economia perde por má alocação de recursos. Sem dado por empresa, uso a instabilidade da produtividade agregada da Fundição como um sinal, bem mais fraco que o original, do mesmo tipo de problema.</p>
+    <div class="exhibit-block">
+      <div id="ee-chart-produtividade"></div>
+      <div class="exhibit-caption">
+        <div class="exhibit-title">Produtividade da Fundição (24.5) ao longo do tempo</div>
+        <div class="exhibit-sub">VTI por pessoal ocupado, PIA/IBGE. Fundição combina 2451+2452 nesta fonte.</div>
+      </div>
+    </div>
+    <p class="pdi-note" id="ee-evidence-produtividade"></p>
+
+    <h4>5. Produção e emprego nem sempre andam juntos</h4>
+    <p class="pdi-note">Rodrik (2016) descreve países que perdem participação industrial no emprego antes mesmo de ficarem ricos. Aplicando a mesma pergunta à história do próprio setor: produção e emprego crescem sempre na mesma proporção, ou o setor vem produzindo mais com relativamente menos gente? Isso não é sinal de fracasso; é o que se espera de um setor que ganha produtividade.</p>
+    <div class="exhibit-block">
+      <div id="ee-chart-producao-emprego"></div>
+      <div class="exhibit-caption">
+        <div class="exhibit-title">Produção e emprego, indexados (base 100)</div>
+        <div class="exhibit-sub">Emprego do setor (RAIS) x produção física da metalurgia (IBGE, nível de divisão, não exclusiva de 2451/2452)</div>
+      </div>
+    </div>
+    <p class="pdi-note" id="ee-evidence-rodrik"></p>
   </section>
 
   <!-- ============ GARGALOS ============ -->

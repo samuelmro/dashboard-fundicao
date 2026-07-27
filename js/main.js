@@ -770,6 +770,131 @@
   }
 
   // ---------------------------------------------------------------------
+  // 08 — Estudos especiais: mesma lógica de 5 modelos consagrados da
+  // economia (Autor-Dorn-Hanson, Acemoglu-Restrepo, Melitz, Hsieh-Klenow,
+  // Rodrik), alimentada com os dados já tratados no restante do painel.
+  // Não são as regressões originais (exigiriam microdado de empresa que não
+  // existe publicamente no Brasil) — são gráficos simples (sem dispersão
+  // nem regressão), pensados pra quem não é economista de formação. Nos
+  // rankings, estados sem dado são excluídos em vez de aparecer zerados.
+  // ---------------------------------------------------------------------
+  function renderEstudosEspeciais() {
+    const s = csS();
+    const sh = shared();
+
+    // 1) Exposição ao choque chinês, por estado (Autor, Dorn & Hanson, 2013):
+    // peso do estado no emprego do setor (ano-base) x variação da participação
+    // chinesa nas importações do setor (primeiro ao último ano com dado).
+    const anosRais = s.rais.uf_yearly.map(r => r.ano);
+    const anoBaseRais = Math.min(...anosRais);
+    const baseUf = s.rais.uf_yearly.filter(r => r.ano === anoBaseRais && r.vinculos > 0);
+    const vincNacionalBase = baseUf.reduce((a, r) => a + r.vinculos, 0);
+    const china = s.comex.importacao_china_resto_yearly;
+    const chinaPct = r => (r.china_usd + r.resto_usd) ? (r.china_usd / (r.china_usd + r.resto_usd)) * 100 : null;
+    const anoChinaBase = Math.min(...china.map(r => r.ano)), anoChinaFim = Math.max(...china.map(r => r.ano));
+    const chinaBase = china.find(r => r.ano === anoChinaBase), chinaFim = china.find(r => r.ano === anoChinaFim);
+    const choqueNacional = (chinaBase && chinaFim) ? chinaPct(chinaFim) - chinaPct(chinaBase) : 0;
+    const exposicaoUf = baseUf.map(r => ({
+      uf: r.uf, label: r.nome_uf, value: vincNacionalBase ? (r.vinculos / vincNacionalBase) * choqueNacional : 0,
+    })).filter(r => r.value > 0).sort((a, b) => b.value - a.value);
+    hBarChart($('#ee-chart-exposicao-china'), {
+      items: exposicaoUf.map(r => ({ uf: r.uf, label: r.label, value: r.value, color: 'var(--series-6)' })),
+      formatVal: n => fmt.full1(n) + ' p.p.',
+    });
+    const topExp = exposicaoUf[0];
+    $('#ee-evidence-china').innerHTML = topExp
+      ? `<strong>${topExp.label}</strong> é o estado do setor mais exposto ao choque chinês (indicador de <strong>${fmt.full1(topExp.value)} pontos percentuais</strong>). No total, a China ganhou <strong>${fmt.full1(choqueNacional)} p.p.</strong> de participação nas importações do setor entre ${anoChinaBase} e ${anoChinaFim}.`
+      : '';
+
+    // 2) Investimento (BNDES per capita) x emprego (Acemoglu & Restrepo, 2020, proxy).
+    const anoFimVinc = Math.max(...anosRais);
+    const vincFimPorUf = new Map(s.rais.uf_yearly.filter(r => r.ano === anoFimVinc).map(r => [r.uf, r.vinculos]));
+    const percapita = s.bndes.uf_total
+      .map(r => { const v = vincFimPorUf.get(r.uf); return v > 0 ? { uf: r.uf, label: r.nome_uf, value: r.valor_desembolsado / v } : null; })
+      .filter(Boolean).sort((a, b) => b.value - a.value);
+    hBarChart($('#ee-chart-bndes-percapita'), {
+      items: percapita.map(r => ({ uf: r.uf, label: r.label, value: r.value, color: 'var(--series-8)' })),
+      formatVal: fmt.brl,
+    });
+    const topInv = percapita[0];
+    $('#ee-evidence-bndes').innerHTML = topInv
+      ? `<strong>${topInv.label}</strong> teve o maior desembolso do BNDES por vínculo do setor: <strong>${fmt.brl(topInv.value)}</strong> por trabalhador, acumulado entre 2002 e 2026 — não necessariamente o estado que mais cresceu em emprego no período.`
+      : '';
+
+    // 3) Heterogeneidade de firmas (Melitz, 2003): distribuição por porte +
+    // concentração geográfica de quem exporta.
+    const anoTam = Math.max(...s.rais.tamanho_yearly.map(r => r.ano));
+    const tamLatest = s.rais.tamanho_yearly.filter(r => r.ano === anoTam);
+    const ORDEM_PORTE_TAM = ['De 1 a 4', 'De 5 a 9', 'De 10 a 19', 'De 20 a 49', 'De 50 a 99',
+      'De 100 a 249', 'De 250 a 499', 'De 500 a 999', '1000 ou Mais'];
+    const tamOrdenado = ORDEM_PORTE_TAM.map(faixa => tamLatest.find(r => r.faixa === faixa)).filter(Boolean);
+    barChart($('#ee-chart-porte'), {
+      categories: tamOrdenado.map(r => r.faixa), formatY: fmt.full, height: 260,
+      series: [{ label: 'Estabelecimentos', color: 'var(--series-2)', values: tamOrdenado.map(r => r.estabelecimentos) }],
+    });
+    const anoExpUf = Math.max(...s.comex.uf_yearly.map(r => r.ano));
+    const exportUfAno = s.comex.uf_yearly.filter(r => r.ano === anoExpUf && r.fluxo === 'Exportação' && r.valor_usd > 0);
+    const exportUf = [...exportUfAno].sort((a, b) => b.valor_usd - a.valor_usd).slice(0, 10);
+    hBarChart($('#ee-chart-export-uf'), {
+      items: exportUf.map(r => ({ uf: r.uf, label: r.nome_uf, value: r.valor_usd, color: 'var(--series-4)' })),
+      formatVal: fmt.usd,
+    });
+    const totalEstab = tamOrdenado.reduce((a, r) => a + r.estabelecimentos, 0);
+    const pequenas = tamOrdenado.filter(r => ['De 1 a 4', 'De 5 a 9', 'De 10 a 19'].includes(r.faixa)).reduce((a, r) => a + r.estabelecimentos, 0);
+    const pctPequenas = totalEstab ? (pequenas / totalEstab) * 100 : null;
+    const totalExp = exportUfAno.reduce((a, r) => a + r.valor_usd, 0);
+    const topExportShare = (exportUf[0] && totalExp) ? (exportUf[0].valor_usd / totalExp) * 100 : null;
+    $('#ee-evidence-melitz').innerHTML =
+      (pctPequenas != null ? `<strong>${fmt.full1(pctPequenas)}%</strong> dos estabelecimentos do setor (${anoTam}) têm até 19 vínculos. ` : '') +
+      (exportUf[0] && topExportShare != null ? `Mas a exportação se concentra: <strong>${exportUf[0].nome_uf}</strong> sozinho responde por <strong>${fmt.full1(topExportShare)}%</strong> do valor exportado em ${anoExpUf}.` : '');
+
+    // 4) Instabilidade da produtividade (Hsieh & Klenow, 2009, proxy agregada).
+    const finF = sh.financeiro.fundicao_24_5;
+    const produtividadeF = finF.map(r => (r.vti != null && r.pessoal_ocupado) ? (r.vti * 1000) / r.pessoal_ocupado : null);
+    lineChart($('#ee-chart-produtividade'), {
+      categories: finF.map(r => r.ano), formatY: fmt.brl, height: 260,
+      series: [{ label: 'VTI / pessoal ocupado (Fundição 24.5)', color: 'var(--series-3)', values: produtividadeF, area: true }],
+    });
+    const variacoes = [];
+    for (let i = 1; i < produtividadeF.length; i++) {
+      if (produtividadeF[i - 1]) variacoes.push(((produtividadeF[i] - produtividadeF[i - 1]) / produtividadeF[i - 1]) * 100);
+    }
+    const maiorQueda = variacoes.length ? Math.min(...variacoes) : null;
+    const maiorAlta = variacoes.length ? Math.max(...variacoes) : null;
+    $('#ee-evidence-produtividade').innerHTML = (maiorQueda != null && maiorAlta != null)
+      ? `Ano a ano, a produtividade da Fundição já variou de <strong>${fmt.full1(maiorQueda)}%</strong> a <strong>+${fmt.full1(maiorAlta)}%</strong> — uma oscilação grande demais para ser só ciclo de preço de matéria-prima.`
+      : '';
+
+    // 5) Produção x emprego, indexados (Rodrik, 2016, reaplicado ao setor).
+    const anoBaseTot = Math.min(...s.rais.uf_yearly_total.map(r => r.ano));
+    const vincBaseTot = s.rais.uf_yearly_total.find(r => r.ano === anoBaseTot).vinculos;
+    const empregoIdx = s.rais.uf_yearly_total.map(r => ({ ano: r.ano, valor: vincBaseTot ? (r.vinculos / vincBaseTot) * 100 : null }));
+    const producaoPorAno = {};
+    sh.producao.metalurgia_indice.forEach(r => {
+      if (r.indice_dessaz != null) (producaoPorAno[r.ano] = producaoPorAno[r.ano] || []).push(r.indice_dessaz);
+    });
+    const anosProd = Object.keys(producaoPorAno).map(Number).sort((a, b) => a - b);
+    const prodAnualBruta = anosProd.map(a => producaoPorAno[a].reduce((x, y) => x + y, 0) / producaoPorAno[a].length);
+    const anoBaseProd = anosProd[0];
+    const baseProdVal = prodAnualBruta[0];
+    const producaoIdx = anosProd.map((a, i) => ({ ano: a, valor: baseProdVal ? (prodAnualBruta[i] / baseProdVal) * 100 : null }));
+    const anoInicioRodrik = Math.max(anoBaseTot, anoBaseProd);
+    const catRodrik = annualCategories([empregoIdx, producaoIdx]).filter(a => a >= anoInicioRodrik);
+    lineChart($('#ee-chart-producao-emprego'), {
+      categories: catRodrik, formatY: n => fmt.full1(n), height: 260,
+      series: [
+        { label: 'Emprego (índice, base 100)', color: 'var(--series-2)', values: seriesAnnual(empregoIdx, 'valor', catRodrik) },
+        { label: 'Produção física, metalurgia (índice, base 100)', color: 'var(--series-6)', values: seriesAnnual(producaoIdx, 'valor', catRodrik) },
+      ],
+    });
+    const ultEmprego = last(empregoIdx.filter(r => catRodrik.includes(r.ano)));
+    const ultProd = last(producaoIdx.filter(r => catRodrik.includes(r.ano) && r.valor != null));
+    $('#ee-evidence-rodrik').innerHTML = (ultEmprego && ultProd && catRodrik.length)
+      ? `Desde ${catRodrik[0]}, o emprego do setor está em <strong>${fmt.full1(ultEmprego.valor)}</strong> (base 100) e a produção da metalurgia em <strong>${fmt.full1(ultProd.valor)}</strong> — as duas linhas não precisam andar juntas, e isso é esperado num setor que ganha produtividade.`
+      : '';
+  }
+
+  // ---------------------------------------------------------------------
   // Gargalos do setor
   // ---------------------------------------------------------------------
   function renderGargalos() {
@@ -1423,7 +1548,7 @@
     { target: 'block-comex', num: '05', title: 'Comércio exterior', sub: 'Exportação e importação, Comex e Comtrade.' },
     { target: 'block-bndes', num: '06', title: 'BNDES', sub: 'Desembolsos por UF, porte e instrumento.' },
     { target: 'block-decom', num: '07', title: 'DECOM', sub: 'Medidas de defesa comercial em vigor.' },
-    { target: 'block-estudos-especiais', num: '08', title: 'Estudos especiais', sub: 'Em construção.' },
+    { target: 'block-estudos-especiais', num: '08', title: 'Estudos especiais', sub: 'Cinco modelos econômicos consagrados, aplicados aos dados do setor.' },
     { target: 'block-gargalos', num: '·', title: 'Gargalos do setor', sub: 'Pontos identificados a partir dos dados.' },
   ];
   function renderSectorSummary() {
@@ -1433,7 +1558,7 @@
 
   function renderCharts() {
     renderProducao(); renderFinanceiro(); renderEmprego(); renderCaged();
-    renderComex(); renderBndes(); renderDecom();
+    renderComex(); renderBndes(); renderDecom(); renderEstudosEspeciais();
   }
   function renderAll() {
     renderCharts();
