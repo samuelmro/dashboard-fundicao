@@ -794,9 +794,12 @@
     const anoChinaBase = Math.min(...china.map(r => r.ano)), anoChinaFim = Math.max(...china.map(r => r.ano));
     const chinaBase = china.find(r => r.ano === anoChinaBase), chinaFim = china.find(r => r.ano === anoChinaFim);
     const choqueNacional = (chinaBase && chinaFim) ? chinaPct(chinaFim) - chinaPct(chinaBase) : 0;
+    // Corta em 0,05 p.p. (não só > 0): um valor entre 0 e 0,05 arredonda pra
+    // "0,0 p.p." no rótulo (fmt.full1), o que parecia estado sem dado — e
+    // limita a 8 barras pra caber sem rolagem, mesmo padrão do resto do painel.
     const exposicaoUf = baseUf.map(r => ({
       uf: r.uf, label: r.nome_uf, value: vincNacionalBase ? (r.vinculos / vincNacionalBase) * choqueNacional : 0,
-    })).filter(r => r.value > 0).sort((a, b) => b.value - a.value);
+    })).filter(r => r.value >= 0.05).sort((a, b) => b.value - a.value).slice(0, 8);
     hBarChart($('#ee-chart-exposicao-china'), {
       items: exposicaoUf.map(r => ({ uf: r.uf, label: r.label, value: r.value, color: 'var(--series-6)' })),
       formatVal: n => fmt.full1(n) + ' p.p.',
@@ -811,7 +814,7 @@
     const vincFimPorUf = new Map(s.rais.uf_yearly.filter(r => r.ano === anoFimVinc).map(r => [r.uf, r.vinculos]));
     const percapita = s.bndes.uf_total
       .map(r => { const v = vincFimPorUf.get(r.uf); return v > 0 ? { uf: r.uf, label: r.nome_uf, value: r.valor_desembolsado / v } : null; })
-      .filter(Boolean).sort((a, b) => b.value - a.value);
+      .filter(Boolean).sort((a, b) => b.value - a.value).slice(0, 8);
     hBarChart($('#ee-chart-bndes-percapita'), {
       items: percapita.map(r => ({ uf: r.uf, label: r.label, value: r.value, color: 'var(--series-8)' })),
       formatVal: fmt.brl,
