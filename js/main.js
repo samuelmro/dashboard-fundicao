@@ -821,7 +821,7 @@
     });
     const topInv = percapita[0];
     $('#ee-evidence-bndes').innerHTML = topInv
-      ? `<strong>${topInv.label}</strong> teve o maior desembolso do BNDES por vínculo do setor: <strong>${fmt.brl(topInv.value)}</strong> por trabalhador, acumulado entre 2002 e 2026 — não necessariamente o estado que mais cresceu em emprego no período.`
+      ? `<strong>${topInv.label}</strong> teve o maior desembolso do BNDES por vínculo do setor, <strong>${fmt.brl(topInv.value)}</strong> por trabalhador, acumulado entre 2002 e 2026, sem que isso signifique necessariamente o estado que mais cresceu em emprego no período.`
       : '';
 
     // 3) Heterogeneidade de firmas (Melitz, 2003): distribuição por porte +
@@ -849,7 +849,7 @@
     const topExportShare = (exportUf[0] && totalExp) ? (exportUf[0].valor_usd / totalExp) * 100 : null;
     $('#ee-evidence-melitz').innerHTML =
       (pctPequenas != null ? `<strong>${fmt.full1(pctPequenas)}%</strong> dos estabelecimentos do setor (${anoTam}) têm até 19 vínculos. ` : '') +
-      (exportUf[0] && topExportShare != null ? `Mas a exportação se concentra: <strong>${exportUf[0].nome_uf}</strong> sozinho responde por <strong>${fmt.full1(topExportShare)}%</strong> do valor exportado em ${anoExpUf}.` : '');
+      (exportUf[0] && topExportShare != null ? `Mas a exportação é concentrada, com <strong>${exportUf[0].nome_uf}</strong> respondendo sozinho por <strong>${fmt.full1(topExportShare)}%</strong> do valor exportado em ${anoExpUf}.` : '');
 
     // 4) Instabilidade da produtividade (Hsieh & Klenow, 2009, proxy agregada).
     const finF = sh.financeiro.fundicao_24_5;
@@ -865,7 +865,7 @@
     const maiorQueda = variacoes.length ? Math.min(...variacoes) : null;
     const maiorAlta = variacoes.length ? Math.max(...variacoes) : null;
     $('#ee-evidence-produtividade').innerHTML = (maiorQueda != null && maiorAlta != null)
-      ? `Ano a ano, a produtividade da Fundição já variou de <strong>${fmt.full1(maiorQueda)}%</strong> a <strong>+${fmt.full1(maiorAlta)}%</strong> — uma oscilação grande demais para ser só ciclo de preço de matéria-prima.`
+      ? `Ano a ano, a produtividade da Fundição já variou de <strong>${fmt.full1(maiorQueda)}%</strong> a <strong>+${fmt.full1(maiorAlta)}%</strong>, uma oscilação grande demais para ser só ciclo de preço de matéria-prima.`
       : '';
 
     // 5) Produção x emprego, indexados (Rodrik, 2016, reaplicado ao setor).
@@ -893,19 +893,47 @@
     const ultEmprego = last(empregoIdx.filter(r => catRodrik.includes(r.ano)));
     const ultProd = last(producaoIdx.filter(r => catRodrik.includes(r.ano) && r.valor != null));
     $('#ee-evidence-rodrik').innerHTML = (ultEmprego && ultProd && catRodrik.length)
-      ? `Desde ${catRodrik[0]}, o emprego do setor está em <strong>${fmt.full1(ultEmprego.valor)}</strong> (base 100) e a produção da metalurgia em <strong>${fmt.full1(ultProd.valor)}</strong> — as duas linhas não precisam andar juntas, e isso é esperado num setor que ganha produtividade.`
+      ? `Desde ${catRodrik[0]}, o emprego do setor está em <strong>${fmt.full1(ultEmprego.valor)}</strong> (base 100) e a produção da metalurgia em <strong>${fmt.full1(ultProd.valor)}</strong>, sem que as duas precisem andar juntas, o que é esperado num setor que ganha produtividade.`
       : '';
 
-    // Panorama do setor: resumo executivo no topo da seção, sintetizando os
-    // 5 achados acima com os mesmos números já calculados (conclusão
-    // primeiro, detalhe depois — mesmo princípio de um research note).
-    $('#ee-sumario-texto').innerHTML = `Onde a concorrência aperta, para onde vai o crédito, como o setor está estruturado e o que isso diz sobre produtividade e emprego: um retrato de <strong>${s.label}</strong> a partir do dado público, sem filtro.`;
+    // Panorama do setor: parágrafo de abertura com dados de todo o painel
+    // (produção, financeiro, emprego, CAGED, comex, BNDES), não só das 5
+    // leituras abaixo, seguido de uma frase de transição e dos achados em
+    // bullets. Texto corrido primeiro, números depois, como um research note.
+    const acoBrutoAnual = {};
+    sh.producao.aco_gusa.forEach(r => { if (r.aco_bruto != null) acoBrutoAnual[r.ano] = (acoBrutoAnual[r.ano] || 0) + r.aco_bruto; });
+    const anosAco = Object.keys(acoBrutoAnual).map(Number).sort((a, b) => a - b);
+    const anoAcoRef = anosAco.length > 1 ? anosAco[anosAco.length - 2] : anosAco[0];
+    const producaoAnualRef = anoAcoRef != null ? acoBrutoAnual[anoAcoRef] : null;
+
+    const finLatest = last(sh.financeiro.fundicao_24_5);
+    const margemLatest = (finLatest && finLatest.receita_liquida_total && finLatest.custos_despesas_totais != null)
+      ? ((finLatest.receita_liquida_total - finLatest.custos_despesas_totais) / finLatest.receita_liquida_total) * 100 : null;
+
+    const vincLatest = last(s.rais.uf_yearly_total);
+    const vincBaseTotal = s.rais.uf_yearly_total[0];
+    const varEmpregoLongo = (vincBaseTotal && vincBaseTotal.vinculos) ? ((vincLatest.vinculos - vincBaseTotal.vinculos) / vincBaseTotal.vinculos) * 100 : null;
+    const saldo12m = s.caged.saldo_monthly_national.slice(-12).reduce((a, r) => a + (r.saldo || 0), 0);
+
+    const comexLatest = last(s.comex.yearly);
+    const saldoComex = comexLatest ? comexLatest.exportacao_usd - comexLatest.importacao_usd : null;
+
+    const totalPorteBn = {};
+    s.bndes.porte_total.forEach(p => { totalPorteBn[p.porte] = p.valor_desembolsado; });
+    const totalGeralBn = Object.values(totalPorteBn).reduce((a, v) => a + v, 0);
+    const grandePctBn = totalGeralBn ? ((totalPorteBn.GRANDE || 0) / totalGeralBn) * 100 : null;
+
+    $('#ee-sumario-texto').innerHTML = `${s.label} fechou ${anoAcoRef} com ${fmt.compact(producaoAnualRef)} toneladas de aço bruto produzidas no país e margem operacional de ${fmt.full1(margemLatest)}% na Fundição (24.5) em ${finLatest.ano}. `
+      + `O emprego formal soma ${fmt.full(vincLatest.vinculos)} vínculos em ${vincLatest.ano}, uma variação de ${fmt.full1(varEmpregoLongo)}% desde ${vincBaseTotal.ano}, e o CAGED mostra saldo de ${fmt.full(saldo12m)} contratações líquidas nos últimos 12 meses. `
+      + `O comércio exterior fechou ${comexLatest.ano} em ${saldoComex >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldoComex))}, com a concorrência chinesa como principal pressão externa, enquanto o crédito do BNDES para o setor segue concentrado nas grandes empresas, que respondem por ${fmt.full1(grandePctBn)}% do total desembolsado. `
+      + `As cinco leituras abaixo detalham essa concorrência externa, o crédito e o investimento, a estrutura do setor, a produtividade e a relação entre produção e emprego, cada uma com gráfico e dado próprios.`;
+
     const bullets = [];
-    if (topExp) bullets.push(`<strong>Concorrência externa:</strong> ${topExp.label} é o estado mais exposto ao choque de importação chinesa (${fmt.full1(topExp.value)} p.p.); a China ganhou ${fmt.full1(choqueNacional)} p.p. de participação nas importações do setor desde ${anoChinaBase}.`);
-    if (topInv) bullets.push(`<strong>Crédito:</strong> ${topInv.label} concentra o maior desembolso do BNDES por vínculo (${fmt.brl(topInv.value)} por trabalhador) — volume de crédito não é sinônimo de geração de emprego.`);
-    if (exportUf[0] && topExportShare != null) bullets.push(`<strong>Estrutura:</strong> a exportação é concentrada — ${exportUf[0].nome_uf} responde por ${fmt.full1(topExportShare)}% do valor exportado em ${anoExpUf}.`);
-    if (maiorQueda != null && maiorAlta != null) bullets.push(`<strong>Produtividade:</strong> a Fundição já oscilou de ${fmt.full1(maiorQueda)}% a +${fmt.full1(maiorAlta)}% de um ano para o outro.`);
-    if (ultEmprego && ultProd) bullets.push(`<strong>Emprego x produção:</strong> desde ${catRodrik[0]}, emprego em ${fmt.full1(ultEmprego.valor)} e produção da metalurgia em ${fmt.full1(ultProd.valor)} (base 100) — trajetórias que não precisam coincidir.`);
+    if (topExp) bullets.push(`<strong>${topExp.label}</strong> é o estado mais exposto ao choque de importação chinesa, com indicador de ${fmt.full1(topExp.value)} p.p., num contexto em que a China ganhou ${fmt.full1(choqueNacional)} p.p. de participação nas importações do setor desde ${anoChinaBase}.`);
+    if (topInv) bullets.push(`<strong>${topInv.label}</strong> concentra o maior desembolso do BNDES por vínculo, ${fmt.brl(topInv.value)} por trabalhador, o que mostra que volume de crédito não é sinônimo direto de geração de emprego.`);
+    if (exportUf[0] && topExportShare != null) bullets.push(`A exportação é concentrada, com <strong>${exportUf[0].nome_uf}</strong> respondendo por ${fmt.full1(topExportShare)}% do valor exportado em ${anoExpUf}.`);
+    if (maiorQueda != null && maiorAlta != null) bullets.push(`A produtividade da Fundição já oscilou de ${fmt.full1(maiorQueda)}% a +${fmt.full1(maiorAlta)}% de um ano para o outro.`);
+    if (ultEmprego && ultProd) bullets.push(`Desde ${catRodrik[0]}, o emprego está em ${fmt.full1(ultEmprego.valor)} e a produção da metalurgia em ${fmt.full1(ultProd.valor)} (base 100), trajetórias que não precisam coincidir.`);
     $('#ee-sumario-bullets').innerHTML = bullets.map(b => `<li>${b}</li>`).join('');
   }
 
