@@ -556,6 +556,18 @@
   function renderComex() {
     const s = csS();
     const bs = blocks.comex;
+
+    const metodologiaNote = $('#comex-metodologia-note');
+    const METODOLOGIA_NCM = {
+      '2451': 'Balança comercial, exportação x importação e peso (kg) do 2451 vêm de uma extração por NCM (grupo 7325, "obras moldadas de ferro/aço"). Os rankings de país e UF abaixo ainda usam uma base mais ampla — os valores não batem entre si por enquanto.',
+      '2452': 'Balança comercial, exportação x importação e peso (kg) do 2452 vêm de uma extração por NCM ("outras obras" de cobre, níquel, alumínio, chumbo, zinco e estanho) — uma aproximação, já que esses NCMs também incluem produtos não fundidos (estampados, forjados). Os rankings de país e UF abaixo ainda usam uma base mais ampla — os valores não batem entre si por enquanto.',
+    };
+    if (METODOLOGIA_NCM[state.sector]) {
+      metodologiaNote.style.display = '';
+      metodologiaNote.textContent = METODOLOGIA_NCM[state.sector];
+    } else {
+      metodologiaNote.style.display = 'none';
+    }
     const ufAvailable = new Set(s.comex.uf_yearly.map(r => r.uf));
     let rows, note = '';
     if (bs.focoUf === 'BR' || !ufAvailable.has(bs.focoUf)) {

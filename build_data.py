@@ -510,7 +510,27 @@ def build_sector(cnae, label, fator_brl_2023):
     comex_df['Valor_US_FOB'] = pd.to_numeric(comex_df['Valor_US_FOB'], errors='coerce')
     comex_df['Quilograma_Liquido'] = pd.to_numeric(comex_df['Quilograma_Liquido'], errors='coerce')
 
-    cy = comex_df.groupby(['Ano', 'Fluxo']).agg(
+    # Os totais nacionais (exportação x importação, kg, balança) vêm de uma
+    # extração por NCM específica de fundição — mais fiel ao escopo do que
+    # `Comex_Exportacao_Importacao_{cnae}.csv` (que superestimava os valores,
+    # provavelmente com NCMs correlatos demais):
+    #   2451: grupo 7325, "obras moldadas de ferro/aço" (limpo, só fundido)
+    #   2452: "outras obras" de cobre/níquel/alumínio/chumbo/zinco/estanho
+    #         (74199100, 75089000/90, 76169900, 78060090, 79070090, 80070090)
+    #         — aproximação: mistura fundido com outros processos, mas exclui
+    #         os itens claramente não-fundidos (esponja, tubo, chapa, higiene)
+    # Ranking por país/UF segue no arquivo antigo até termos essa abertura
+    # também na extração por NCM.
+    NCM_OVERRIDE_FILE = {'2451': 'Comex_2451_NCM7325.csv', '2452': 'Comex_2452_NCM_NaoFerrosos.csv'}
+    if cnae in NCM_OVERRIDE_FILE:
+        ncm_df = read_csv(NCM_OVERRIDE_FILE[cnae])
+        ncm_df['Valor_US_FOB'] = pd.to_numeric(ncm_df['Valor_US_FOB'], errors='coerce')
+        ncm_df['Quilograma_Liquido'] = pd.to_numeric(ncm_df['Quilograma_Liquido'], errors='coerce')
+        cy_source = ncm_df
+    else:
+        cy_source = comex_df
+
+    cy = cy_source.groupby(['Ano', 'Fluxo']).agg(
         valor_usd=('Valor_US_FOB', 'sum'), peso_kg=('Quilograma_Liquido', 'sum')).reset_index()
     comex_yearly = []
     for ano, g in cy.groupby('Ano'):
