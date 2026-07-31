@@ -12,14 +12,11 @@
   const fmtCompact = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
   const fmtFull = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
   const fmtFull1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
-  const fmtFull2 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const fmt = {
     compact(n) { return n == null || isNaN(n) ? '-' : fmtCompact.format(n); },
     full(n) { return n == null || isNaN(n) ? '-' : fmtFull.format(n); },
     full1(n) { return n == null || isNaN(n) ? '-' : fmtFull1.format(n); },
-    full2(n) { return n == null || isNaN(n) ? '-' : fmtFull2.format(n); },
-    brlB(n) { return n == null || isNaN(n) ? '-' : fmtFull2.format(n); },
     usd(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtCompact.format(n); },
     brl(n) { return n == null || isNaN(n) ? '-' : 'R$ ' + fmtCompact.format(n); },
     usdFull(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtFull.format(n); },

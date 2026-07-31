@@ -525,14 +525,14 @@ def build_sector(cnae, label, fator_brl_2023):
         })
     comex_yearly.sort(key=lambda r: r['ano'])
 
-    # Balança comercial em R$ bilhões de 2023 (câmbio médio do ano + IPCA),
+    # Balança comercial em R$ milhões de 2023 (câmbio médio do ano + IPCA),
     # pra comparar com relatórios do setor que reportam em real constante
     # em vez de US$ FOB corrente.
     for row in comex_yearly:
         f = fator_brl_2023.get(row['ano'])
         if f:
-            row['exportacao_brl_2023'] = row['exportacao_usd'] * f / 1e9
-            row['importacao_brl_2023'] = row['importacao_usd'] * f / 1e9
+            row['exportacao_brl_2023'] = row['exportacao_usd'] * f / 1e6
+            row['importacao_brl_2023'] = row['importacao_usd'] * f / 1e6
             row['saldo_brl_2023'] = row['exportacao_brl_2023'] - row['importacao_brl_2023']
         else:
             row['exportacao_brl_2023'] = None

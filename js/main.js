@@ -575,8 +575,11 @@
     $('#comex-foco-sub').textContent = 'US$ FOB por ano, ' + ufName(bs.focoUf);
 
     const rowsBalanca = filterAnnual(s.comex.yearly, bs.lo, bs.hi);
+    const balancaTemAnoParcial = rowsBalanca.some(r => r.ano === CURRENT_YEAR);
+    $('#comex-balanca-sub').textContent = 'Exportação, importação e saldo, em milhões de R$ de 2023, Brasil'
+      + (balancaTemAnoParcial ? ` (${CURRENT_YEAR} é ano parcial)` : '');
     lineChart($('#chart-comex-balanca'), {
-      categories: rowsBalanca.map(r => r.ano), formatY: fmt.full1, formatEndLabel: fmt.brlB, height: 280, endLabels: true,
+      categories: rowsBalanca.map(r => r.ano), formatY: fmt.full, formatEndLabel: fmt.full, height: 280, endLabels: true,
       series: [
         { label: 'Exportação', color: 'var(--series-4)', values: rowsBalanca.map(r => r.exportacao_brl_2023) },
         { label: 'Importação', color: 'var(--series-6)', values: rowsBalanca.map(r => r.importacao_brl_2023) },
