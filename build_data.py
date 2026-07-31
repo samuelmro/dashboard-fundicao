@@ -222,6 +222,29 @@ def build_macro():
     return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
 
 
+def build_fator_brl_2023(macro_rows):
+    """Fator anual USD -> R$ de 2023: câmbio médio do ano x deflator IPCA
+    (base = média de 2023). Usado só na balança comercial (comex), pra dar
+    a mesma leitura 'R$ constante' que aparece em relatórios do setor,
+    sem trocar a unidade (US$ FOB) do resto do bloco de comércio exterior."""
+    dolar_by_year, ipca_by_year = {}, {}
+    for r in macro_rows:
+        if r['dolar'] is not None:
+            dolar_by_year.setdefault(r['ano'], []).append(r['dolar'])
+        if r['ipca'] is not None:
+            ipca_by_year.setdefault(r['ano'], []).append(r['ipca'])
+    dolar_avg = {ano: sum(v) / len(v) for ano, v in dolar_by_year.items()}
+    ipca_avg = {ano: sum(v) / len(v) for ano, v in ipca_by_year.items()}
+    ipca_2023 = ipca_avg.get(2023)
+    if not ipca_2023:
+        return {}
+    return {
+        ano: dolar_avg[ano] * (ipca_2023 / ipca_avg[ano])
+        for ano in dolar_avg
+        if ano in ipca_avg and ipca_avg[ano]
+    }
+
+
 def build_decom():
     df = read_csv('decom_fundicao_processos_2451.csv').rename(columns={
         'NCM': 'ncm', 'País': 'pais', 'Status': 'status', 'Alíquota_USD_Ton': 'aliquota',
@@ -322,7 +345,7 @@ def latest_breakdown(file):
     return {'ano': ano_max, 'items': items}
 
 
-def build_sector(cnae, label):
+def build_sector(cnae, label, fator_brl_2023):
     print(f'  Setor {cnae} ({label})...')
 
     # --- RAIS: estabelecimentos/vínculos por UF, anual ---
@@ -502,6 +525,20 @@ def build_sector(cnae, label):
         })
     comex_yearly.sort(key=lambda r: r['ano'])
 
+    # Balança comercial em R$ bilhões de 2023 (câmbio médio do ano + IPCA),
+    # pra comparar com relatórios do setor que reportam em real constante
+    # em vez de US$ FOB corrente.
+    for row in comex_yearly:
+        f = fator_brl_2023.get(row['ano'])
+        if f:
+            row['exportacao_brl_2023'] = row['exportacao_usd'] * f / 1e9
+            row['importacao_brl_2023'] = row['importacao_usd'] * f / 1e9
+            row['saldo_brl_2023'] = row['exportacao_brl_2023'] - row['importacao_brl_2023']
+        else:
+            row['exportacao_brl_2023'] = None
+            row['importacao_brl_2023'] = None
+            row['saldo_brl_2023'] = None
+
     uf_totals = (comex_df.groupby('UF_Produto')['Valor_US_FOB'].sum()
                  .reset_index().sort_values('Valor_US_FOB', ascending=False))
     top_uf_names = [u for u in uf_totals['UF_Produto'] if resolve_uf(u)][:8]
@@ -677,11 +714,12 @@ def main():
     fin_metalurgia = read_financeiro('Dados_Financeiros_Metalurgia_24.csv')
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
     macro = build_macro()
+    fator_brl_2023 = build_fator_brl_2023(macro)
     decom = build_decom()
     energia_industrial = build_energia_industrial()
 
-    sector_2451 = build_sector('2451', 'Fundição de ferro e aço')
-    sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos')
+    sector_2451 = build_sector('2451', 'Fundição de ferro e aço', fator_brl_2023)
+    sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos', fator_brl_2023)
 
     uf_lista = sorted(({'uf': uf, 'nome': nome} for _, uf, nome in UF_TABLE), key=lambda x: x['nome'])
 

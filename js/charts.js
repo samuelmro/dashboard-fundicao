@@ -12,11 +12,14 @@
   const fmtCompact = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
   const fmtFull = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
   const fmtFull1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+  const fmtFull2 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const fmt = {
     compact(n) { return n == null || isNaN(n) ? '-' : fmtCompact.format(n); },
     full(n) { return n == null || isNaN(n) ? '-' : fmtFull.format(n); },
     full1(n) { return n == null || isNaN(n) ? '-' : fmtFull1.format(n); },
+    full2(n) { return n == null || isNaN(n) ? '-' : fmtFull2.format(n); },
+    brlB(n) { return n == null || isNaN(n) ? '-' : fmtFull2.format(n); },
     usd(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtCompact.format(n); },
     brl(n) { return n == null || isNaN(n) ? '-' : 'R$ ' + fmtCompact.format(n); },
     usdFull(n) { return n == null || isNaN(n) ? '-' : 'US$ ' + fmtFull.format(n); },
@@ -168,14 +171,14 @@
   // ---------------------------------------------------------------------
   function lineChart(container, opts) {
     container.innerHTML = '';
-    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, bands = [], tooltipExtra } = opts;
+    const { series, categories, formatY = fmt.compact, formatX = (s => s), height = 220, stacked = false, bands = [], tooltipExtra, endLabels = false, formatEndLabel = formatY } = opts;
     const n = categories.length;
     if (!n || !series.some(s => s.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
       return;
     }
     const width = 600;
-    const margin = { top: 14, right: 14, bottom: 26, left: 48 };
+    const margin = { top: 14, right: endLabels ? 46 : 14, bottom: 26, left: 48 };
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
 
@@ -274,6 +277,36 @@
           }
         }
       });
+
+      // rótulos de valor no fim de cada linha (estilo "relatório"), com
+      // separação vertical mínima pra não sobrepor quando as linhas terminam
+      // perto umas das outras.
+      if (endLabels) {
+        const labelPositions = [];
+        series.forEach(s => {
+          for (let i = s.values.length - 1; i >= 0; i--) {
+            if (s.values[i] != null) {
+              labelPositions.push({ y: yScale(s.values[i]), text: formatEndLabel(s.values[i]), color: s.color });
+              break;
+            }
+          }
+        });
+        labelPositions.sort((a, b) => a.y - b.y);
+        const minGap = 13;
+        for (let i = 1; i < labelPositions.length; i++) {
+          if (labelPositions[i].y - labelPositions[i - 1].y < minGap) {
+            labelPositions[i].y = labelPositions[i - 1].y + minGap;
+          }
+        }
+        labelPositions.forEach(p => {
+          const lbl = svgEl('text', {
+            x: width - margin.right + 6, y: p.y + 3, 'text-anchor': 'start',
+            style: `fill:${p.color};font-weight:700;font-size:11px`,
+          });
+          lbl.textContent = p.text;
+          svg.appendChild(lbl);
+        });
+      }
     }
 
     // hit columns

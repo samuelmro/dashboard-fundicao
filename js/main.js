@@ -573,6 +573,17 @@
     }
     $('#comex-uf-note') && ($('#comex-uf-note').textContent = note);
     $('#comex-foco-sub').textContent = 'US$ FOB por ano, ' + ufName(bs.focoUf);
+
+    const rowsBalanca = filterAnnual(s.comex.yearly, bs.lo, bs.hi);
+    lineChart($('#chart-comex-balanca'), {
+      categories: rowsBalanca.map(r => r.ano), formatY: fmt.full1, formatEndLabel: fmt.brlB, height: 280, endLabels: true,
+      series: [
+        { label: 'Exportação', color: 'var(--series-4)', values: rowsBalanca.map(r => r.exportacao_brl_2023) },
+        { label: 'Importação', color: 'var(--series-6)', values: rowsBalanca.map(r => r.importacao_brl_2023) },
+        { label: 'Saldo', color: 'var(--series-3)', values: rowsBalanca.map(r => r.saldo_brl_2023) },
+      ]
+    });
+
     const cat = rows.map(r => r.ano);
     barChart($('#chart-comex-brasil'), {
       categories: cat, formatY: fmt.usd, height: 280,
@@ -623,8 +634,27 @@
     });
 
     const top = s.comex.top_paises_latest;
-    $('#comex-paises-sub').textContent = 'Exportação de ' + top.ano;
+    $('#comex-paises-sub').textContent = 'Para onde o Brasil mais exporta, ' + top.ano;
     rankList($('#rank-comex-paises'), top.exportacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-4)' });
+    $('#comex-paises-imp-sub').textContent = 'De onde o Brasil mais importa, ' + top.ano;
+    rankList($('#rank-comex-paises-imp'), top.importacao.slice(0, 8).map(i => ({ label: i.pais, value: i.valor_usd })), { formatVal: fmt.usd, color: 'var(--series-6)' });
+
+    $('#comex-paises-table-sub').textContent = 'Ano de ' + top.ano;
+    const paisesSet = new Set([...top.exportacao.map(i => i.pais), ...top.importacao.map(i => i.pais)]);
+    const expByPais = new Map(top.exportacao.map(i => [i.pais, i.valor_usd]));
+    const impByPais = new Map(top.importacao.map(i => [i.pais, i.valor_usd]));
+    const paisesTableRows = Array.from(paisesSet).map(pais => ({
+      pais, exportacao_usd: expByPais.get(pais) || 0, importacao_usd: impByPais.get(pais) || 0,
+    })).sort((a, b) => (b.exportacao_usd + b.importacao_usd) - (a.exportacao_usd + a.importacao_usd));
+    dataTable($('#table-comex-paises'), {
+      columns: [
+        { key: 'pais', label: 'País' },
+        { key: 'exportacao_usd', label: 'Exportação', align: 'right', format: fmt.usdFull },
+        { key: 'importacao_usd', label: 'Importação', align: 'right', format: fmt.usdFull },
+      ],
+      rows: paisesTableRows,
+      pageSize: 8,
+    });
 
     const ufAnoMax = Math.max(...s.comex.uf_yearly.map(r => r.ano));
     const rankExpUf = Array.from(new Set(s.comex.uf_yearly.map(r => r.uf))).map(uf => {
