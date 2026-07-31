@@ -195,9 +195,8 @@ def build_caged_download(cnae, label):
 # 05 — Comércio exterior (por setor: NCM de fundição, país/UF, Comtrade)
 # ---------------------------------------------------------------------------
 COMEX_NCM_FILE = {'2451': 'Comex_2451_NCM7325.csv', '2452': 'Comex_2452_NCM_NaoFerrosos.csv'}
-# UF por NCM de fundição, quando já disponível (hoje só 2452 — 2451 ainda
-# usa a base ampla pra UF, igual o painel).
-COMEX_NCM_UF_FILE = {'2452': 'Comex_2452_NCM_NaoFerrosos_UF.csv'}
+# UF por NCM de fundição, quando já disponível (igual o painel).
+COMEX_NCM_UF_FILE = {'2451': 'Comex_2451_NCM7325_UF.csv', '2452': 'Comex_2452_NCM_NaoFerrosos_UF.csv'}
 
 
 def build_comex_download(cnae, label):

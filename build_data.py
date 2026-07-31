@@ -560,9 +560,8 @@ def build_sector(cnae, label, fator_brl_2023):
             row['saldo_brl_2023'] = None
 
     # Ranking por UF: usa a mesma extração por NCM de fundição acima, quando
-    # já disponível pro setor (hoje só 2452 — 2451 segue no arquivo antigo
-    # até termos essa abertura também pra ele).
-    NCM_UF_OVERRIDE_FILE = {'2452': 'Comex_2452_NCM_NaoFerrosos_UF.csv'}
+    # já disponível pro setor.
+    NCM_UF_OVERRIDE_FILE = {'2451': 'Comex_2451_NCM7325_UF.csv', '2452': 'Comex_2452_NCM_NaoFerrosos_UF.csv'}
     if cnae in NCM_UF_OVERRIDE_FILE:
         uf_df = read_csv(NCM_UF_OVERRIDE_FILE[cnae])
         uf_df['Valor_US_FOB'] = pd.to_numeric(uf_df['Valor_US_FOB'], errors='coerce')
