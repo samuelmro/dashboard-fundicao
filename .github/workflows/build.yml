@@ -6,6 +6,7 @@ on:
     paths:
       - '3_Dados_Tratados_CSV/**'
       - 'build_data.py'
+      - 'build_downloads.py'
       - 'requirements.txt'
       - 'index.html'
       - 'css/**'
@@ -39,6 +40,8 @@ jobs:
       - run: pytest
 
       - run: python build_data.py
+
+      - run: python build_downloads.py
 
       - name: Stage static site (sem CSVs brutos nem código do pipeline)
         run: |

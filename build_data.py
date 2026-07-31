@@ -559,10 +559,20 @@ def build_sector(cnae, label, fator_brl_2023):
             row['importacao_brl_2023'] = None
             row['saldo_brl_2023'] = None
 
-    uf_totals = (comex_df.groupby('UF_Produto')['Valor_US_FOB'].sum()
+    # Ranking por UF: usa a mesma extração por NCM de fundição acima, quando
+    # já disponível pro setor (hoje só 2452 — 2451 segue no arquivo antigo
+    # até termos essa abertura também pra ele).
+    NCM_UF_OVERRIDE_FILE = {'2452': 'Comex_2452_NCM_NaoFerrosos_UF.csv'}
+    if cnae in NCM_UF_OVERRIDE_FILE:
+        uf_df = read_csv(NCM_UF_OVERRIDE_FILE[cnae])
+        uf_df['Valor_US_FOB'] = pd.to_numeric(uf_df['Valor_US_FOB'], errors='coerce')
+    else:
+        uf_df = comex_df
+
+    uf_totals = (uf_df.groupby('UF_Produto')['Valor_US_FOB'].sum()
                  .reset_index().sort_values('Valor_US_FOB', ascending=False))
     top_uf_names = [u for u in uf_totals['UF_Produto'] if resolve_uf(u)][:8]
-    cuf = (comex_df[comex_df['UF_Produto'].isin(top_uf_names)]
+    cuf = (uf_df[uf_df['UF_Produto'].isin(top_uf_names)]
            .groupby(['Ano', 'UF_Produto', 'Fluxo'])['Valor_US_FOB'].sum().reset_index())
     comex_uf_yearly = []
     for r in cuf.itertuples(index=False):

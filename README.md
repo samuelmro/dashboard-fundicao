@@ -10,7 +10,9 @@ exterior, energia (CCEE), BNDES e DECOM.
 ```
 3_Dados_Tratados_CSV/   CSVs brutos tratados (uma linha por ano/mês/UF/categoria)
 build_data.py           Lê os CSVs e gera data/data.json
+build_downloads.py      Lê os CSVs e gera data/downloads/*.xlsx (botão "Baixar dados" de cada seção)
 data/data.json          Dado consolidado que o dashboard consome via fetch()
+data/downloads/         Planilhas Excel formatadas, uma por seção (duas quando o dado varia por setor)
 index.html              Estrutura das seções do painel
 css/style.css           Estilo (paleta vermelho/navy, layout de duas colunas)
 js/charts.js            Motor de gráficos SVG vanilla (sem libs externas)
@@ -36,6 +38,15 @@ Pré-requisito: Python 3.10+ (já configurado em `.venv/` neste projeto).
 
 Isso lê tudo em `3_Dados_Tratados_CSV/` e regrava `data/data.json`. Rode de
 novo sempre que um CSV for atualizado ou adicionado.
+
+Pra regenerar as planilhas de download (`data/downloads/*.xlsx`):
+
+```powershell
+.venv\Scripts\python build_downloads.py
+```
+
+Roda independente do `data.json` (lê os CSVs direto), mas o CI (`.github/workflows/build.yml`)
+já executa os dois em sequência a cada push.
 
 ## Como rodar localmente
 

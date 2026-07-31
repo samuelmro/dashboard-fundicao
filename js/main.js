@@ -560,7 +560,7 @@
     const metodologiaNote = $('#comex-metodologia-note');
     const METODOLOGIA_NCM = {
       '2451': 'Balança comercial, exportação x importação e peso (kg) do 2451 vêm de uma extração por NCM (grupo 7325, "obras moldadas de ferro/aço"). Os rankings de país e UF abaixo ainda usam uma base mais ampla — os valores não batem entre si por enquanto.',
-      '2452': 'Balança comercial, exportação x importação e peso (kg) do 2452 vêm de uma extração por NCM: 7419.91.00 (cobre), 7508.90.00/90 (níquel), 7616.99.00 (alumínio), 7806.00.90 (chumbo), 7907.00.90 (zinco), 8007.00.90 (estanho) — "outras obras" de cada metal, uma aproximação, já que esses NCMs também incluem produtos não fundidos (estampados, forjados). Os rankings de país e UF abaixo ainda usam uma base mais ampla — os valores não batem entre si por enquanto.',
+      '2452': 'Balança comercial, exportação x importação, peso (kg) e ranking por UF do 2452 vêm de uma extração por NCM: 7419.91.00 (cobre), 7508.90.00/90 (níquel), 7616.99.00 (alumínio), 7806.00.90 (chumbo), 7907.00.90 (zinco), 8007.00.90 (estanho) — "outras obras" de cada metal, uma aproximação, já que esses NCMs também incluem produtos não fundidos (estampados, forjados). O ranking de país abaixo ainda usa uma base mais ampla — os valores não batem entre si por enquanto.',
     };
     if (METODOLOGIA_NCM[state.sector]) {
       metodologiaNote.style.display = '';
@@ -1715,9 +1715,17 @@
     $('#sector-section-list').querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => scrollToBlock(btn.dataset.target)));
   }
 
+  function updateDownloadLinks() {
+    ['emprego', 'caged', 'comex', 'bndes'].forEach(id => {
+      const el = $('#download-' + id);
+      if (el) el.href = `data/downloads/${id === 'comex' ? 'Comercio_Exterior' : id === 'caged' ? 'CAGED' : id === 'bndes' ? 'BNDES' : 'Emprego'}_${state.sector}.xlsx`;
+    });
+  }
+
   function renderCharts() {
     renderProducao(); renderFinanceiro(); renderEmprego(); renderCaged();
     renderComex(); renderBndes(); renderDecom(); renderEstudosEspeciais();
+    updateDownloadLinks();
   }
   function renderAll() {
     renderCharts();

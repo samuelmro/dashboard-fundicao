@@ -235,6 +235,15 @@ a:hover { color: var(--accent); }
   font: inherit; font-size: 0.78rem; padding: 6px 14px; cursor: pointer; border-radius: var(--radius-sm);
 }
 .table-export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Download de dados da seção (Excel) ---------- */
+.section-download {
+  margin-left: auto;
+  font: inherit; font-size: 0.78rem; color: var(--text-secondary);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 6px 14px; text-decoration: none; white-space: nowrap;
+}
+.section-download:hover { border-color: var(--accent); color: var(--accent); }
 .filter-note {
   font-size: 0.73rem;
   color: var(--text-muted);
