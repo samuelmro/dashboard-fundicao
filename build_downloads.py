@@ -18,10 +18,10 @@ OUT_DIR = ROOT / 'data' / 'downloads'
 
 FONT_NAME = 'Arial'
 HEADER_FONT = Font(name=FONT_NAME, bold=True, color='FFFFFF')
-HEADER_FILL = PatternFill('solid', fgColor='1F3864')
-BODY_FONT = Font(name=FONT_NAME)
+HEADER_FILL = PatternFill('solid', fgColor='000000')
+BODY_FONT = Font(name=FONT_NAME, color='000000')
 NOTE_FONT = Font(name=FONT_NAME, italic=True, size=9, color='595959')
-TITLE_FONT = Font(name=FONT_NAME, bold=True, size=13)
+TITLE_FONT = Font(name=FONT_NAME, bold=True, size=13, color='000000')
 THIN = Side(style='thin', color='BFBFBF')
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
