@@ -1549,7 +1549,7 @@
       // setor em foco continua relevante pro consumo e pro gasto (consumo x
       // essa tarifa), mas não muda o custo unitário em si.
       $('#ei-ranking-custo-title').textContent = 'Ranking de estados por custo de energia (classe industrial)';
-      $('#ei-ranking-custo-sub').textContent = `R$/MWh a preços de ${ei.ano_base_deflacao}, ${monthLabel(stateEI.hi, true)}, estados marcados no filtro em destaque`;
+      $('#ei-ranking-custo-sub').textContent = `R$/MWh a preços de ${ei.ano_base_deflacao} (fonte: MME/ANEEL), ${monthLabel(stateEI.hi, true)}, estados marcados no filtro em destaque`;
       hBarChart($('#rank-ei-custo-estados'), {
         items: itemsRanking.map(it => ({
           uf: it.uf, label: it.label, value: it.value,
