@@ -222,21 +222,6 @@ def build_macro():
     return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
 
 
-def build_fator_ipca(macro_rows, ano_base):
-    """Fator anual de deflação só por IPCA (sem câmbio), pra série que já é
-    R$ nominal — ex.: receita líquida da PIA-Empresa. fator[ano] = IPCA
-    médio de ano_base / IPCA médio do ano."""
-    ipca_by_year = {}
-    for r in macro_rows:
-        if r['ipca'] is not None:
-            ipca_by_year.setdefault(r['ano'], []).append(r['ipca'])
-    ipca_avg = {ano: sum(v) / len(v) for ano, v in ipca_by_year.items()}
-    ipca_base = ipca_avg.get(ano_base)
-    if not ipca_base:
-        return {}
-    return {ano: ipca_base / v for ano, v in ipca_avg.items() if v}
-
-
 def build_fator_brl_2023(macro_rows):
     """Fator anual USD -> R$ de 2023: câmbio médio do ano x deflator IPCA
     (base = média de 2023). Usado só na balança comercial (comex), pra dar
@@ -759,19 +744,6 @@ def main():
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
     macro = build_macro()
     fator_brl_2023 = build_fator_brl_2023(macro)
-
-    # Faturamento (receita líquida de vendas) da Fundição (24.5) deflacionado
-    # a R$ bilhões de 2024 — mesma lógica de deflator só-IPCA (a fonte já é
-    # R$ nominal, não precisa de câmbio). receita_liquida_total vem em R$
-    # mil, daí x1000 pra reais e /1e9 pra bilhões.
-    fator_ipca_2024 = build_fator_ipca(macro, 2024)
-    for row in fin_fundicao:
-        f = fator_ipca_2024.get(row['ano'])
-        row['receita_liquida_bi_2024'] = (
-            row['receita_liquida_total'] * 1000 * f / 1e9
-            if (f and row['receita_liquida_total'] is not None) else None
-        )
-
     decom = build_decom()
     energia_industrial = build_energia_industrial()
 

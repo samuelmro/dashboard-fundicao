@@ -279,11 +279,6 @@
       ]
     });
 
-    lineChart($('#chart-financeiro-faturamento-deflacionado'), {
-      categories: catFin, formatY: fmt.full1, formatEndLabel: n => fmt.full1(n), height: 280, endLabels: true,
-      series: [{ label: 'Receita líquida (R$ bi 2024)', color: 'var(--series-3)', values: finF.map(r => r.receita_liquida_bi_2024), area: true }],
-    });
-
     const latestFin = last(sh.financeiro.fundicao_24_5);
     $('#financeiro-waterfall-title').textContent = 'Decomposição de custos de ' + latestFin.ano;
     const materiasPrimas = latestFin.consumo_materias_primas || 0;
