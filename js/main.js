@@ -530,6 +530,24 @@
       })),
     });
 
+    // Mesmo campo, período do novo CAGED (jan/2020 em diante) — escala
+    // própria (~2 ordens de grandeza menor), gráfico separado de propósito
+    // pra não forçar a mesma régua do período anterior.
+    const combosSalarioNovo = ufsSel.map(uf => {
+      const rows = uf === 'BR' ? s.caged.salario_monthly_national : s.caged.salario_uf_monthly.filter(r => r.uf === uf);
+      const rowsNovoCaged = rows.filter(r => r.ano * 100 + r.mes > SALARIO_CAGED_ULTIMO_CONFIAVEL);
+      return { uf, nome: ufName(uf), rows: filterMonthly(rowsNovoCaged, bs.lo, bs.hi) };
+    });
+    const combosSalarioNovoGrafico = combosParaGrafico(combosSalarioNovo, ufsSel);
+    const catSalarioNovo = monthlyCategories(combosSalarioNovoGrafico.map(c => c.rows));
+    lineChart($('#chart-caged-massa-salarial-novo'), {
+      categories: catSalarioNovo, formatX: monthLabel, formatY: fmt.brl, height: 280,
+      series: combosSalarioNovoGrafico.map((c, i) => ({
+        label: c.nome, color: CORES[i % CORES.length],
+        values: seriesMonthly(c.rows, 'massa_salarial', catSalarioNovo),
+      })),
+    });
+
     // Ranking: soma do saldo no período selecionado, todos os estados com
     // dado. Referência em zero é natural aqui (positivo = contratou líquido,
     // negativo = demitiu líquido) — diferente de vínculos/desembolso, que
