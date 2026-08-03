@@ -14,6 +14,14 @@
     { from: 202002, to: 202006, label: 'Covid-19 2020' },
   ];
 
+  // Massa salarial (CAGED): o campo Salario_Mensal cai ~98% na fonte a
+  // partir de jan/2020 e não se recupera — bate com a transição pro novo
+  // CAGED (eSocial), não é queda real (o saldo de contratações, mesma
+  // fonte, não mostra quebra nesse período). Em vez de mostrar o trecho
+  // quebrado sombreado (obrigava a explicar toda vez), a série é cortada
+  // no último mês confiável.
+  const SALARIO_CAGED_ULTIMO_CONFIAVEL = 201912;
+
   const state = { sector: '2451', view: 'home', data: null };
   // Filtro por bloco: cada seção tem sua própria cobertura real de dado
   // (Produção vai de 1980, RAIS de 2006, Comex varia até por setor — 2451
@@ -509,7 +517,8 @@
 
     const combosSalario = ufsSel.map(uf => {
       const rows = uf === 'BR' ? s.caged.salario_monthly_national : s.caged.salario_uf_monthly.filter(r => r.uf === uf);
-      return { uf, nome: ufName(uf), rows: filterMonthly(rows, bs.lo, bs.hi) };
+      const rowsConfiaveis = rows.filter(r => r.ano * 100 + r.mes <= SALARIO_CAGED_ULTIMO_CONFIAVEL);
+      return { uf, nome: ufName(uf), rows: filterMonthly(rowsConfiaveis, bs.lo, bs.hi) };
     });
     const combosSalarioGrafico = combosParaGrafico(combosSalario, ufsSel);
     const catSalario = monthlyCategories(combosSalarioGrafico.map(c => c.rows));
