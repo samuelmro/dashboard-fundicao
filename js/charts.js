@@ -107,6 +107,22 @@
     return ticks;
   }
 
+  // Índices do eixo X que recebem legenda, espaçados pra não lotar — mas
+  // sempre incluindo a última categoria (senão, dependendo de como o passo
+  // se alinha com n, ela nunca aparece, mesmo com dado ali).
+  function labelIndices(n, innerW) {
+    const maxLabels = Math.max(2, Math.floor(innerW / 56));
+    const step = Math.max(1, Math.ceil(n / maxLabels));
+    const idx = [];
+    for (let i = 0; i < n; i += step) idx.push(i);
+    const last = n - 1;
+    if (idx[idx.length - 1] !== last) {
+      if (idx.length > 1 && last - idx[idx.length - 1] < step / 2) idx[idx.length - 1] = last;
+      else idx.push(last);
+    }
+    return new Set(idx);
+  }
+
   // Acha a posição (em índice, possivelmente fracionário) de um valor de
   // categoria dentro do array de categorias — usado para posicionar faixas
   // (bands) que não caem exatamente sobre uma categoria existente.
@@ -216,14 +232,12 @@
       svg.appendChild(lbl);
     });
 
-    // x labels (subset to avoid crowding)
-    const maxLabels = Math.max(2, Math.floor(innerW / 56));
-    const step = Math.max(1, Math.ceil(n / maxLabels));
-    for (let i = 0; i < n; i += step) {
+    // x labels (subset to avoid crowding, sempre incluindo a última categoria)
+    labelIndices(n, innerW).forEach(i => {
       const lbl = svgEl('text', { x: xScale(i), y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
       lbl.textContent = formatX(categories[i]);
       svg.appendChild(lbl);
-    }
+    });
 
     // crosshair (hidden by default)
     const crosshair = svgEl('line', { x1: 0, x2: 0, y1: margin.top, y2: margin.top + innerH, class: 'gridline', style: 'display:none' });
@@ -386,8 +400,7 @@
       svg.appendChild(lbl);
     });
 
-    const maxLabels = Math.max(2, Math.floor(innerW / 56));
-    const catStep = Math.max(1, Math.ceil(n / maxLabels));
+    const showLabel = labelIndices(n, innerW);
     const slotW = innerW / n;
     const nSeries = series.length;
     const gap = 2;
@@ -395,7 +408,7 @@
 
     for (let i = 0; i < n; i++) {
       const slotX = margin.left + i * slotW;
-      if (i % catStep === 0) {
+      if (showLabel.has(i)) {
         const lbl = svgEl('text', { x: slotX + slotW / 2, y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
         lbl.textContent = formatX(categories[i]);
         svg.appendChild(lbl);
@@ -583,13 +596,11 @@
       svg.appendChild(lbl);
     });
 
-    const maxLabels = Math.max(2, Math.floor(innerW / 56));
-    const step = Math.max(1, Math.ceil(n / maxLabels));
-    for (let i = 0; i < n; i += step) {
+    labelIndices(n, innerW).forEach(i => {
       const lbl = svgEl('text', { x: xScale(i), y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
       lbl.textContent = formatX(categories[i]);
       svg.appendChild(lbl);
-    }
+    });
 
     function drawLine(s, yScale) {
       let segStart = null, d = '';
