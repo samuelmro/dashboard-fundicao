@@ -952,9 +952,11 @@
 
     // Contexto adicional: produtividade da Fundição frente à Metalurgia como
     // um todo (grupo mais amplo, mesma fonte), pra dar escala ao número.
+    // Compara o mesmo ano nas duas séries — Metalurgia pode ter dado mais
+    // recente que Fundição (fontes atualizadas em momentos diferentes).
     const finMetal = sh.financeiro.metalurgia_24;
-    const metalLatest = last(finMetal);
-    const prodMetalLatest = (metalLatest && metalLatest.vti != null && metalLatest.pessoal_ocupado) ? (metalLatest.vti * 1000) / metalLatest.pessoal_ocupado : null;
+    const metalMesmoAno = finMetal.find(r => r.ano === last(finF).ano);
+    const prodMetalLatest = (metalMesmoAno && metalMesmoAno.vti != null && metalMesmoAno.pessoal_ocupado) ? (metalMesmoAno.vti * 1000) / metalMesmoAno.pessoal_ocupado : null;
     const prodFundLatest = produtividadeF[produtividadeF.length - 1];
     const gapProd = (prodMetalLatest && prodFundLatest) ? ((prodFundLatest - prodMetalLatest) / prodMetalLatest) * 100 : null;
     $('#ee-analise-produtividade').innerHTML = (prodFundLatest != null && prodMetalLatest != null
