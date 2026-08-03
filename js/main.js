@@ -6,6 +6,17 @@
   const CORES = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)',
                  'var(--series-5)', 'var(--series-6)', 'var(--series-7)', 'var(--series-8)'];
 
+  // Mapa UF -> região (mesma tabela do build_data.py), só pra mostrar na
+  // dica do ranking de custo de energia qual região determina a tarifa.
+  const UF_REGIAO_JS = {
+    AC: 'Norte', AP: 'Norte', AM: 'Norte', PA: 'Norte', RO: 'Norte', RR: 'Norte', TO: 'Norte',
+    AL: 'Nordeste', BA: 'Nordeste', CE: 'Nordeste', MA: 'Nordeste', PB: 'Nordeste',
+    PE: 'Nordeste', PI: 'Nordeste', RN: 'Nordeste', SE: 'Nordeste',
+    DF: 'Centro-Oeste', GO: 'Centro-Oeste', MT: 'Centro-Oeste', MS: 'Centro-Oeste',
+    ES: 'Sudeste', MG: 'Sudeste', RJ: 'Sudeste', SP: 'Sudeste',
+    PR: 'Sul', RS: 'Sul', SC: 'Sul',
+  };
+
   // Recessões do Brasil (datação CODACE/FGV-IBRE), usadas como faixas de contexto.
   const RECESSOES = [
     { from: 200301, to: 200306, label: '2003' },
@@ -1170,7 +1181,7 @@
       [AMBOS, 'BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
       ['Ferro e aço (2451)', 'DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
       [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.'],
-      ['Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, Brasil e São Paulo', '2012–2026 (mensal)', 'Nível de divisão CNAE (24 divisões), não é exclusivo de 2451/2452; custo e gasto são estimativas por cenário (baixo/médio/alto). Abrangência geográfica limitada a Brasil x São Paulo nesta fonte (sem abertura para as demais UFs).'],
+      ['Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, 27 estados + Brasil', '2012–2026 (mensal)', 'Consumo (MWh): nível de divisão CNAE (24 divisões, fonte EPE), não é exclusivo de 2451/2452. Custo (R$/MWh): tarifa média REAL faturada da classe Industrial, por região (5 regiões, não por estado nem por divisão CNAE) — MME/ANEEL, "Informativo Tarifário/Gestão do Setor Elétrico", Tabela 7. Anos sem edição publicada (a maioria de 2012-2016, 2018, 2020-2021, 2026) são interpolados/extrapolados a partir dos anos com dado real, ajustados pelo IPCA. Valores deflacionados a R$ do último ano completo (ver nota de deflação abaixo). Detalhe completo e citação na "Limitações gerais" abaixo.'],
     ];
     $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
   }
@@ -1234,18 +1245,22 @@
       ],
     });
 
-    // Custo da energia na metalurgia (CNAE 24) em SP, média anual. Reaproveita
-    // o mesmo arquivo lazy da aba Energia Industrial (fetch avulso, sem
-    // filtro nem cache compartilhado, é a única vez que essa página usa).
+    // Custo da energia na metalurgia (CNAE 24) em SP, média anual, em R$
+    // constantes (deflacionado por IPCA) — em nominal, 14 anos de série
+    // mistura inflação com variação real de custo. Reaproveita o mesmo
+    // arquivo lazy da aba Energia Industrial (fetch avulso, sem filtro nem
+    // cache compartilhado, é a única vez que essa página usa).
     fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
       const sp = obj['SP'] || [];
       const porAno = {};
-      sp.forEach(([ano, , , custo]) => { if (custo != null) (porAno[ano] = porAno[ano] || []).push(custo); });
+      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
       const anos = Object.keys(porAno).map(Number).sort((a, b) => a - b);
       const vals = anos.map(a => porAno[a].reduce((x, y) => x + y, 0) / porAno[a].length);
+      const anoBase = data.energia_industrial.ano_base_deflacao;
+      $('#pdi-chart-energia-sub').textContent = `R$/MWh a preços de ${anoBase} (deflacionado por IPCA), média anual, Energia Industrial`;
       lineChart($('#pdi-chart-energia'), {
         categories: anos, formatY: n => fmt.brl(n) + '/MWh', height: 260,
-        series: [{ label: 'Custo médio', color: 'var(--series-8)', values: vals, area: true }],
+        series: [{ label: 'Custo médio (real)', color: 'var(--series-8)', values: vals, area: true }],
       });
     });
 
@@ -1505,10 +1520,10 @@
         series: combosGrafico.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[2]), area: i === 0 })),
       });
 
-      $('#ei-custo-tempo-sub').textContent = `R$/MWh, ${nomesSelecionados}${combos.length !== combosGrafico.length ? ' (Brasil fora do gráfico, ver tabela)' : ''}`;
+      $('#ei-custo-tempo-sub').textContent = `R$/MWh a preços de ${ei.ano_base_deflacao} (deflacionado por IPCA), ${nomesSelecionados}${combos.length !== combosGrafico.length ? ' (Brasil fora do gráfico, ver tabela)' : ''}`;
       lineChart($('#chart-ei-custo-tempo'), {
         categories: catTempo, formatX: monthLabel, formatY: fmt.brl, height: 280,
-        series: combosGrafico.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[3]) })),
+        series: combosGrafico.map((c, i) => ({ label: c.label, color: CORES[i % CORES.length], values: c.rows.map(r => r[5]) })),
       });
 
       // Ranking: todos os 27 estados (sem Brasil, que é o agregado), custo
@@ -1523,14 +1538,18 @@
       const estados = ei.ufs.filter(u => u.uf !== 'BR');
       const rowsBrCusto = serieFoco['BR'] || [];
       const refCustoRow = rowsBrCusto.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rowsBrCusto[rowsBrCusto.length - 1];
-      const refCusto = refCustoRow ? refCustoRow[3] : null;
+      const refCusto = refCustoRow ? refCustoRow[5] : null;
       const itemsRanking = estados.map(u => {
         const rows = serieFoco[u.uf] || [];
         const row = rows.find(r => (r[0] * 100 + r[1]) === stateEI.hi) || rows[rows.length - 1];
-        return row ? { uf: u.uf, label: u.nome, value: row[3] } : null;
+        return row ? { uf: u.uf, label: u.nome, value: row[5] } : null;
       }).filter(Boolean).sort((a, b) => a.value - b.value);
-      $('#ei-ranking-custo-title').textContent = 'Ranking de estados por custo de energia: ' + titleCasePt(divisaoFoco.descricao);
-      $('#ei-ranking-custo-sub').textContent = `R$/MWh, ${monthLabel(stateEI.hi, true)}, estados marcados no filtro em destaque`;
+      // Custo é a tarifa média real da classe Industrial por região (ANEEL/
+      // MME) — não varia por divisão CNAE, só por estado/região e mês. O
+      // setor em foco continua relevante pro consumo e pro gasto (consumo x
+      // essa tarifa), mas não muda o custo unitário em si.
+      $('#ei-ranking-custo-title').textContent = 'Ranking de estados por custo de energia (classe industrial)';
+      $('#ei-ranking-custo-sub').textContent = `R$/MWh a preços de ${ei.ano_base_deflacao}, ${monthLabel(stateEI.hi, true)}, estados marcados no filtro em destaque`;
       hBarChart($('#rank-ei-custo-estados'), {
         items: itemsRanking.map(it => ({
           uf: it.uf, label: it.label, value: it.value,
@@ -1538,7 +1557,7 @@
         })),
         formatVal: n => fmt.brl(n) + '/MWh',
         reference: refCusto != null ? { value: refCusto, label: 'Brasil: ' + fmt.brl(refCusto) + '/MWh' } : null,
-        tooltipExtra: () => [{ label: 'Fator de carga (premissa)', value: fmt.full1(divisaoFoco.fator_carga) }],
+        tooltipExtra: (it) => [{ label: 'Região', value: UF_REGIAO_JS[it.uf] || '' }],
         onClick: (it) => { stateEI.ufs.add(it.uf); stateEI.focoUf = it.uf; renderUfPanel(); syncUfBtn(); update(); },
       });
 
@@ -1577,7 +1596,7 @@
         c.rows.forEach(r => {
           linhas.push({
             uf: c.uf, uf_nome: ufInfo[c.uf], setor: titleCasePt(divInfo[c.cnae].descricao), k: r[0] * 100 + r[1],
-            consumo_mwh: r[2], custo_rs_mwh: r[3], gasto_rs: r[2] * r[3], participacao_pct: r[4],
+            consumo_mwh: r[2], custo_rs_mwh: r[3], custo_real_rs_mwh: r[5], gasto_rs: r[2] * r[3], participacao_pct: r[4],
           });
         });
       });
@@ -1588,7 +1607,8 @@
           { key: 'setor', label: 'Setor' },
           { key: 'k', label: 'Mês', format: monthLabel },
           { key: 'consumo_mwh', label: 'Consumo', align: 'right', format: fmt.mwh },
-          { key: 'custo_rs_mwh', label: 'Custo', align: 'right', format: n => fmt.brl(n) + '/MWh' },
+          { key: 'custo_rs_mwh', label: 'Custo (nominal)', align: 'right', format: n => fmt.brl(n) + '/MWh' },
+          { key: 'custo_real_rs_mwh', label: `Custo (R$ ${ei.ano_base_deflacao})`, align: 'right', format: n => fmt.brl(n) + '/MWh' },
           { key: 'gasto_rs', label: 'Gasto', align: 'right', format: fmt.brlFull },
           { key: 'participacao_pct', label: 'Participação', align: 'right', format: n => fmt.pct(n) },
         ],

@@ -122,8 +122,8 @@ def test_energia_industrial_schema(data):
     assert {'BR', 'SP', 'AC', 'RR'} <= {u['uf'] for u in ei['ufs']}
     assert ei['ufs'][0]['uf'] == 'BR'  # Brasil primeiro na lista
     assert len(ei['divisoes']) == 24
-    assert all('fator_carga' in d and d['fator_carga'] for d in ei['divisoes'])
-    assert ei['serie_campos'] == ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct']
+    assert all('cnae' in d and 'descricao' in d for d in ei['divisoes'])
+    assert ei['serie_campos'] == ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct', 'custo_real_rs_mwh']
 
 
 @pytest.mark.parametrize('cnae', [10, 24, 33])

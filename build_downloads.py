@@ -12,6 +12,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
+from build_data import UF_REGIAO, build_fator_ipca, build_macro, tarifa_industrial_regiao_ano
+
 ROOT = Path(__file__).resolve().parent
 SRC_DIR = ROOT / '3_Dados_Tratados_CSV'
 OUT_DIR = ROOT / 'data' / 'downloads'
@@ -276,9 +278,43 @@ def build_decom_download():
 # ---------------------------------------------------------------------------
 def build_energia_download():
     wb = _new_workbook()
-    _add_sheet(wb, 'Estados x divisoes CNAE', _read('energia_industria_transformacao_estados_brasil_2012-2026.csv', decimal='.'),
+
+    # Custo = tarifa média REAL faturada da classe Industrial por região
+    # (MME/ANEEL), não o fator-de-carga-assumido do CSV bruto (checado contra
+    # tarifa publicada e descartado — dava menos da metade do valor real).
+    # Gasto/custo real (deflacionado por IPCA) na mesma lógica do build_data.py.
+    df_energia = _read('energia_industria_transformacao_estados_brasil_2012-2026.csv', decimal='.')
+    df_energia = df_energia.drop(columns=['FATOR_CARGA_ASSUMIDO'])  # não alimenta mais o custo, ver nota abaixo
+    macro = build_macro()
+    ipca_by_year = {}
+    for r in macro:
+        if r['ipca'] is not None:
+            ipca_by_year.setdefault(r['ano'], []).append(r['ipca'])
+    ipca_avg = {ano: sum(v) / len(v) for ano, v in ipca_by_year.items()}
+
+    df_energia['CONSUMO_MWH'] = pd.to_numeric(df_energia['CONSUMO_MWH'], errors='coerce')
+    df_energia['REGIAO'] = df_energia['UF'].map(UF_REGIAO).fillna('Brasil')
+    df_energia['CUSTO_TOTAL_RS_MWH'] = df_energia.apply(
+        lambda r: tarifa_industrial_regiao_ano(r['REGIAO'], int(r['ANO']), ipca_avg), axis=1)
+    df_energia['GASTO_ESTIMADO_RS'] = df_energia['CONSUMO_MWH'] * df_energia['CUSTO_TOTAL_RS_MWH']
+
+    meses_por_ano = df_energia.groupby('ANO')['MES'].nunique()
+    ano_max = int(df_energia['ANO'].max())
+    ano_base_energia = ano_max if meses_por_ano.get(ano_max, 0) >= 12 else ano_max - 1
+    fator_ipca_energia = build_fator_ipca(macro, ano_base_energia)
+    df_energia['FATOR_IPCA'] = df_energia['ANO'].map(fator_ipca_energia)
+    df_energia[f'CUSTO_REAL_RS_MWH_{ano_base_energia}'] = df_energia['CUSTO_TOTAL_RS_MWH'] * df_energia['FATOR_IPCA']
+    df_energia[f'GASTO_ESTIMADO_REAL_RS_{ano_base_energia}'] = df_energia['GASTO_ESTIMADO_RS'] * df_energia['FATOR_IPCA']
+    df_energia = df_energia.drop(columns=['FATOR_IPCA'])
+
+    _add_sheet(wb, 'Estados x divisoes CNAE', df_energia,
                title='Energia industrial — Consumo/custo por UF e divisão CNAE (2012-2026)',
-               note='Fonte própria (consolidação de dados setoriais de energia).')
+               note=f'Consumo (MWh): fonte própria por UF/divisão CNAE. Custo (R$/MWh): tarifa média REAL faturada '
+                    f'da classe Industrial por região — MME/ANEEL, "Informativo Tarifário/Gestão do Setor Elétrico", '
+                    f'Tabela "Tarifa Média Faturada por Classe de Consumo e Região" (gov.br/mme). Não varia por '
+                    f'estado dentro da região nem por divisão CNAE. Anos sem edição publicada são interpolados/'
+                    f'extrapolados por IPCA (ver coluna REGIAO). Gasto/custo real em R$ de {ano_base_energia} '
+                    f'(deflacionado por IPCA).')
     _add_sheet(wb, 'SP detalhado', _read('energia_industria_transformacao_sp_brasil_2012-2026.csv', decimal='.'),
                title='Energia industrial — São Paulo (detalhado)')
     _add_sheet(wb, 'CCEE exato 2451', _read('Consumo_Energia_CCEE_Exato_2451.csv'),

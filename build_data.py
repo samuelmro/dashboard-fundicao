@@ -222,6 +222,20 @@ def build_macro():
     return sorted(rows, key=lambda r: r['ano'] * 100 + r['mes'])
 
 
+def build_fator_ipca(macro_rows, ano_base):
+    """Fator anual de deflação só por IPCA (sem câmbio), pra série que já é
+    R$ nominal. fator[ano] = IPCA médio de ano_base / IPCA médio do ano."""
+    ipca_by_year = {}
+    for r in macro_rows:
+        if r['ipca'] is not None:
+            ipca_by_year.setdefault(r['ano'], []).append(r['ipca'])
+    ipca_avg = {ano: sum(v) / len(v) for ano, v in ipca_by_year.items()}
+    ipca_base = ipca_avg.get(ano_base)
+    if not ipca_base:
+        return {}
+    return {ano: ipca_base / v for ano, v in ipca_avg.items() if v}
+
+
 def build_fator_brl_2023(macro_rows):
     """Fator anual USD -> R$ de 2023: câmbio médio do ano x deflator IPCA
     (base = média de 2023). Usado só na balança comercial (comex), pra dar
@@ -258,22 +272,105 @@ def build_decom():
 # ---------------------------------------------------------------------------
 # ENERGIA INDUSTRIAL: consumo/custo de energia de toda a indústria de
 # transformação (24 divisões CNAE), com abertura pelas 27 UFs + Brasil.
-# Fonte própria, formato diferente dos demais CSVs (separador decimal '.',
-# não ','). A série completa por divisão x UF (~115 mil linhas) é grande
-# demais para embutir inteira no data.json principal, então é gravada em
-# 24 arquivos separados (data/energia/serie-cnae-N.json) e carregada sob
-# demanda pelo dashboard só quando aquela divisão é selecionada.
+# Consumo: fonte própria (formato diferente dos demais CSVs, separador
+# decimal '.', não ','). A série completa por divisão x UF (~115 mil linhas)
+# é grande demais para embutir inteira no data.json principal, então é
+# gravada em 24 arquivos separados (data/energia/serie-cnae-N.json) e
+# carregada sob demanda pelo dashboard só quando aquela divisão é selecionada.
+#
+# Custo (R$/MWh): o CSV bruto trazia uma estimativa por "fator de carga
+# assumido" (fixo por divisão CNAE, nunca varia por estado nem por ano) que,
+# checada contra tarifa real publicada (ANEEL, subgrupo A4), dava menos da
+# metade do valor real faturado — não é confiável. Substituído pela tarifa
+# média REAL faturada da classe Industrial, por região e ano, publicada pelo
+# MME/ANEEL no "Informativo Tarifário/Gestão do Setor Elétrico" (ver
+# ANEEL_TARIFA_INDUSTRIAL_ANUAL abaixo — fonte e citação completa na aba
+# Referências do painel). É mais grosso (5 regiões, não 27 estados; 1 classe
+# "Industrial", não 24 divisões CNAE) mas é dado real, não modelado.
 # ---------------------------------------------------------------------------
 UF_NOME_EXTRA = {'BR': 'Brasil'}
 
+UF_REGIAO = {
+    'AC': 'Norte', 'AP': 'Norte', 'AM': 'Norte', 'PA': 'Norte', 'RO': 'Norte', 'RR': 'Norte', 'TO': 'Norte',
+    'AL': 'Nordeste', 'BA': 'Nordeste', 'CE': 'Nordeste', 'MA': 'Nordeste', 'PB': 'Nordeste',
+    'PE': 'Nordeste', 'PI': 'Nordeste', 'RN': 'Nordeste', 'SE': 'Nordeste',
+    'DF': 'Centro-Oeste', 'GO': 'Centro-Oeste', 'MT': 'Centro-Oeste', 'MS': 'Centro-Oeste',
+    'ES': 'Sudeste', 'MG': 'Sudeste', 'RJ': 'Sudeste', 'SP': 'Sudeste',
+    'PR': 'Sul', 'RS': 'Sul', 'SC': 'Sul',
+}
 
-def build_energia_industrial():
+# Tarifa média REAL faturada, classe Industrial, R$/MWh nominal — MME/ANEEL,
+# "Informativo Tarifário/Gestão do Setor Elétrico" (Tabela 7, "Tarifa Média
+# Faturada por Classe de Consumo e Região"), edições anuais. 2017/2019 são
+# médias do ano; 2022-2025 são a competência de dezembro (ou outubro/2022,
+# mês disponível na edição daquele ano) — pequena inconsistência de
+# competência entre anos, mas é o dado real publicado, não estimado.
+ANEEL_TARIFA_INDUSTRIAL_ANUAL = {
+    2017: {'Brasil': 397.07, 'Centro-Oeste': 364.75, 'Nordeste': 370.18, 'Norte': 433.84, 'Sudeste': 406.35, 'Sul': 397.17},
+    2019: {'Brasil': 479.22, 'Centro-Oeste': 477.67, 'Nordeste': 435.89, 'Norte': 524.27, 'Sudeste': 492.17, 'Sul': 471.87},
+    2022: {'Brasil': 577.14, 'Centro-Oeste': 669.26, 'Nordeste': 582.24, 'Norte': 591.10, 'Sudeste': 583.29, 'Sul': 545.57},
+    2023: {'Brasil': 638.21, 'Centro-Oeste': 775.19, 'Nordeste': 674.37, 'Norte': 735.06, 'Sudeste': 630.85, 'Sul': 594.53},
+    2024: {'Brasil': 694.65, 'Centro-Oeste': 824.33, 'Nordeste': 712.20, 'Norte': 756.71, 'Sudeste': 694.82, 'Sul': 652.35},
+    2025: {'Brasil': 785.53, 'Centro-Oeste': 955.71, 'Nordeste': 825.31, 'Norte': 825.59, 'Sudeste': 769.14, 'Sul': 752.67},
+}
+_ANOS_TARIFA_REAL = sorted(ANEEL_TARIFA_INDUSTRIAL_ANUAL)
+
+
+def tarifa_industrial_regiao_ano(regiao, ano, ipca_avg):
+    """Tarifa média industrial (R$/MWh nominal) pra uma região/ano: valor
+    real da ANEEL quando existe; interpolação linear entre os dois anos
+    reais mais próximos quando o ano cai no meio; e fora do intervalo
+    conhecido, extrapola pela variação do IPCA a partir da ponta mais
+    próxima (mantém a tarifa real em termos reais, não trava um valor
+    nominal congelado)."""
+    if ano in ANEEL_TARIFA_INDUSTRIAL_ANUAL:
+        return ANEEL_TARIFA_INDUSTRIAL_ANUAL[ano][regiao]
+    primeiro, ultimo = _ANOS_TARIFA_REAL[0], _ANOS_TARIFA_REAL[-1]
+    if ano < primeiro or ano > ultimo:
+        ano_ref = primeiro if ano < primeiro else ultimo
+        base = ANEEL_TARIFA_INDUSTRIAL_ANUAL[ano_ref][regiao]
+        ipca_ano = ipca_avg.get(ano) or ipca_avg.get(ano_ref)
+        ipca_ref = ipca_avg.get(ano_ref)
+        if not ipca_ano or not ipca_ref:
+            return base
+        return base * ipca_ano / ipca_ref
+    lo = max(a for a in _ANOS_TARIFA_REAL if a <= ano)
+    hi = min(a for a in _ANOS_TARIFA_REAL if a >= ano)
+    if lo == hi:
+        return ANEEL_TARIFA_INDUSTRIAL_ANUAL[lo][regiao]
+    frac = (ano - lo) / (hi - lo)
+    v_lo, v_hi = ANEEL_TARIFA_INDUSTRIAL_ANUAL[lo][regiao], ANEEL_TARIFA_INDUSTRIAL_ANUAL[hi][regiao]
+    return v_lo + (v_hi - v_lo) * frac
+
+
+def build_energia_industrial(macro_rows):
     df = pd.read_csv(SRC_DIR / 'energia_industria_transformacao_estados_brasil_2012-2026.csv',
                       sep=';', decimal='.', encoding='utf-8-sig')
-    num_cols = ['FATOR_CARGA_ASSUMIDO', 'CONSUMO_MWH', 'CUSTO_TOTAL_RS_MWH', 'GASTO_ESTIMADO_RS',
-                'PARTICIPACAO_PCT_SETOR_NA_UF']
+    num_cols = ['CONSUMO_MWH', 'PARTICIPACAO_PCT_SETOR_NA_UF']
     for c in num_cols:
         df[c] = pd.to_numeric(df[c], errors='coerce')
+
+    ipca_by_year = {}
+    for r in macro_rows:
+        if r['ipca'] is not None:
+            ipca_by_year.setdefault(r['ano'], []).append(r['ipca'])
+    ipca_avg = {ano: sum(v) / len(v) for ano, v in ipca_by_year.items()}
+
+    df['REGIAO'] = df['UF'].map(UF_REGIAO).fillna('Brasil')
+    df['CUSTO_TOTAL_RS_MWH'] = df.apply(
+        lambda r: tarifa_industrial_regiao_ano(r['REGIAO'], int(r['ANO']), ipca_avg), axis=1)
+    df['GASTO_ESTIMADO_RS'] = df['CONSUMO_MWH'] * df['CUSTO_TOTAL_RS_MWH']
+
+    # Deflaciona pro último ano completo disponível (mesmo padrão — só IPCA,
+    # sem câmbio — usado no faturamento da Fundição), pra não misturar
+    # inflação acumulada de 14 anos com variação real de custo.
+    meses_por_ano = df.groupby('ANO')['MES'].nunique()
+    ano_max = int(df['ANO'].max())
+    ano_base_energia = ano_max if meses_por_ano.get(ano_max, 0) >= 12 else ano_max - 1
+    fator_ipca_energia = build_fator_ipca(macro_rows, ano_base_energia)
+    df['fator_ipca'] = df['ANO'].map(fator_ipca_energia)
+    df['CUSTO_REAL_RS_MWH'] = df['CUSTO_TOTAL_RS_MWH'] * df['fator_ipca']
+    df['GASTO_ESTIMADO_REAL_RS'] = df['GASTO_ESTIMADO_RS'] * df['fator_ipca']
 
     def nome_uf(uf):
         if uf in UF_NOME_EXTRA:
@@ -284,11 +381,12 @@ def build_energia_industrial():
     ufs = [{'uf': uf, 'nome': nome_uf(uf)} for uf in sorted(df['UF'].unique().tolist())]
     ufs.sort(key=lambda u: (u['uf'] != 'BR', u['nome']))
 
-    divisoes_df = (df[['CNAE_DIVISAO', 'CNAE_DIVISAO_DESCRICAO', 'FATOR_CARGA_ASSUMIDO']]
+    # fator_carga_assumido da fonte não alimenta mais o custo (ver nota acima
+    # sobre a troca pela tarifa real ANEEL) — não é exposto no schema.
+    divisoes_df = (df[['CNAE_DIVISAO', 'CNAE_DIVISAO_DESCRICAO']]
                    .drop_duplicates('CNAE_DIVISAO').sort_values('CNAE_DIVISAO'))
     divisoes = [
-        {'cnae': to_int(r.CNAE_DIVISAO), 'descricao': r.CNAE_DIVISAO_DESCRICAO,
-         'fator_carga': to_num(r.FATOR_CARGA_ASSUMIDO)}
+        {'cnae': to_int(r.CNAE_DIVISAO), 'descricao': r.CNAE_DIVISAO_DESCRICAO}
         for r in divisoes_df.itertuples(index=False)
     ]
     coverage = monthly_coverage(
@@ -308,7 +406,7 @@ def build_energia_industrial():
             g = g.sort_values(['ANO', 'MES'])
             obj[uf] = [
                 [to_int(r.ANO), to_int(r.MES), to_num(r.CONSUMO_MWH), to_num(r.CUSTO_TOTAL_RS_MWH),
-                 to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF)]
+                 to_num(r.PARTICIPACAO_PCT_SETOR_NA_UF), to_num(r.CUSTO_REAL_RS_MWH)]
                 for r in g.itertuples(index=False)
             ]
         with open(energia_dir / f"serie-cnae-{d['cnae']}.json", 'w', encoding='utf-8') as f:
@@ -329,7 +427,8 @@ def build_energia_industrial():
         'coverage': coverage,
         'ufs': ufs,
         'divisoes': divisoes,
-        'serie_campos': ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct'],
+        'serie_campos': ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct', 'custo_real_rs_mwh'],
+        'ano_base_deflacao': ano_base_energia,
     }
 
 
@@ -745,7 +844,7 @@ def main():
     macro = build_macro()
     fator_brl_2023 = build_fator_brl_2023(macro)
     decom = build_decom()
-    energia_industrial = build_energia_industrial()
+    energia_industrial = build_energia_industrial(macro)
 
     sector_2451 = build_sector('2451', 'Fundição de ferro e aço', fator_brl_2023)
     sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos', fator_brl_2023)
