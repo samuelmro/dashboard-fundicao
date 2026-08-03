@@ -44,6 +44,22 @@ def _is_plain_int_col(header):
     return any(hint in h for hint in NO_SEP_HINTS)
 
 
+
+# Acima disso, estilo por célula (borda + fonte em cada uma) fica lento
+# demais (Comtrade e energia industrial passam de 100 mil linhas) — nesse
+# caso usa escrita em bloco (ws.append) e só formata número, sem borda/fonte
+# por célula, pra não travar o build.
+LARGE_SHEET_THRESHOLD = 3000
+
+
+def _normalize_value(v):
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return None
+    if isinstance(v, float) and v.is_integer():
+        return int(v)
+    return v
+
+
 def _write_df(ws, df, title=None, note=None):
     r = 1
     if title:
@@ -59,20 +75,32 @@ def _write_df(ws, df, title=None, note=None):
     header_row = r
     r += 1
     plain_int_cols = {h for h in headers if _is_plain_int_col(h)}
-    for _, row in df.iterrows():
-        for c, h in enumerate(headers, start=1):
-            v = row[h]
-            if pd.isna(v):
-                v = None
-            elif isinstance(v, (int, float)) and not isinstance(v, bool):
-                fv = float(v)
-                v = int(fv) if fv.is_integer() else fv
-            cell = ws.cell(row=r, column=c, value=v)
-            cell.font = BODY_FONT
-            cell.border = BORDER
-            if isinstance(v, (int, float)):
-                cell.number_format = '0' if h in plain_int_cols else '#,##0.##'
-        r += 1
+    n_rows = len(df)
+    style_cells = n_rows <= LARGE_SHEET_THRESHOLD
+
+    if style_cells:
+        for _, row in df.iterrows():
+            for c, h in enumerate(headers, start=1):
+                v = _normalize_value(row[h])
+                cell = ws.cell(row=r, column=c, value=v)
+                cell.font = BODY_FONT
+                cell.border = BORDER
+                if isinstance(v, (int, float)):
+                    cell.number_format = '0' if h in plain_int_cols else '#,##0.##'
+            r += 1
+    else:
+        # values.tolist() + ws.append: ordens de magnitude mais rápido que
+        # ws.cell() célula a célula pra planilhas de centenas de milhares
+        # de linhas.
+        for row_vals in df[headers].values.tolist():
+            ws.append([_normalize_value(v) for v in row_vals])
+        num_formats = ['0' if h in plain_int_cols else '#,##0.##' for h in headers]
+        for row in ws.iter_rows(min_row=header_row + 1, max_row=header_row + n_rows):
+            for cell, fmt in zip(row, num_formats):
+                if isinstance(cell.value, (int, float)):
+                    cell.number_format = fmt
+        r = header_row + 1 + n_rows
+
     for c, h in enumerate(headers, start=1):
         sample = df[h].head(300)
         max_len = max((len(str(x)) for x in sample if pd.notna(x)), default=10)
