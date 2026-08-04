@@ -324,6 +324,25 @@
       })),
       pageSize: 20,
     });
+
+    const LABEL_CNAE = { '2451': 'Ferro e aço (2451)', '2452': 'Não ferrosos (2452)' };
+    dataTable($('#table-financeiro-por-cnae'), {
+      columns: [
+        { key: 'cnae_label', label: 'Classe' },
+        { key: 'numero_empresas', label: 'Nº empresas', align: 'right', format: fmt.full },
+        { key: 'pessoal_ocupado', label: 'Pessoal ocupado', align: 'right', format: fmt.full },
+        { key: 'vbpi', label: 'VBPI', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'vti', label: 'VTI', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'receita_liquida_total', label: 'Receita líquida', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'custos_despesas_totais', label: 'Custos totais', align: 'right', format: n => fmt.brlFull(n * 1000) },
+        { key: 'margem', label: 'Margem operacional', align: 'right', format: n => fmt.pct(n) },
+      ],
+      rows: sh.financeiro.por_cnae_2024.map(r => ({
+        ...r, cnae_label: LABEL_CNAE[r.cnae] || r.cnae,
+        margem: (r.receita_liquida_total && r.custos_despesas_totais != null)
+          ? ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100 : null,
+      })),
+    });
   }
 
   // ---------------------------------------------------------------------

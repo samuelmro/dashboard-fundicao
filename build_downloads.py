@@ -165,10 +165,13 @@ def build_financeiro_download():
     wb = _new_workbook()
     _add_sheet(wb, 'Metalurgia 24', _read('Dados_Financeiros_Metalurgia_24.csv'),
                title='Financeiro — Metalurgia (CNAE 24)',
-               note='Fonte: IBGE/PIA-Empresa, 2007-2023.')
+               note='Fonte: IBGE/PIA-Empresa, 2007-2024.')
     _add_sheet(wb, 'Fundicao 24.5', _read('Dados_Financeiros_Fundicao_24_5.csv'),
                title='Financeiro — Fundição (CNAE 24.5)',
-               note='Reúne 2451+2452 sem abertura entre eles. Fonte: IBGE/PIA-Empresa, 2007-2023.')
+               note='Reúne 2451+2452 sem abertura entre eles. Fonte: IBGE/PIA-Empresa, 2007-2024.')
+    _add_sheet(wb, '2451 x 2452 (2024)', _read('Dados_Financeiros_CNAE_2451_2452_2024_SerieNova.csv'),
+               title='Financeiro — Ferro e aço (2451) x Não ferrosos (2452)',
+               note='Só 2024 — primeira vez com essa abertura por classe. Fonte: IBGE/PIA-Empresa.')
     _save(wb, 'Financeiro.xlsx')
 
 

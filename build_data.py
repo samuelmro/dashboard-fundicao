@@ -207,6 +207,25 @@ def read_financeiro(name):
     return sorted(out, key=lambda r: r['ano'])
 
 
+def read_financeiro_por_cnae(name):
+    """Quebra 2451 x 2452 do financeiro (só existe pra 2024 — PIA/IBGE não
+    abre por classe nos demais anos, só no grupo 24.5 combinado)."""
+    df = read_csv(name)
+    out = []
+    for r in df.itertuples(index=False):
+        out.append({
+            'ano': to_int(r.ano), 'cnae': str(r.cnae_subclasse).strip(),
+            'numero_empresas': to_int(r.numero_empresas_estrato_certo),
+            'pessoal_ocupado': to_int(r.pessoal_ocupado),
+            'receita_liquida_total': to_num(r.receita_liquida_total),
+            'custos_despesas_totais': to_num(r.custos_despesas_totais),
+            'gastos_pessoal_total': to_num(r.gastos_pessoal_total),
+            'custos_operacoes_industriais': to_num(r.custos_operacoes_industriais),
+            'vbpi': to_num(r.vbpi), 'vti': to_num(r.vti),
+        })
+    return sorted(out, key=lambda r: (r['ano'], r['cnae']))
+
+
 # ---------------------------------------------------------------------------
 # SHARED: Macro + DECOM
 # ---------------------------------------------------------------------------
@@ -841,6 +860,7 @@ def main():
     metalurgia_indice, aco_gusa, aco_gusa_dessaz = build_producao()
     fin_metalurgia = read_financeiro('Dados_Financeiros_Metalurgia_24.csv')
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
+    fin_por_cnae = read_financeiro_por_cnae('Dados_Financeiros_CNAE_2451_2452_2024_SerieNova.csv')
     macro = build_macro()
     fator_brl_2023 = build_fator_brl_2023(macro)
     decom = build_decom()
@@ -860,7 +880,7 @@ def main():
         'shared': {
             'producao': {'metalurgia_indice': metalurgia_indice, 'aco_gusa': aco_gusa,
                          'aco_gusa_dessaz': aco_gusa_dessaz},
-            'financeiro': {'metalurgia_24': fin_metalurgia, 'fundicao_24_5': fin_fundicao},
+            'financeiro': {'metalurgia_24': fin_metalurgia, 'fundicao_24_5': fin_fundicao, 'por_cnae_2024': fin_por_cnae},
             'macro': macro,
             'decom': decom,
         },
