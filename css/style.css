@@ -82,18 +82,7 @@ a:hover { color: var(--accent); }
   padding: 18px 20px;
   border-bottom: 1px solid var(--border);
 }
-.sidebar-brand img { height: 20px; width: auto; display: block; }
-.sidebar-brand .divider { width: 1px; height: 18px; background: var(--border); }
-
-.sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-brand img { height: 22px; width: auto; display: block; }
-.sidebar-brand .divider { width: 1px; height: 20px; background: var(--border); }
+.sidebar-brand img { height: 40px; width: auto; display: block; }
 
 .sidebar-section-label {
   padding: 16px 20px 6px;
