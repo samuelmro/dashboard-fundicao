@@ -29,7 +29,7 @@ O que falta automatizar é só a etapa 1: buscar dado novo em cada fonte.
 | Comex Stat (exportação/importação) | Manual, portal público | Mensal |
 | RAIS + CAGED histórico (até 2019) | Manual, sistema de consulta | Mensal/conforme publicação |
 | DECOM (defesa comercial) | Manual, tabela pública | Conforme publicação de resolução |
-| Energia Industrial (EPE + MME/ANEEL) | Manual, publicações oficiais | Anual (publicação do MME) |
+| Energia Industrial (EPE + MME/ANEEL) | Manual, publicações oficiais | **Não precisa atualizar** (decisão do SIFESP) |
 
 Os scripts de coleta automática e o passo a passo detalhado das fontes
 manuais (incluindo qualquer login necessário) **não ficam neste
