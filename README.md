@@ -17,9 +17,9 @@ index.html              Estrutura das seções do painel
 css/style.css           Estilo (paleta vermelho/navy, layout de duas colunas)
 js/charts.js            Motor de gráficos SVG vanilla (sem libs externas)
 js/main.js              Lógica de filtros, cálculos derivados e wiring dos gráficos
-js/range-slider.js       Slider de período (dois handles)
 tests/test_build_data.py Testes de fumaça do pipeline (pytest)
 serve.ps1               Servidor HTTP estático simples (PowerShell), porta 8791
+ATUALIZACAO.md          Processo de atualização periódica dos dados, por fonte
 ```
 
 Os dados de 2451 e 2452 vivem no mesmo `data.json`, em `sectors["2451"]` e
