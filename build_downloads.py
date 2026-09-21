@@ -320,13 +320,6 @@ def build_energia_download():
                     f'(deflacionado por IPCA).')
     _add_sheet(wb, 'SP detalhado', _read('energia_industria_transformacao_sp_brasil_2012-2026.csv', decimal='.'),
                title='Energia industrial — São Paulo (detalhado)')
-    _add_sheet(wb, 'CCEE exato 2451', _read('Consumo_Energia_CCEE_Exato_2451.csv'),
-               title='Consumo de energia (CCEE, exato por CNAE) — Ferro e aço (2451)',
-               note='Fonte: CCEE, a partir de abr/2024 (mensal).')
-    _add_sheet(wb, 'CCEE exato 2452', _read('Consumo_Energia_CCEE_Exato_2452.csv'),
-               title='Consumo de energia (CCEE, exato por CNAE) — Não ferrosos (2452)')
-    _add_sheet(wb, 'CCEE aproximado metalurgia', _read('Consumo_Energia_CCEE_Metalurgia_e_Produtos_Metal_APROXIMADO.csv'),
-               title='Consumo de energia (CCEE, aproximado) — Metalurgia e produtos de metal')
     _save(wb, 'Energia_Industrial.xlsx')
 
 
