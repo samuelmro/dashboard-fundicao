@@ -737,10 +737,31 @@ def build_sector(cnae, label, fator_brl_2023):
         row['Outros'] = round(total_ano - soma_top, 2)
         top_paises_yearly['yearly'].append(row)
 
+    # Mesmo recorte "top 3 países + Outros", mas para importação — pedido
+    # do SIFESP pra dar mais destaque à evolução das origens de importação
+    # (hoje só existia a versão de exportação acima).
+    imp_df = comex_df[comex_df['Fluxo'] == 'Importação']
+    top_countries_imp = list(
+        imp_df.groupby('Pais')['Valor_US_FOB'].sum().sort_values(ascending=False).head(3).index
+    )
+    by_year_country_imp = imp_df.groupby(['Ano', 'Pais'])['Valor_US_FOB'].sum().reset_index()
+    top_paises_imp_yearly = {'paises': top_countries_imp, 'yearly': []}
+    for ano in sorted(imp_df['Ano'].unique().tolist()):
+        yr = by_year_country_imp[by_year_country_imp['Ano'] == ano]
+        total_ano = to_num(yr['Valor_US_FOB'].sum()) or 0.0
+        row = {'ano': to_int(ano)}
+        soma_top = 0.0
+        for pais in top_countries_imp:
+            v = yr[yr['Pais'] == pais]['Valor_US_FOB']
+            val = to_num(v.iloc[0]) if len(v) else 0.0
+            row[pais] = val or 0.0
+            soma_top += val or 0.0
+        row['Outros'] = round(total_ano - soma_top, 2)
+        top_paises_imp_yearly['yearly'].append(row)
+
     # Importação: China x resto do mundo, série anual. Mede a pressão de
     # peças fundidas chinesas mais baratas sobre o mercado interno (usado no
     # case de PD&I para o setor).
-    imp_df = comex_df[comex_df['Fluxo'] == 'Importação']
     importacao_china_resto_yearly = []
     for ano in sorted(imp_df['Ano'].unique().tolist()):
         yr = imp_df[imp_df['Ano'] == ano]
@@ -749,6 +770,78 @@ def build_sector(cnae, label, fator_brl_2023):
         importacao_china_resto_yearly.append({
             'ano': to_int(ano), 'china_usd': china, 'resto_usd': round(total_ano_imp - china, 2),
         })
+
+    # --- Comex por NCM/produto: preço médio (US$/kg) e ranking de produtos.
+    # 2451 já tem extrações nacionais separadas por fluxo; 2452 só tem a
+    # versão aberta por UF, então soma-se UF pra chegar no total nacional.
+    NCM_PRODUTO_FILES = {
+        '2451': {'Exportação': 'Comex_Fonte_2451_Exportacao_NCM.csv',
+                 'Importação': 'Comex_Fonte_2451_Importacao_NCM.csv'},
+    }
+
+    def _ncm_df_from_file(path):
+        df = read_csv(path)
+        df.columns = ['Ano', 'NCM', 'Descricao', 'Valor_US_FOB', 'Quilograma_Liquido']
+        df['Valor_US_FOB'] = pd.to_numeric(df['Valor_US_FOB'], errors='coerce')
+        df['Quilograma_Liquido'] = pd.to_numeric(df['Quilograma_Liquido'], errors='coerce')
+        df['Descricao'] = df['Descricao'].astype(str).str.strip()
+        return df
+
+    def _ncm_itens_ano(df, ano):
+        sub = df[df['Ano'] == ano].groupby(['NCM', 'Descricao'], as_index=False)[
+            ['Valor_US_FOB', 'Quilograma_Liquido']].sum()
+        sub = sub.sort_values('Valor_US_FOB', ascending=False)
+        itens = []
+        for r in sub.itertuples(index=False):
+            kg = to_num(r.Quilograma_Liquido)
+            valor = to_num(r.Valor_US_FOB)
+            itens.append({
+                'ncm': str(int(r.NCM)), 'descricao': r.Descricao,
+                'valor_usd': valor, 'kg': kg,
+                'preco_medio_usd_kg': round(valor / kg, 4) if valor and kg else None,
+            })
+        return itens
+
+    def _ncm_preco_medio_yearly(df):
+        by_year = df.groupby('Ano', as_index=False)[['Valor_US_FOB', 'Quilograma_Liquido']].sum()
+        out = []
+        for r in by_year.itertuples(index=False):
+            kg = to_num(r.Quilograma_Liquido)
+            valor = to_num(r.Valor_US_FOB)
+            out.append({
+                'ano': to_int(r.Ano),
+                'preco_medio_usd_kg': round(valor / kg, 4) if valor and kg else None,
+            })
+        out.sort(key=lambda x: x['ano'])
+        return out
+
+    if cnae in NCM_PRODUTO_FILES:
+        dfs_por_fluxo = {fluxo: _ncm_df_from_file(fname) for fluxo, fname in NCM_PRODUTO_FILES[cnae].items()}
+    elif cnae == '2452':
+        uf_df_2452 = read_csv('Comex_Fonte_2452_ExpImp_UF.csv')
+        uf_df_2452.columns = ['Fluxo', 'Ano', 'NCM', 'Descricao', 'UF', 'Valor_US_FOB', 'Quilograma_Liquido']
+        uf_df_2452['Fluxo'] = uf_df_2452['Fluxo'].astype(str).str.strip()
+        uf_df_2452['Valor_US_FOB'] = pd.to_numeric(uf_df_2452['Valor_US_FOB'], errors='coerce')
+        uf_df_2452['Quilograma_Liquido'] = pd.to_numeric(uf_df_2452['Quilograma_Liquido'], errors='coerce')
+        uf_df_2452['Descricao'] = uf_df_2452['Descricao'].astype(str).str.strip()
+        dfs_por_fluxo = {
+            'Exportação': uf_df_2452[uf_df_2452['Fluxo'] == 'Exportação'],
+            'Importação': uf_df_2452[uf_df_2452['Fluxo'] == 'Importação'],
+        }
+    else:
+        dfs_por_fluxo = {}
+
+    comex_ncm = {}
+    for fluxo, chave in (('Exportação', 'exportacao'), ('Importação', 'importacao')):
+        df_fluxo = dfs_por_fluxo.get(fluxo)
+        if df_fluxo is None or df_fluxo.empty:
+            continue
+        ano_latest = int(df_fluxo['Ano'].max())
+        ano_latest = ano_latest - 1 if ano_latest == date.today().year else ano_latest
+        comex_ncm[chave] = {
+            'latest': {'ano': ano_latest, 'itens': _ncm_itens_ano(df_fluxo, ano_latest)},
+            'preco_medio_yearly': _ncm_preco_medio_yearly(df_fluxo),
+        }
 
     # --- Comtrade global (agregação pesada: ~250k linhas) ---
     ct_df = read_csv(f'Comtrade_Global_Fundicao_{cnae}.csv')
@@ -843,7 +936,9 @@ def build_sector(cnae, label, fator_brl_2023):
         'comex': {
             'yearly': comex_yearly, 'uf_yearly': comex_uf_yearly,
             'top_paises_latest': top_paises_latest, 'top_paises_yearly': top_paises_yearly,
+            'top_paises_imp_yearly': top_paises_imp_yearly,
             'importacao_china_resto_yearly': importacao_china_resto_yearly,
+            'ncm': comex_ncm,
         },
         'comtrade': comtrade,
         'bndes': {'yearly': bndes_yearly, 'uf_total': bndes_uf_total,
