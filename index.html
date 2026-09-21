@@ -61,7 +61,57 @@
 
 <div class="wrap">
 
-<div id="home-view"></div><!-- /#home-view -->
+<div id="home-view">
+  <div class="exec-header">
+    <div>
+      <h1>Painel Executivo — Fundição em Números</h1>
+      <p>Os principais indicadores do setor, por segmento. O detalhamento completo de cada um está disponível na navegação ao final desta página.</p>
+    </div>
+    <div class="exec-seg-toggle" id="exec-seg-toggle" role="tablist" aria-label="Segmento do Painel Executivo">
+      <button type="button" class="exec-seg-btn" data-seg="2451" role="tab">Fundição de Ferro e Aço</button>
+      <button type="button" class="exec-seg-btn" data-seg="2452" role="tab">Fundição de Não Ferrosos</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid" id="exec-kpi-grid"></div>
+
+  <div class="section" id="exec-charts-section">
+    <div class="section-header"><h2>O setor em 4 perguntas</h2></div>
+    <div class="exhibit-grid">
+      <div class="exhibit">
+        <div id="exec-chart-crescimento"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">1. O setor está crescendo ou diminuindo?</div>
+          <div class="exhibit-sub">Produção, faturamento e empregos, indexados (base 100 no primeiro ano)</div>
+        </div>
+      </div>
+      <div class="exhibit">
+        <div id="exec-chart-comex"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">2. As importações estão crescendo?</div>
+          <div class="exhibit-sub">Exportação x importação, R$ milhões de 2023</div>
+        </div>
+      </div>
+      <div class="exhibit">
+        <div id="exec-chart-paises-imp"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">3. De onde está vindo a concorrência?</div>
+          <div class="exhibit-sub" id="exec-chart-paises-imp-sub">Principais países de origem das importações</div>
+        </div>
+      </div>
+      <div class="exhibit">
+        <div id="exec-chart-custos"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">4. Como estão custos e competitividade?</div>
+          <div class="exhibit-sub">Custo de energia (metalurgia, SP) x produtividade (VTI por trabalhador)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exec-menu-title">Navegar pelo painel</div>
+  <div class="sector-section-list" id="exec-nav-menu"></div>
+</div><!-- /#home-view -->
 
 <div id="data-view" hidden>
 
@@ -77,6 +127,7 @@
       <a class="section-download" href="data/downloads/Producao_Fisica.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">Dado nacional (IBGE/PIM-PF e Instituto Aço Brasil), sem abertura por estado, vale igualmente para os dois segmentos (2451/2452).</p>
+    <div class="caption-meta" id="section-caption-producao"></div>
     <div class="block-filter">
       <div class="block-filter-item">
         <span>Período</span>
@@ -133,6 +184,7 @@
       <a class="section-download" href="data/downloads/Financeiro.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">Fonte: IBGE/PIA-Empresa, 2007–2024, sempre em série completa (sem filtro de período). A base "Fundição" (24.5) reúne 2451+2452 sem abertura entre eles; "Metalurgia" (24) é o grupo mais amplo.</p>
+    <div class="caption-meta" id="section-caption-financeiro"></div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-financeiro-vbpi-vti"></div>
@@ -194,6 +246,7 @@
       <a class="section-download" id="download-emprego" href="data/downloads/Emprego_2451.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">A partir de 2022 a metodologia de coleta mudou (base eSocial); perfis detalhados (escolaridade, ocupação, tempo de emprego) têm quebra de série entre 2021 e 2022. Clique numa barra do ranking por UF para adicionar aquele estado ao filtro abaixo.</p>
+    <div class="caption-meta" id="section-caption-emprego"></div>
     <div class="block-filter">
       <div class="block-filter-item">
         <span>Período</span>
@@ -306,6 +359,7 @@
       <a class="section-download" id="download-caged" href="data/downloads/CAGED_2451.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note" id="caged-coverage-note">Granularidade mensal (admissões/desligamentos), que a RAIS não oferece.</p>
+    <div class="caption-meta" id="section-caption-caged"></div>
     <div class="block-filter">
       <div class="block-filter-item">
         <span>Período</span>
@@ -385,6 +439,7 @@
       <a class="section-download" id="download-comex" href="data/downloads/Comercio_Exterior_2451.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">O gráfico de exportação x importação segue o estado escolhido abaixo (ou clique numa barra do ranking por UF para trocar).</p>
+    <div class="caption-meta" id="section-caption-comex"></div>
     <p class="filter-note" id="comex-metodologia-note" style="display:none"></p>
     <div class="block-filter">
       <div class="block-filter-item">
@@ -489,6 +544,7 @@
       <a class="section-download" id="download-bndes" href="data/downloads/BNDES_2451.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">Desembolsos já são específicos do segmento selecionado (2451/2452). Sempre em série completa (2002-2026), sem filtro de período ou estado — desembolso do BNDES não é distribuído uniformemente Brasil afora, então o ranking por UF abaixo já é o retrato certo (não uma comparação recortável).</p>
+    <div class="caption-meta" id="section-caption-bndes"></div>
     <div class="exhibit-grid">
       <div class="exhibit">
         <div id="chart-bndes-ano"></div>
@@ -543,6 +599,7 @@
       <a class="section-download" href="data/downloads/DECOM_2451.xlsx" download>⬇ Baixar dados (Excel)</a>
     </div>
     <p class="section-note">Fonte: DECOM/GECEX. Base específica de ferro e aço (2451); não há processos catalogados para não ferrosos (2452) nesta fonte.</p>
+    <div class="caption-meta" id="section-caption-decom"></div>
     <div class="exhibit-block" id="decom-wrap">
       <div id="table-decom"></div>
       <div class="exhibit-caption">
@@ -561,6 +618,7 @@
       <h2>Estudos especiais</h2>
     </div>
     <p class="section-note">Panorama do setor, com os mesmos dados usados no restante deste painel (RAIS, Comex, BNDES, PIA/IBGE).</p>
+    <div class="caption-meta" id="section-caption-estudos-especiais"></div>
 
     <div class="pdi-cta">
       <h4>Panorama do setor</h4>

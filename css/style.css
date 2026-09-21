@@ -263,6 +263,60 @@ a:hover { color: var(--accent); }
 .sector-section-row .ssr-arrow { color: var(--text-muted); font-size: 0.9rem; flex-shrink: 0; transition: transform .12s, color .12s; }
 .sector-section-row:hover .ssr-arrow { color: var(--accent); transform: translateY(2px); }
 
+/* ---------- Painel Executivo (Início): resumo simples + menu de navegação,
+   pensado pra quem entra pela primeira vez e não quer o detalhamento
+   completo de cara. Reaproveita os tokens de .section/.exhibit, sem cor
+   nova. ---------- */
+.exec-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.exec-header h1 { font-size: 1.5rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.exec-header p { margin: 4px 0 0; font-size: 0.85rem; color: var(--text-secondary); }
+
+.exec-seg-toggle { display: flex; gap: 6px; }
+.exec-seg-btn {
+  font: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+}
+.exec-seg-btn:hover { border-color: var(--accent); color: var(--accent); }
+.exec-seg-btn.active { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+@media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+.kpi-tile {
+  display: flex; flex-direction: column; gap: 6px;
+  text-align: left; font: inherit; cursor: pointer;
+  background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 18px 16px;
+  transition: border-color .12s, box-shadow .12s;
+}
+.kpi-tile:hover { border-color: var(--accent); }
+.kpi-tile:disabled, .kpi-tile.no-click { cursor: default; }
+.kpi-tile:disabled:hover, .kpi-tile.no-click:hover { border-color: var(--border); }
+.kpi-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.kpi-value { font-size: 1.65rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.kpi-value .kpi-unit { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-left: 4px; }
+.kpi-sub { font-size: 0.75rem; color: var(--text-secondary); }
+.kpi-note { font-size: 0.68rem; color: var(--text-muted); font-style: italic; }
+.kpi-trend { font-size: 0.78rem; font-weight: 650; }
+.kpi-trend-up { color: var(--good); }
+.kpi-trend-down { color: var(--bad); }
+.kpi-trend-flat { color: var(--text-muted); }
+
+/* Linha "Fonte · Período · Atualizado em" — mesma classe usada no rodapé
+   dos KPI tiles e anexada a cada .section-note existente (ver
+   renderCaptionMeta em main.js). */
+.caption-meta { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+.caption-meta .cm-sep { margin: 0 5px; }
+
+.exec-menu-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4px; }
+
 /* ---------- Sections ---------- */
 .section {
   background: var(--surface-card);

@@ -1783,6 +1783,327 @@
     $('#sector-section-list').querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => scrollToBlock(btn.dataset.target)));
   }
 
+  // ---------------------------------------------------------------------
+  // Legenda "Fonte · Período · Atualizado em" — mesmo padrão usado no
+  // Painel Executivo e anexado a cada seção numerada, pra quem entra no
+  // painel saber na hora o que está vendo (pedido do SIFESP).
+  // ---------------------------------------------------------------------
+  function formatDataBr(iso) {
+    if (!iso) return null;
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+  function renderCaptionMeta(el, { fonte, periodo } = {}) {
+    if (!el) return;
+    const atualizado = state.data && state.data.meta && state.data.meta.gerado_em;
+    const partes = [];
+    if (fonte) partes.push('Fonte: ' + fonte);
+    if (periodo) partes.push(periodo);
+    if (atualizado) partes.push('Atualizado em ' + formatDataBr(atualizado));
+    el.textContent = partes.join(' · ');
+  }
+  const SECTION_FONTES = {
+    producao: 'Instituto Aço Brasil + IBGE/PIM-PF',
+    financeiro: 'IBGE — PIA-Empresa',
+    emprego: 'RAIS',
+    caged: 'CAGED',
+    comex: 'MDIC/Comex Stat + UN Comtrade',
+    bndes: 'BNDES',
+    decom: 'DECOM/GECEX',
+    'estudos-especiais': 'RAIS, Comex, BNDES e PIA/IBGE (mesmas bases do restante do painel)',
+  };
+  function initSectionCaptions() {
+    Object.keys(SECTION_FONTES).forEach(key => {
+      renderCaptionMeta($('#section-caption-' + key), { fonte: SECTION_FONTES[key] });
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Painel Executivo (Início): números principais do setor + menu de
+  // navegação. Pensado pra quem entra pela 1ª vez e não quer o
+  // detalhamento completo de cara (pedido do SIFESP) — não remove nem
+  // esconde nada do painel de dados, é só uma porta de entrada mais simples.
+  // ---------------------------------------------------------------------
+  const EXEC_OUTRAS_SECOES = [
+    { view: 'energia-industrial', title: 'Energia Industrial', sub: 'Consumo e custo de energia na indústria, por estado.' },
+    { view: 'pdi', title: 'PD&I', sub: 'Casos de Pesquisa, Desenvolvimento & Inovação para o setor.' },
+    { view: 'relatorios', title: 'Relatórios', sub: 'Em construção.' },
+    { view: 'referencias', title: 'Referências', sub: 'Fontes e metodologia de cada indicador.' },
+  ];
+
+  function goToBlock(sector, target) {
+    const btn = document.querySelector(`#sector-tabs button[data-view="${sector}"]`);
+    if (btn) btn.click();
+    requestAnimationFrame(() => scrollToBlock(target));
+  }
+  function goToView(view) {
+    const btn = document.querySelector(`[data-view="${view}"]`);
+    if (btn) btn.click();
+  }
+
+  function kpiTile({ id, label, value, unit, sub, note, trendHtml, sector, target }) {
+    const clickable = !!(sector && target);
+    const tag = clickable ? 'button' : 'div';
+    const attrs = clickable ? `type="button" data-sector="${sector}" data-target="${target}"` : '';
+    return `<${tag} class="kpi-tile${clickable ? '' : ' no-click'}" ${attrs} id="${id}">
+      <span class="kpi-label">${label}</span>
+      <span class="kpi-value">${value}${unit ? `<span class="kpi-unit">${unit}</span>` : ''}</span>
+      <span class="kpi-sub">${sub || ''}</span>
+      ${trendHtml || ''}
+      ${note ? `<span class="kpi-note">${note}</span>` : ''}
+      <span class="caption-meta" data-caption></span>
+    </${tag}>`;
+  }
+
+  // Seta + variação % em relação ao período anterior, no formato pedido
+  // pelo SIFESP ("IMPORTAÇÕES ↑ XX% em relação ao ano anterior").
+  function trendHtml(atual, anterior, labelPeriodo) {
+    if (atual == null || anterior == null || !anterior) return '';
+    const pct = ((atual - anterior) / Math.abs(anterior)) * 100;
+    const dir = pct > 0.5 ? 'up' : pct < -0.5 ? 'down' : 'flat';
+    const arrow = dir === 'up' ? '↑' : dir === 'down' ? '↓' : '→';
+    return `<span class="kpi-trend kpi-trend-${dir}">${arrow} ${fmt.pct(Math.abs(pct))} ${labelPeriodo || 'em relação ao ano anterior'}</span>`;
+  }
+  // Pega o último ano "fechado" de uma série anual (ignora o ano corrente,
+  // que costuma vir parcial no Comex/RAIS) e o ano anterior a ele, pra
+  // comparação justa de variação.
+  function ultimosDoisAnosFechados(rows) {
+    if (!rows || !rows.length) return { atual: null, anterior: null };
+    let idx = rows.length - 1;
+    if (rows[idx].ano === CURRENT_YEAR && idx > 0) idx -= 1;
+    return { atual: rows[idx] || null, anterior: rows[idx - 1] || null };
+  }
+
+  function renderExecutivo() {
+    if (!state.data) return;
+    const execSector = state.execSector || state.sector;
+    document.querySelectorAll('#exec-seg-toggle .exec-seg-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.seg === execSector);
+    });
+
+    const sd = state.data.sectors[execSector];
+    const sh = shared();
+    const { atual: empregoAtual, anterior: empregoAnterior } = ultimosDoisAnosFechados(sd.rais.uf_yearly_total);
+    const { atual: comexAtual, anterior: comexAnterior } = ultimosDoisAnosFechados(sd.comex.yearly);
+    const finRow = sh.financeiro.por_cnae_2024.find(r => r.cnae === execSector);
+
+    const anosProd = Array.from(new Set(sh.producao.aco_gusa.map(r => r.ano))).sort((a, b) => a - b);
+    const prod12m = sh.producao.aco_gusa.slice(-12);
+    const prodPrev12m = sh.producao.aco_gusa.slice(-24, -12);
+    const producaoSoma = prod12m.reduce((s, r) => s + (r.aco_bruto || 0), 0);
+    const producaoSomaAnterior = prodPrev12m.length === 12 ? prodPrev12m.reduce((s, r) => s + (r.aco_bruto || 0), 0) : null;
+
+    const saldoAtualUsd = comexAtual ? (comexAtual.exportacao_usd - comexAtual.importacao_usd) : null;
+    const saldoAnteriorUsd = comexAnterior ? (comexAnterior.exportacao_usd - comexAnterior.importacao_usd) : null;
+
+    const tiles = [
+      kpiTile({
+        id: 'exec-kpi-faturamento', label: 'Faturamento do setor',
+        value: finRow ? fmt.brl(finRow.receita_liquida_total * 1000) : '-',
+        sub: 'Receita líquida em 2024',
+        note: 'Sem comparação anual: 2024 é o único ano com abertura por segmento nesta fonte',
+        sector: execSector, target: 'block-financeiro',
+      }),
+      kpiTile({
+        id: 'exec-kpi-emprego', label: 'Empregos formais',
+        value: fmt.compact(empregoAtual ? empregoAtual.vinculos : null),
+        sub: empregoAtual ? `Vínculos ativos em ${empregoAtual.ano}` : '',
+        trendHtml: empregoAtual && empregoAnterior ? trendHtml(empregoAtual.vinculos, empregoAnterior.vinculos) : '',
+        sector: execSector, target: 'block-emprego',
+      }),
+      kpiTile({
+        id: 'exec-kpi-estabelecimentos', label: 'Número de estabelecimentos',
+        value: fmt.compact(empregoAtual ? empregoAtual.estabelecimentos : null),
+        sub: empregoAtual ? `Em ${empregoAtual.ano}` : '',
+        trendHtml: empregoAtual && empregoAnterior ? trendHtml(empregoAtual.estabelecimentos, empregoAnterior.estabelecimentos) : '',
+        sector: execSector, target: 'block-emprego',
+      }),
+      kpiTile({
+        id: 'exec-kpi-producao', label: 'Produção',
+        value: fmt.compact(producaoSoma),
+        sub: 'Toneladas de aço bruto, últimos 12 meses',
+        trendHtml: trendHtml(producaoSoma, producaoSomaAnterior, 'em relação aos 12 meses anteriores'),
+        note: 'Mesmo valor para os dois segmentos — a fonte não abre por CNAE',
+        sector: execSector, target: 'block-producao',
+      }),
+      kpiTile({
+        id: 'exec-kpi-exportacao', label: 'Exportações',
+        value: comexAtual ? fmt.usd(comexAtual.exportacao_usd) : '-',
+        sub: comexAtual ? `US$ FOB em ${comexAtual.ano}` : '',
+        trendHtml: comexAtual && comexAnterior ? trendHtml(comexAtual.exportacao_usd, comexAnterior.exportacao_usd) : '',
+        sector: execSector, target: 'block-comex',
+      }),
+      kpiTile({
+        id: 'exec-kpi-importacao', label: 'Importações',
+        value: comexAtual ? fmt.usd(comexAtual.importacao_usd) : '-',
+        sub: comexAtual ? `US$ FOB em ${comexAtual.ano}` : '',
+        trendHtml: comexAtual && comexAnterior ? trendHtml(comexAtual.importacao_usd, comexAnterior.importacao_usd) : '',
+        sector: execSector, target: 'block-comex',
+      }),
+      kpiTile({
+        id: 'exec-kpi-saldo', label: 'Saldo da balança comercial',
+        value: saldoAtualUsd != null ? fmt.usd(saldoAtualUsd) : '-',
+        sub: comexAtual ? `Exportação − importação, ${comexAtual.ano}` : '',
+        trendHtml: saldoAtualUsd != null && saldoAnteriorUsd != null ? trendHtml(saldoAtualUsd, saldoAnteriorUsd) : '',
+        sector: execSector, target: 'block-comex',
+      }),
+      kpiTile({
+        id: 'exec-kpi-energia', label: 'Custo de energia',
+        value: '…', sub: 'Carregando…',
+        note: 'Metalurgia em SP (CNAE 24) — não abre por segmento',
+      }),
+    ];
+
+    const grid = $('#exec-kpi-grid');
+    grid.innerHTML = tiles.join('');
+    grid.querySelectorAll('.kpi-tile[data-sector]').forEach(btn => {
+      btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target));
+    });
+
+    renderCaptionMeta($('#exec-kpi-faturamento [data-caption]'), { fonte: 'IBGE/PIA-Empresa', periodo: '2024' });
+    renderCaptionMeta($('#exec-kpi-emprego [data-caption]'), { fonte: 'RAIS' });
+    renderCaptionMeta($('#exec-kpi-estabelecimentos [data-caption]'), { fonte: 'RAIS' });
+    renderCaptionMeta($('#exec-kpi-producao [data-caption]'), { fonte: 'Instituto Aço Brasil + IBGE/PIM-PF' });
+    renderCaptionMeta($('#exec-kpi-exportacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
+    renderCaptionMeta($('#exec-kpi-importacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
+    renderCaptionMeta($('#exec-kpi-saldo [data-caption]'), { fonte: 'MDIC/Comex Stat' });
+
+    // Energia é carregada à parte (mesmo arquivo lazy que a aba Energia
+    // Industrial e o case de PD&I usam) — não bloqueia o resto do painel.
+    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
+      const sp = obj['SP'] || [];
+      if (!sp.length) return;
+      const porAno = {};
+      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
+      const anos = Object.keys(porAno).map(Number).sort((a, b) => a - b);
+      const mediaAno = a => porAno[a].reduce((s, v) => s + v, 0) / porAno[a].length;
+      // 2026 vem parcial (cobertura só até abril) — compara o último ano
+      // fechado, senão a variação fica artificial.
+      let idxUltimo = anos.length - 1;
+      if (anos[idxUltimo] === CURRENT_YEAR && idxUltimo > 0) idxUltimo -= 1;
+      const ultimoAno = anos[idxUltimo];
+      const anteriorAno = anos[idxUltimo - 1];
+      const media = mediaAno(ultimoAno);
+      const tile = $('#exec-kpi-energia');
+      if (!tile) return;
+      tile.querySelector('.kpi-value').innerHTML = fmt.brl(media) + '<span class="kpi-unit">/MWh</span>';
+      tile.querySelector('.kpi-sub').textContent = `Custo médio real em ${ultimoAno}, SP`;
+      if (anteriorAno) {
+        tile.querySelector('.kpi-sub').insertAdjacentHTML('afterend', trendHtml(media, mediaAno(anteriorAno)));
+      }
+      renderCaptionMeta(tile.querySelector('[data-caption]'), { fonte: 'MME/ANEEL + EPE' });
+    }).catch(() => {});
+
+    renderExecCharts(execSector);
+    renderExecNavMenu(execSector);
+  }
+
+  // ---------------------------------------------------------------------
+  // Os 4 gráficos executivos, respondendo às perguntas que o SIFESP listou:
+  // o setor cresce? as importações crescem? de onde vem a concorrência?
+  // como estão custos e competitividade?
+  // ---------------------------------------------------------------------
+  function indexarBase100(vals) {
+    const base = vals.find(v => v != null && v !== 0);
+    if (base == null) return vals.map(() => null);
+    return vals.map(v => (v == null ? null : (v / base) * 100));
+  }
+  function somaAnual(monthlyRows, field) {
+    const porAno = {};
+    monthlyRows.forEach(r => { porAno[r.ano] = (porAno[r.ano] || 0) + (r[field] || 0); });
+    return porAno;
+  }
+
+  function renderExecCharts(execSector) {
+    const sd = state.data.sectors[execSector];
+    const sh = shared();
+
+    // 1) O setor está crescendo? Produção (nacional), faturamento (grupo
+    // Fundição 24.5, combinado — não abre por segmento) e empregos (por
+    // segmento), indexados a 100 no primeiro ano em comum.
+    const finAnos = sh.financeiro.fundicao_24_5.map(r => r.ano);
+    const catCrescimento = finAnos.filter(a => a >= 2007);
+    const producaoPorAno = somaAnual(sh.producao.aco_gusa, 'aco_bruto');
+    const empregoPorAno = new Map(sd.rais.uf_yearly_total.map(r => [r.ano, r.vinculos]));
+    const finPorAno = new Map(sh.financeiro.fundicao_24_5.map(r => [r.ano, r.receita_liquida_total]));
+    lineChart($('#exec-chart-crescimento'), {
+      categories: catCrescimento, formatY: n => fmt.compact(n), height: 260,
+      series: [
+        { label: 'Produção (aço bruto)', color: 'var(--series-1)', values: indexarBase100(catCrescimento.map(a => producaoPorAno[a] ?? null)) },
+        { label: 'Faturamento (grupo Fundição)', color: 'var(--series-3)', values: indexarBase100(catCrescimento.map(a => finPorAno.has(a) ? finPorAno.get(a) : null)) },
+        { label: 'Empregos (segmento selecionado)', color: 'var(--series-2)', values: indexarBase100(catCrescimento.map(a => empregoPorAno.has(a) ? empregoPorAno.get(a) : null)) },
+      ],
+    });
+
+    // 2) Importações estão crescendo? Exportação x importação do segmento
+    // selecionado, em R$ constantes de 2023 (mesma unidade da balança
+    // comercial do detalhamento, pra não misturar nominal com real). Corta
+    // o ano corrente se vier parcial, senão o fim da linha cai artificial.
+    const comexCompleto = sd.comex.yearly.filter(r => r.ano !== CURRENT_YEAR);
+    const catComex = comexCompleto.map(r => r.ano);
+    lineChart($('#exec-chart-comex'), {
+      categories: catComex, formatY: fmt.brl, height: 260,
+      series: [
+        { label: 'Exportação', color: 'var(--series-4)', values: comexCompleto.map(r => r.exportacao_brl_2023) },
+        { label: 'Importação', color: 'var(--series-6)', values: comexCompleto.map(r => r.importacao_brl_2023) },
+      ],
+    });
+
+    // 3) De onde vem a concorrência? Ranking de países de origem das
+    // importações, ano mais recente completo (mesmo recorte do
+    // detalhamento em Comércio Exterior).
+    const paisesImp = sd.comex.top_paises_latest.importacao || [];
+    $('#exec-chart-paises-imp-sub').textContent = `Principais países de origem das importações, ${sd.comex.top_paises_latest.ano}`;
+    rankList($('#exec-chart-paises-imp'), paisesImp.map(p => ({ label: p.pais, value: p.valor_usd })), {
+      formatVal: fmt.usd, color: 'var(--series-6)',
+    });
+
+    // 4) Custos e competitividade: custo de energia (metalurgia SP, não
+    // abre por segmento) x produtividade (VTI por trabalhador, grupo
+    // Fundição combinado — mesma limitação do faturamento acima).
+    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
+      const sp = obj['SP'] || [];
+      const porAno = {};
+      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
+      const anosEnergia = Object.keys(porAno).map(Number).sort((a, b) => a - b);
+      const custoPorAno = new Map(anosEnergia.map(a => [a, porAno[a].reduce((s, v) => s + v, 0) / porAno[a].length]));
+      const produtividadePorAno = new Map(sh.financeiro.fundicao_24_5
+        .filter(r => r.vti != null && r.pessoal_ocupado)
+        .map(r => [r.ano, (r.vti * 1000) / r.pessoal_ocupado]));
+      const catCustos = anosEnergia.filter(a => produtividadePorAno.has(a));
+      dualAxisLineChart($('#exec-chart-custos'), {
+        categories: catCustos, height: 260,
+        seriesLeft: { label: 'Custo de energia (R$/MWh, SP)', color: 'var(--series-5)', values: catCustos.map(a => custoPorAno.get(a) ?? null) },
+        seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-8)', values: catCustos.map(a => produtividadePorAno.get(a) ?? null) },
+        formatYLeft: n => fmt.brl(n), formatYRight: n => fmt.brl(n),
+      });
+    }).catch(() => {});
+  }
+
+  function renderExecNavMenu(execSector) {
+    const blocos = SECTION_META.map(sec =>
+      `<button type="button" class="sector-section-row" data-sector="${execSector}" data-target="${sec.target}"><span class="ssr-num">${sec.num}</span><span class="ssr-text"><span class="ssr-title">${sec.title}</span><span class="ssr-sub">${sec.sub}</span></span><span class="ssr-arrow">→</span></button>`
+    ).join('');
+    const outras = EXEC_OUTRAS_SECOES.map(v =>
+      `<button type="button" class="sector-section-row" data-view="${v.view}"><span class="ssr-num">·</span><span class="ssr-text"><span class="ssr-title">${v.title}</span><span class="ssr-sub">${v.sub}</span></span><span class="ssr-arrow">→</span></button>`
+    ).join('');
+    const menu = $('#exec-nav-menu');
+    menu.innerHTML = blocos + outras;
+    menu.querySelectorAll('button[data-target]').forEach(btn =>
+      btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target)));
+    menu.querySelectorAll('button[data-view]').forEach(btn =>
+      btn.addEventListener('click', () => goToView(btn.dataset.view)));
+  }
+
+  function setupExecSegToggle() {
+    document.querySelectorAll('#exec-seg-toggle .exec-seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.execSector = btn.dataset.seg;
+        renderExecutivo();
+      });
+    });
+  }
+
   function updateDownloadLinks() {
     ['emprego', 'caged', 'comex', 'bndes'].forEach(id => {
       const el = $('#download-' + id);
@@ -1815,6 +2136,9 @@
       renderPdi(data);
       renderEnergiaIndustrial(data);
       renderAll();
+      initSectionCaptions();
+      setupExecSegToggle();
+      renderExecutivo();
     })
     .catch(err => {
       document.querySelector('.wrap').innerHTML = '<p style="padding:40px;color:var(--bad)">Não foi possível carregar os dados (data/data.json). Detalhe: ' + err.message + '</p>';
