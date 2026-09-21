@@ -11,3 +11,7 @@ __pycache__/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Pasta de preparação de dados (scripts R, planilhas brutas, chaves de API e
+# login de consulta) — nunca deve subir pro repositório público do site.
+Setor Siderúrgico/
