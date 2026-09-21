@@ -684,6 +684,16 @@
       categories: filteredYearly.map(r => r.ano), formatY: fmt.usd, height: 280, stacked: true, series: seriesTopPaises
     });
 
+    const topYImp = s.comex.top_paises_imp_yearly;
+    const filteredYearlyImp = topYImp.yearly.filter(r => r.ano >= bs.lo && r.ano <= bs.hi);
+    const seriesTopPaisesImp = topYImp.paises.map((pais, i) => ({
+      label: pais, color: CORES[i % CORES.length], values: filteredYearlyImp.map(r => r[pais] || 0)
+    }));
+    seriesTopPaisesImp.push({ label: 'Outros', color: 'var(--baseline)', values: filteredYearlyImp.map(r => r.Outros || 0) });
+    barChart($('#chart-comex-top-paises-imp-tempo'), {
+      categories: filteredYearlyImp.map(r => r.ano), formatY: fmt.usd, height: 280, stacked: true, series: seriesTopPaisesImp
+    });
+
     const ctBr = filterAnnual(s.comtrade.brazil_yearly, bs.lo, bs.hi);
     const ctWorld = filterAnnual(s.comtrade.world_yearly, bs.lo, bs.hi);
     const catCt = annualCategories([ctBr, ctWorld]);
@@ -755,6 +765,45 @@
       rows: ufTableRows,
       pageSize: 8,
     });
+
+    // Produtos (NCM) e preço médio (US$/kg) — só existe pro 2451 e 2452
+    // por enquanto (ver comentário em build_data.py sobre as fontes).
+    const ncm = s.comex.ncm || {};
+    const ncmWrap = $('#comex-ncm-wrap');
+    if (ncm.exportacao || ncm.importacao) {
+      ncmWrap.style.display = '';
+      const ncmCols = [
+        { key: 'ncm', label: 'NCM' },
+        { key: 'descricao', label: 'Descrição' },
+        { key: 'valor_usd', label: 'Valor US$ FOB', align: 'right', format: fmt.usdFull },
+        { key: 'kg', label: 'Quilograma líquido', align: 'right', format: fmt.full },
+        { key: 'preco_medio_usd_kg', label: 'Preço médio (US$/kg)', align: 'right', format: n => n == null ? '-' : 'US$ ' + fmt.full1(n) },
+      ];
+      if (ncm.exportacao) {
+        $('#comex-ncm-exp-sub').textContent = 'Por código NCM, ' + ncm.exportacao.latest.ano;
+        dataTable($('#table-comex-ncm-exp'), { columns: ncmCols, rows: ncm.exportacao.latest.itens, pageSize: 8 });
+      }
+      if (ncm.importacao) {
+        $('#comex-ncm-imp-sub').textContent = 'Por código NCM, ' + ncm.importacao.latest.ano;
+        dataTable($('#table-comex-ncm-imp'), { columns: ncmCols, rows: ncm.importacao.latest.itens, pageSize: 8 });
+      }
+      const catPreco = annualCategories([
+        (ncm.exportacao && ncm.exportacao.preco_medio_yearly) || [],
+        (ncm.importacao && ncm.importacao.preco_medio_yearly) || [],
+      ]);
+      lineChart($('#chart-comex-preco-medio'), {
+        categories: catPreco, formatY: n => 'US$ ' + fmt.full1(n), height: 280,
+        series: [
+          ncm.exportacao ? { label: 'Exportação', color: 'var(--series-4)', values: seriesAnnual(ncm.exportacao.preco_medio_yearly, 'preco_medio_usd_kg', catPreco) } : null,
+          ncm.importacao ? { label: 'Importação', color: 'var(--series-6)', values: seriesAnnual(ncm.importacao.preco_medio_yearly, 'preco_medio_usd_kg', catPreco) } : null,
+        ].filter(Boolean),
+      });
+    } else {
+      ncmWrap.style.display = 'none';
+      $('#table-comex-ncm-exp').innerHTML = '';
+      $('#table-comex-ncm-imp').innerHTML = '';
+      $('#chart-comex-preco-medio').innerHTML = '';
+    }
   }
 
   // ---------------------------------------------------------------------
