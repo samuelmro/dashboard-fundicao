@@ -2123,7 +2123,7 @@
     dualAxisLineChart($('#exec-chart-margem'), {
       categories: finComp.map(r => r.ano), height: 260,
       seriesLeft: { label: 'Margem operacional (%)', color: 'var(--series-8)', values: finComp.map(r => r.margem) },
-      seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-5)', values: finComp.map(r => r.produtividade) },
+      seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-2)', values: finComp.map(r => r.produtividade) },
       formatYLeft: n => fmt.pct(n), formatYRight: n => fmt.brl(n),
     });
   }
