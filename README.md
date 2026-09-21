@@ -3,7 +3,7 @@
 Painel executivo estático (sem framework, sem build step de JS) sobre o setor de
 fundição de ferro/aço (CNAE 2451) e de metais não ferrosos (CNAE 2452) no
 Brasil: produção física, financeiro, emprego formal (RAIS), CAGED, comércio
-exterior, energia (CCEE), BNDES e DECOM.
+exterior, energia industrial (EPE/MME-ANEEL), BNDES e DECOM.
 
 ## Estrutura
 
@@ -25,7 +25,8 @@ serve.ps1               Servidor HTTP estático simples (PowerShell), porta 8791
 Os dados de 2451 e 2452 vivem no mesmo `data.json`, em `sectors["2451"]` e
 `sectors["2452"]` — o switch de setor no topo do painel só troca qual chave é
 lida, sem novo fetch. Dados que não variam por segmento (produção física
-nacional, financeiro PIA, energia aproximada, macro, DECOM) ficam em `shared`.
+nacional, financeiro PIA, energia industrial por divisão CNAE, macro, DECOM)
+ficam em `shared`.
 
 ## Como regenerar os dados
 
@@ -89,7 +90,7 @@ presença de campos-chave usados pelos gráficos (ex.: `laminados`,
 | CAGED | CAGED (saldo, salário, tipo de movimentação) | calculada dinamicamente a partir da base (ver painel) |
 | Comércio exterior | MDIC — Comex Stat | 2006/2016–2026 (anual) |
 | Comércio exterior (contexto mundial) | UN Comtrade (proxy por HS) | 2015–2024 (anual) |
-| Energia | CCEE (exato por CNAE + aproximado "Metalurgia") | a partir de abr/2024 (mensal) |
+| Energia Industrial | EPE (consumo) + MME/ANEEL (tarifa média faturada) | 2012–2026 (mensal, por UF e divisão CNAE) |
 | BNDES | Desembolsos por UF/porte/instrumento | 2002–2026 (anual) |
 | DECOM | Processos de defesa comercial (só 2451) | histórico |
 
