@@ -213,8 +213,8 @@
     lineChart($('#chart-producao-dessaz'), {
       categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 280,
       series: [
-        { label: 'Observado', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
-        { label: 'Dessazonalizado', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
+        { label: 'Mês a mês', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
+        { label: 'Sem efeito sazonal', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
       ]
     });
 
@@ -497,7 +497,7 @@
     const s = csS();
     const bs = blocks.caged;
 
-    $('#caged-coverage-note').textContent = `Granularidade mensal (admissões/desligamentos), que a RAIS não oferece. Cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}. Clique numa barra do ranking por UF para adicionar aquele estado ao filtro abaixo.`;
+    $('#caged-coverage-note').textContent = `Dado mês a mês (admissões e desligamentos) — mais detalhado no tempo do que a RAIS, que só fecha uma vez por ano. Cobertura: ${s.caged.coverage.inicio} a ${s.caged.coverage.fim}. Clique numa barra do ranking por UF para adicionar aquele estado ao filtro abaixo.`;
 
     // Combos: 1 linha por estado marcado no filtro (mesmo padrão de
     // renderEmprego/renderEnergiaIndustrial), usando as séries mensais por

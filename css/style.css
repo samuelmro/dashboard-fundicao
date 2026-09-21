@@ -315,7 +315,7 @@ a:hover { color: var(--accent); }
 .caption-meta { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
 .caption-meta .cm-sep { margin: 0 5px; }
 
-.exec-menu-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4px; }
+.exec-menu-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 40px 0 4px; }
 
 /* ---------- Sections ---------- */
 .section {
