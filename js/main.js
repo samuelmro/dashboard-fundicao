@@ -2078,9 +2078,9 @@
     lineChart($('#exec-chart-crescimento'), {
       categories: catCrescimento, formatY: n => fmt.compact(n), height: 260,
       series: [
-        { label: 'Produção (aço bruto)', color: 'var(--series-1)', values: indexarBase100(catCrescimento.map(a => producaoPorAno[a] ?? null)) },
+        { label: 'Produção (aço bruto)', color: 'var(--series-7)', values: indexarBase100(catCrescimento.map(a => producaoPorAno[a] ?? null)) },
         { label: 'Faturamento (grupo Fundição)', color: 'var(--series-3)', values: indexarBase100(catCrescimento.map(a => finPorAno.has(a) ? finPorAno.get(a) : null)) },
-        { label: 'Empregos (segmento selecionado)', color: 'var(--series-2)', values: indexarBase100(catCrescimento.map(a => empregoPorAno.has(a) ? empregoPorAno.get(a) : null)) },
+        { label: 'Empregos (segmento selecionado)', color: 'var(--series-5)', values: indexarBase100(catCrescimento.map(a => empregoPorAno.has(a) ? empregoPorAno.get(a) : null)) },
       ],
     });
 
@@ -2107,26 +2107,25 @@
       formatVal: fmt.usd, color: 'var(--series-6)',
     });
 
-    // 4) Custos e competitividade: custo de energia (metalurgia SP, não
-    // abre por segmento) x produtividade (VTI por trabalhador, grupo
-    // Fundição combinado — mesma limitação do faturamento acima).
-    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
-      const sp = obj['SP'] || [];
-      const porAno = {};
-      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
-      const anosEnergia = Object.keys(porAno).map(Number).sort((a, b) => a - b);
-      const custoPorAno = new Map(anosEnergia.map(a => [a, porAno[a].reduce((s, v) => s + v, 0) / porAno[a].length]));
-      const produtividadePorAno = new Map(sh.financeiro.fundicao_24_5
-        .filter(r => r.vti != null && r.pessoal_ocupado)
-        .map(r => [r.ano, (r.vti * 1000) / r.pessoal_ocupado]));
-      const catCustos = anosEnergia.filter(a => produtividadePorAno.has(a));
-      dualAxisLineChart($('#exec-chart-custos'), {
-        categories: catCustos, height: 260,
-        seriesLeft: { label: 'Custo de energia (R$/MWh, SP)', color: 'var(--series-5)', values: catCustos.map(a => custoPorAno.get(a) ?? null) },
-        seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-8)', values: catCustos.map(a => produtividadePorAno.get(a) ?? null) },
-        formatYLeft: n => fmt.brl(n), formatYRight: n => fmt.brl(n),
-      });
-    }).catch(() => {});
+    // 4) Competitividade e produtividade: margem operacional e produtividade
+    // (VTI por trabalhador), as duas do grupo Fundição combinado (mesma
+    // limitação do faturamento acima — abertura por segmento só em 2024).
+    // Eixos diferentes (% x R$), por isso dois eixos no mesmo gráfico —
+    // aqui faz sentido comparar, ao contrário de energia (fonte sem
+    // relação direta com as duas).
+    const finComp = sh.financeiro.fundicao_24_5
+      .filter(r => r.receita_liquida_total && r.custos_despesas_totais != null && r.vti != null && r.pessoal_ocupado)
+      .map(r => ({
+        ano: r.ano,
+        margem: ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100,
+        produtividade: (r.vti * 1000) / r.pessoal_ocupado,
+      }));
+    dualAxisLineChart($('#exec-chart-margem'), {
+      categories: finComp.map(r => r.ano), height: 260,
+      seriesLeft: { label: 'Margem operacional (%)', color: 'var(--series-8)', values: finComp.map(r => r.margem) },
+      seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-5)', values: finComp.map(r => r.produtividade) },
+      formatYLeft: n => fmt.pct(n), formatYRight: n => fmt.brl(n),
+    });
   }
 
   function renderExecNavMenu(execSector) {
