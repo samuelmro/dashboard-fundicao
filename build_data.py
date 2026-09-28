@@ -170,7 +170,19 @@ def build_producao():
                                  'total_sem_ferro_gusa': to_num(r.total_sem_ferro_gusa)})
 
     key = lambda r: r['ano'] * 100 + r['mes']
-    return sorted(metalurgia_indice, key=key), sorted(aco_gusa, key=key), sorted(aco_gusa_dessaz, key=key)
+
+    # Alumínio primário (ABAL) — produção física do 2452. Diferente do aço
+    # (2451), aqui é só uma série (não abre por produto), então não tem
+    # equivalente a laminados/ferro-gusa/semi-acabados.
+    al_df = read_csv('Producao_Aluminio_Primario_ABAL.csv')
+    aluminio_primario = sorted([
+        {'ano': to_int(r.Ano), 'mes': to_int(r.Mes),
+         'producao': to_num(r.Producao_Mil_T), 'producao_dessaz': to_num(r.Producao_Dessaz_Mil_T)}
+        for r in al_df.itertuples(index=False)
+    ], key=key)
+
+    return (sorted(metalurgia_indice, key=key), sorted(aco_gusa, key=key), sorted(aco_gusa_dessaz, key=key),
+            aluminio_primario)
 
 
 # ---------------------------------------------------------------------------
@@ -952,7 +964,7 @@ def build_sector(cnae, label, fator_brl_2023):
 def main():
     print(f'Lendo CSVs de {SRC_DIR}...')
 
-    metalurgia_indice, aco_gusa, aco_gusa_dessaz = build_producao()
+    metalurgia_indice, aco_gusa, aco_gusa_dessaz, aluminio_primario = build_producao()
     fin_metalurgia = read_financeiro('Dados_Financeiros_Metalurgia_24.csv')
     fin_fundicao = read_financeiro('Dados_Financeiros_Fundicao_24_5.csv')
     fin_por_cnae = read_financeiro_por_cnae('Dados_Financeiros_CNAE_2451_2452_2024_SerieNova.csv')
@@ -963,6 +975,10 @@ def main():
 
     sector_2451 = build_sector('2451', 'Fundição de ferro e aço', fator_brl_2023)
     sector_2452 = build_sector('2452', 'Fundição de metais não ferrosos', fator_brl_2023)
+    # Produção física do 2452 é alumínio primário (ABAL), não aço — ao
+    # contrário do resto do bloco "shared", aqui os dois segmentos têm
+    # fontes de fato diferentes.
+    sector_2452['producao_aluminio'] = aluminio_primario
 
     uf_lista = sorted(({'uf': uf, 'nome': nome} for _, uf, nome in UF_TABLE), key=lambda x: x['nome'])
 

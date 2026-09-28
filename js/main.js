@@ -176,7 +176,7 @@
     const sh = shared();
     const s1 = state.data.sectors['2451'], s2 = state.data.sectors['2452'];
 
-    const prod = yearBounds([sh.producao.aco_gusa, sh.producao.metalurgia_indice]);
+    const prod = yearBounds([sh.producao.aco_gusa, sh.producao.metalurgia_indice, s2.producao_aluminio]);
     blocks.producao = { lo: prod.lo, hi: prod.hi, boundsLo: prod.lo, boundsHi: prod.hi };
 
     const emp = yearBounds([s1.rais.uf_yearly_total, s2.rais.uf_yearly_total]);
@@ -195,28 +195,95 @@
   // ---------------------------------------------------------------------
   function renderProducao() {
     const sh = shared();
+    const s = csS();
     const bs = blocks.producao;
+    const isAluminio = state.sector === '2452';
 
-    const ag = filterMonthly(sh.producao.aco_gusa, bs.lo, bs.hi);
-    const catAg = ag.map(r => r.ano * 100 + r.mes);
-    lineChart($('#chart-producao-acogusa'), {
-      categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 280,
-      series: [
-        { label: 'Aço bruto', color: 'var(--series-1)', values: ag.map(r => r.aco_bruto), area: true },
-        { label: 'Ferro-gusa', color: 'var(--series-5)', values: ag.map(r => r.ferro_gusa) },
-        { label: 'Laminados', color: 'var(--series-3)', values: ag.map(r => r.laminados) },
-      ]
-    });
+    $('#producao-razao-wrap').style.display = isAluminio ? 'none' : '';
+    $('#producao-section-note').textContent = isAluminio
+      ? 'Dado nacional (ABAL), sem abertura por estado. Alumínio primário é a produção física do segmento não ferrosos; não inclui outros metais não ferrosos (cobre, zinco etc.), que não têm série física pública equivalente.'
+      : 'Dado nacional (IBGE/PIM-PF e Instituto Aço Brasil), sem abertura por estado.';
+    renderCaptionMeta($('#section-caption-producao'), { fonte: isAluminio ? 'ABAL' : 'Instituto Aço Brasil + IBGE/PIM-PF' });
 
-    const dessaz = filterMonthly(sh.producao.aco_gusa_dessaz, bs.lo, bs.hi);
-    const catDz = monthlyCategories([ag, dessaz]);
-    lineChart($('#chart-producao-dessaz'), {
-      categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 280,
-      series: [
-        { label: 'Mês a mês', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
-        { label: 'Sem efeito sazonal', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
-      ]
-    });
+    if (isAluminio) {
+      const al = filterMonthly(s.producao_aluminio, bs.lo, bs.hi);
+      const catAl = al.map(r => r.ano * 100 + r.mes);
+      $('#producao-acogusa-title').textContent = 'Produção de alumínio primário';
+      $('#producao-acogusa-sub').textContent = 'Mil toneladas por mês, ABAL';
+      lineChart($('#chart-producao-acogusa'), {
+        categories: catAl, formatX: monthLabel, formatY: fmt.compact, height: 280,
+        series: [{ label: 'Alumínio primário', color: 'var(--series-1)', values: al.map(r => r.producao), area: true }]
+      });
+
+      $('#producao-dessaz-title').textContent = 'Alumínio primário: mês a mês vs. sem efeito sazonal';
+      $('#producao-dessaz-sub').textContent = 'Mil toneladas / mês. "Sem efeito sazonal" remove variações que se repetem todo ano (ex: férias, fim de ano), pra comparar mês a mês sem esse ruído';
+      lineChart($('#chart-producao-dessaz'), {
+        categories: catAl, formatX: monthLabel, formatY: fmt.compact, height: 280,
+        series: [
+          { label: 'Mês a mês', color: 'var(--series-2)', values: al.map(r => r.producao) },
+          { label: 'Sem efeito sazonal', color: 'var(--series-3)', values: al.map(r => r.producao_dessaz) },
+        ]
+      });
+
+      $('#producao-table-title').textContent = 'Alumínio primário mensal, série completa';
+      $('#producao-table-sub').textContent = 'ABAL, mais recente primeiro, clique no cabeçalho para ordenar';
+      const alTableRows = [...s.producao_aluminio].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
+      dataTable($('#table-producao'), {
+        columns: [
+          { key: 'k', label: 'Mês', format: monthLabel },
+          { key: 'producao', label: 'Alumínio primário (mil t)', align: 'right', format: fmt.full1 },
+          { key: 'producao_dessaz', label: 'Sem efeito sazonal (mil t)', align: 'right', format: fmt.full1 },
+        ],
+        rows: alTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
+        pageSize: 12,
+      });
+    } else {
+      const ag = filterMonthly(sh.producao.aco_gusa, bs.lo, bs.hi);
+      const catAg = ag.map(r => r.ano * 100 + r.mes);
+      $('#producao-acogusa-title').textContent = 'Aço bruto, ferro-gusa e laminados';
+      $('#producao-acogusa-sub').textContent = 'Toneladas por mês, Instituto Aço Brasil. Ferro-gusa só a partir de fev/09';
+      lineChart($('#chart-producao-acogusa'), {
+        categories: catAg, formatX: monthLabel, formatY: fmt.compact, height: 280,
+        series: [
+          { label: 'Aço bruto', color: 'var(--series-1)', values: ag.map(r => r.aco_bruto), area: true },
+          { label: 'Ferro-gusa', color: 'var(--series-5)', values: ag.map(r => r.ferro_gusa) },
+          { label: 'Laminados', color: 'var(--series-3)', values: ag.map(r => r.laminados) },
+        ]
+      });
+
+      const dessaz = filterMonthly(sh.producao.aco_gusa_dessaz, bs.lo, bs.hi);
+      const catDz = monthlyCategories([ag, dessaz]);
+      $('#producao-dessaz-title').textContent = 'Aço bruto: mês a mês vs. sem efeito sazonal';
+      $('#producao-dessaz-sub').textContent = 'Toneladas / mês. "Sem efeito sazonal" remove variações que se repetem todo ano (ex: férias, fim de ano), pra comparar mês a mês sem esse ruído';
+      lineChart($('#chart-producao-dessaz'), {
+        categories: catDz, formatX: monthLabel, formatY: fmt.compact, height: 280,
+        series: [
+          { label: 'Mês a mês', color: 'var(--series-2)', values: seriesMonthly(ag, 'aco_bruto', catDz) },
+          { label: 'Sem efeito sazonal', color: 'var(--series-3)', values: seriesMonthly(dessaz, 'aco_bruto', catDz) },
+        ]
+      });
+
+      const razao = ag.map(r => (r.laminados != null && r.aco_bruto) ? (r.laminados / r.aco_bruto) * 100 : null);
+      lineChart($('#chart-producao-razao'), {
+        categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
+        series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
+      });
+
+      $('#producao-table-title').textContent = 'Produção física mensal, série completa';
+      $('#producao-table-sub').textContent = 'Instituto Aço Brasil, mais recente primeiro, clique no cabeçalho para ordenar';
+      const producaoTableRows = [...sh.producao.aco_gusa].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
+      dataTable($('#table-producao'), {
+        columns: [
+          { key: 'k', label: 'Mês', format: monthLabel },
+          { key: 'aco_bruto', label: 'Aço bruto (t)', align: 'right', format: fmt.full },
+          { key: 'ferro_gusa', label: 'Ferro-gusa (t)', align: 'right', format: fmt.full },
+          { key: 'laminados', label: 'Laminados (t)', align: 'right', format: fmt.full },
+          { key: 'semi_acabados', label: 'Semiacabados (t)', align: 'right', format: fmt.full },
+        ],
+        rows: producaoTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
+        pageSize: 12,
+      });
+    }
 
     const idx = filterMonthly(sh.producao.metalurgia_indice, bs.lo, bs.hi);
     const catIdx = idx.map(r => r.ano * 100 + r.mes);
@@ -226,25 +293,6 @@
         { label: 'Índice bruto', color: 'var(--series-2)', values: idx.map(r => r.indice_bruto) },
         { label: 'Dessazonalizado', color: 'var(--series-3)', values: idx.map(r => r.indice_dessaz) }
       ]
-    });
-
-    const razao = ag.map(r => (r.laminados != null && r.aco_bruto) ? (r.laminados / r.aco_bruto) * 100 : null);
-    lineChart($('#chart-producao-razao'), {
-      categories: catAg, formatX: monthLabel, formatY: n => fmt.pct(n), height: 280,
-      series: [{ label: 'Laminados / aço bruto', color: 'var(--series-1)', values: razao, area: true }]
-    });
-
-    const producaoTableRows = [...sh.producao.aco_gusa].sort((a, b) => (b.ano * 100 + b.mes) - (a.ano * 100 + a.mes));
-    dataTable($('#table-producao'), {
-      columns: [
-        { key: 'k', label: 'Mês', format: monthLabel },
-        { key: 'aco_bruto', label: 'Aço bruto (t)', align: 'right', format: fmt.full },
-        { key: 'ferro_gusa', label: 'Ferro-gusa (t)', align: 'right', format: fmt.full },
-        { key: 'laminados', label: 'Laminados (t)', align: 'right', format: fmt.full },
-        { key: 'semi_acabados', label: 'Semiacabados (t)', align: 'right', format: fmt.full },
-      ],
-      rows: producaoTableRows.map(r => ({ ...r, k: r.ano * 100 + r.mes })),
-      pageSize: 12,
     });
   }
 
@@ -1128,11 +1176,19 @@
     // (produção, financeiro, emprego, CAGED, comex, BNDES), não só das 5
     // leituras abaixo, seguido de uma frase de transição e dos achados em
     // bullets. Texto corrido primeiro, números depois, como um research note.
-    const acoBrutoAnual = {};
-    sh.producao.aco_gusa.forEach(r => { if (r.aco_bruto != null) acoBrutoAnual[r.ano] = (acoBrutoAnual[r.ano] || 0) + r.aco_bruto; });
-    const anosAco = Object.keys(acoBrutoAnual).map(Number).sort((a, b) => a - b);
-    const anoAcoRef = anosAco.length > 1 ? anosAco[anosAco.length - 2] : anosAco[0];
-    const producaoAnualRef = anoAcoRef != null ? acoBrutoAnual[anoAcoRef] : null;
+    const isAluminioEE = state.sector === '2452';
+    const producaoAnual = {};
+    const producaoCampoEE = isAluminioEE ? 'producao' : 'aco_bruto';
+    (isAluminioEE ? s.producao_aluminio : sh.producao.aco_gusa).forEach(r => {
+      if (r[producaoCampoEE] != null) producaoAnual[r.ano] = (producaoAnual[r.ano] || 0) + r[producaoCampoEE];
+    });
+    const anosProducaoEE = Object.keys(producaoAnual).map(Number).sort((a, b) => a - b);
+    const anoAcoRef = anosProducaoEE.length > 1 ? anosProducaoEE[anosProducaoEE.length - 2] : anosProducaoEE[0];
+    // Alumínio (ABAL) vem em mil toneladas; converte pra toneladas simples
+    // aqui pra fmt.compact aplicar a escala (mil/mi) sozinho, sem duplicar
+    // a palavra "mil" entre o número formatado e o rótulo.
+    const producaoAnualRef = anoAcoRef != null ? producaoAnual[anoAcoRef] * (isAluminioEE ? 1000 : 1) : null;
+    const producaoRotulo = isAluminioEE ? 'toneladas de alumínio primário' : 'toneladas de aço bruto';
 
     const finLatest = last(sh.financeiro.fundicao_24_5);
     const margemLatest = (finLatest && finLatest.receita_liquida_total && finLatest.custos_despesas_totais != null)
@@ -1147,7 +1203,7 @@
     const saldoComex = comexLatest ? comexLatest.exportacao_usd - comexLatest.importacao_usd : null;
 
     // totalPorteBn/grandePctBn já foram calculados lá em cima, na análise de crédito.
-    $('#ee-sumario-texto').innerHTML = `${s.label} fechou ${anoAcoRef} com ${fmt.compact(producaoAnualRef)} toneladas de aço bruto produzidas no país e margem operacional de ${fmt.full1(margemLatest)}% na Fundição (24.5) em ${finLatest.ano}. `
+    $('#ee-sumario-texto').innerHTML = `${s.label} fechou ${anoAcoRef} com ${fmt.compact(producaoAnualRef)} ${producaoRotulo} produzidas no país e margem operacional de ${fmt.full1(margemLatest)}% na Fundição (24.5) em ${finLatest.ano}. `
       + `O emprego formal soma ${fmt.full(vincLatest.vinculos)} vínculos em ${vincLatest.ano}, uma variação de ${fmt.full1(varEmpregoLongo)}% desde ${vincBaseTotal.ano}, e o CAGED mostra saldo de ${fmt.full(saldo12m)} contratações líquidas nos últimos 12 meses. `
       + `O comércio exterior fechou ${comexLatest.ano} em ${saldoComex >= 0 ? 'superávit' : 'déficit'} de ${fmt.usd(Math.abs(saldoComex))}, com a concorrência chinesa como principal pressão externa, enquanto o crédito do BNDES para o setor segue concentrado nas grandes empresas, que respondem por ${fmt.full1(grandePctBn)}% do total desembolsado. `
       + `As cinco leituras abaixo detalham essa concorrência externa, o crédito e o investimento, a estrutura do setor, a produtividade e a relação entre produção e emprego, cada uma com gráfico e dado próprios.`;
@@ -1852,7 +1908,6 @@
     el.textContent = partes.join(' · ');
   }
   const SECTION_FONTES = {
-    producao: 'Instituto Aço Brasil + IBGE/PIM-PF',
     financeiro: 'IBGE — PIA-Empresa',
     emprego: 'RAIS',
     caged: 'CAGED',
@@ -1936,11 +1991,17 @@
     const { atual: comexAtual, anterior: comexAnterior } = ultimosDoisAnosFechados(sd.comex.yearly);
     const finRow = sh.financeiro.por_cnae_2024.find(r => r.cnae === execSector);
 
-    const anosProd = Array.from(new Set(sh.producao.aco_gusa.map(r => r.ano))).sort((a, b) => a - b);
-    const prod12m = sh.producao.aco_gusa.slice(-12);
-    const prodPrev12m = sh.producao.aco_gusa.slice(-24, -12);
-    const producaoSoma = prod12m.reduce((s, r) => s + (r.aco_bruto || 0), 0);
-    const producaoSomaAnterior = prodPrev12m.length === 12 ? prodPrev12m.reduce((s, r) => s + (r.aco_bruto || 0), 0) : null;
+    const isAluminioExec = execSector === '2452';
+    const producaoMensal = isAluminioExec ? sd.producao_aluminio : sh.producao.aco_gusa;
+    const producaoCampo = isAluminioExec ? 'producao' : 'aco_bruto';
+    // Alumínio (ABAL) vem em mil toneladas; converte pra toneladas simples
+    // pra não duplicar "mil" entre o número compactado e o rótulo.
+    const producaoFatorUnidade = isAluminioExec ? 1000 : 1;
+    const prod12m = producaoMensal.slice(-12);
+    const prodPrev12m = producaoMensal.slice(-24, -12);
+    const producaoSoma = prod12m.reduce((s, r) => s + (r[producaoCampo] || 0), 0) * producaoFatorUnidade;
+    const producaoSomaAnterior = prodPrev12m.length === 12
+      ? prodPrev12m.reduce((s, r) => s + (r[producaoCampo] || 0), 0) * producaoFatorUnidade : null;
 
     const saldoAtualUsd = comexAtual ? (comexAtual.exportacao_usd - comexAtual.importacao_usd) : null;
     const saldoAnteriorUsd = comexAnterior ? (comexAnterior.exportacao_usd - comexAnterior.importacao_usd) : null;
@@ -1959,6 +2020,13 @@
         sub: empregoAtual ? `Vínculos ativos em ${empregoAtual.ano}` : '',
         trendHtml: empregoAtual && empregoAnterior ? trendHtml(empregoAtual.vinculos, empregoAnterior.vinculos) : '',
         sector: execSector, target: 'block-emprego',
+      }),
+      kpiTile({
+        id: 'exec-kpi-producao', label: 'Produção',
+        value: fmt.compact(producaoSoma),
+        sub: isAluminioExec ? 'Toneladas de alumínio primário, últimos 12 meses' : 'Toneladas de aço bruto, últimos 12 meses',
+        trendHtml: trendHtml(producaoSoma, producaoSomaAnterior, 'em relação aos 12 meses anteriores'),
+        sector: execSector, target: 'block-producao',
       }),
       kpiTile({
         id: 'exec-kpi-estabelecimentos', label: 'Número de estabelecimentos',
@@ -1990,18 +2058,13 @@
       }),
     ];
 
-    // Produção e energia não variam por segmento (a fonte não abre por
-    // CNAE) — ficam numa grade à parte, sempre visível, pra não parecer
-    // que o filtro de segmento "não funcionou" quando o número não muda
-    // ao trocar de Ferro/Aço pra Não Ferrosos (feedback do Albino).
+    // Energia não varia por segmento (a fonte não abre por CNAE) — fica
+    // numa grade à parte, sempre visível, pra não parecer que o filtro de
+    // segmento "não funcionou" quando o número não muda ao trocar de
+    // Ferro/Aço pra Não Ferrosos (feedback do Albino). Produção agora tem
+    // fonte própria por segmento (aço x alumínio primário), então saiu
+    // dessa grade e voltou pra grade normal, acima.
     const tilesGeral = [
-      kpiTile({
-        id: 'exec-kpi-producao', label: 'Produção',
-        value: fmt.compact(producaoSoma),
-        sub: 'Toneladas de aço bruto, últimos 12 meses, setor inteiro',
-        trendHtml: trendHtml(producaoSoma, producaoSomaAnterior, 'em relação aos 12 meses anteriores'),
-        sector: execSector, target: 'block-producao',
-      }),
       kpiTile({
         id: 'exec-kpi-energia', label: 'Custo de energia',
         value: '…', sub: 'Carregando…',
@@ -2023,7 +2086,7 @@
     renderCaptionMeta($('#exec-kpi-faturamento [data-caption]'), { fonte: 'IBGE/PIA-Empresa', periodo: '2024' });
     renderCaptionMeta($('#exec-kpi-emprego [data-caption]'), { fonte: 'RAIS' });
     renderCaptionMeta($('#exec-kpi-estabelecimentos [data-caption]'), { fonte: 'RAIS' });
-    renderCaptionMeta($('#exec-kpi-producao [data-caption]'), { fonte: 'Instituto Aço Brasil + IBGE/PIM-PF' });
+    renderCaptionMeta($('#exec-kpi-producao [data-caption]'), { fonte: isAluminioExec ? 'ABAL' : 'Instituto Aço Brasil + IBGE/PIM-PF' });
     renderCaptionMeta($('#exec-kpi-exportacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
     renderCaptionMeta($('#exec-kpi-importacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
     renderCaptionMeta($('#exec-kpi-saldo [data-caption]'), { fonte: 'MDIC/Comex Stat' });
@@ -2078,18 +2141,22 @@
     const sd = state.data.sectors[execSector];
     const sh = shared();
 
-    // 1) O setor está crescendo? Produção (nacional), faturamento (grupo
-    // Fundição 24.5, combinado — não abre por segmento) e empregos (por
-    // segmento), indexados a 100 no primeiro ano em comum.
+    // 1) O setor está crescendo? Produção (aço bruto pro 2451, alumínio
+    // primário pro 2452), faturamento (grupo Fundição 24.5, combinado —
+    // não abre por segmento) e empregos (por segmento), indexados a 100
+    // no primeiro ano em comum.
+    const isAluminioChart = execSector === '2452';
     const finAnos = sh.financeiro.fundicao_24_5.map(r => r.ano);
     const catCrescimento = finAnos.filter(a => a >= 2007);
-    const producaoPorAno = somaAnual(sh.producao.aco_gusa, 'aco_bruto');
+    const producaoPorAno = isAluminioChart
+      ? somaAnual(sd.producao_aluminio, 'producao')
+      : somaAnual(sh.producao.aco_gusa, 'aco_bruto');
     const empregoPorAno = new Map(sd.rais.uf_yearly_total.map(r => [r.ano, r.vinculos]));
     const finPorAno = new Map(sh.financeiro.fundicao_24_5.map(r => [r.ano, r.receita_liquida_total]));
     lineChart($('#exec-chart-crescimento'), {
       categories: catCrescimento, formatY: n => fmt.compact(n), height: 260,
       series: [
-        { label: 'Produção (aço bruto)', color: 'var(--series-7)', values: indexarBase100(catCrescimento.map(a => producaoPorAno[a] ?? null)) },
+        { label: isAluminioChart ? 'Produção (alumínio primário)' : 'Produção (aço bruto)', color: 'var(--series-7)', values: indexarBase100(catCrescimento.map(a => producaoPorAno[a] ?? null)) },
         { label: 'Faturamento (grupo Fundição)', color: 'var(--series-3)', values: indexarBase100(catCrescimento.map(a => finPorAno.has(a) ? finPorAno.get(a) : null)) },
         { label: 'Empregos (segmento selecionado)', color: 'var(--series-5)', values: indexarBase100(catCrescimento.map(a => empregoPorAno.has(a) ? empregoPorAno.get(a) : null)) },
       ],
@@ -2164,9 +2231,10 @@
   }
 
   function updateDownloadLinks() {
-    ['emprego', 'caged', 'comex', 'bndes'].forEach(id => {
+    const NOME_ARQUIVO = { comex: 'Comercio_Exterior', caged: 'CAGED', bndes: 'BNDES', emprego: 'Emprego', producao: 'Producao_Fisica' };
+    ['emprego', 'caged', 'comex', 'bndes', 'producao'].forEach(id => {
       const el = $('#download-' + id);
-      if (el) el.href = `data/downloads/${id === 'comex' ? 'Comercio_Exterior' : id === 'caged' ? 'CAGED' : id === 'bndes' ? 'BNDES' : 'Emprego'}_${state.sector}.xlsx`;
+      if (el) el.href = `data/downloads/${NOME_ARQUIVO[id]}_${state.sector}.xlsx`;
     });
   }
 

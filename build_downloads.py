@@ -155,7 +155,16 @@ def build_producao_download():
     _add_sheet(wb, 'Metalurgia mensal', _read('Producao_Fisica_Mensal_Metalurgia.csv'),
                title='Produção física — Índice mensal da metalurgia',
                note='Fonte: IBGE/PIM-PF.')
-    _save(wb, 'Producao_Fisica.xlsx')
+    _save(wb, 'Producao_Fisica_2451.xlsx')
+
+    wb2 = _new_workbook()
+    _add_sheet(wb2, 'Aluminio primario', _read('Producao_Aluminio_Primario_ABAL.csv'),
+               title='Produção física — Alumínio primário (bruto e dessazonalizado)',
+               note='Fonte: ABAL (Associação Brasileira do Alumínio). Mil toneladas/mês.')
+    _add_sheet(wb2, 'Metalurgia mensal', _read('Producao_Fisica_Mensal_Metalurgia.csv'),
+               title='Produção física — Índice mensal da metalurgia (contexto, não exclusivo de não ferrosos)',
+               note='Fonte: IBGE/PIM-PF.')
+    _save(wb2, 'Producao_Fisica_2452.xlsx')
 
 
 # ---------------------------------------------------------------------------

@@ -27,6 +27,11 @@ def test_top_level_schema(data):
 
 
 def test_sectors_are_symmetric(data):
+    # Exceções documentadas: produção física do 2452 é alumínio primário
+    # (ABAL), sem equivalente pro 2451 (aço/Instituto Aço Brasil, que fica
+    # em shared.producao por ser a fonte usada há mais tempo no painel).
+    ONLY_2452 = {'producao_aluminio'}
+
     def keys(d, prefix=''):
         out = set()
         for k, v in d.items():
@@ -36,7 +41,7 @@ def test_sectors_are_symmetric(data):
         return out
 
     keys_2451 = keys(data['sectors']['2451'])
-    keys_2452 = keys(data['sectors']['2452'])
+    keys_2452 = keys(data['sectors']['2452']) - ONLY_2452
     assert keys_2451 == keys_2452
 
 

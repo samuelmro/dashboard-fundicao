@@ -24,9 +24,12 @@ ATUALIZACAO.md          Processo de atualização periódica dos dados, por font
 
 Os dados de 2451 e 2452 vivem no mesmo `data.json`, em `sectors["2451"]` e
 `sectors["2452"]` — o switch de setor no topo do painel só troca qual chave é
-lida, sem novo fetch. Dados que não variam por segmento (produção física
-nacional, financeiro PIA, energia industrial por divisão CNAE, macro, DECOM)
-ficam em `shared`.
+lida, sem novo fetch. Dados que não variam por segmento (financeiro PIA,
+energia industrial por divisão CNAE, macro, DECOM, e o índice de produção
+da metalurgia — que é contexto geral, não específico de aço ou alumínio)
+ficam em `shared`. A produção física em si é específica de cada setor: aço
+bruto/ferro-gusa/laminados (`shared.producao.aco_gusa`, usado só quando o
+setor é 2451) e alumínio primário (`sectors["2452"].producao_aluminio`).
 
 ## Como regenerar os dados
 
@@ -84,7 +87,8 @@ presença de campos-chave usados pelos gráficos (ex.: `laminados`,
 
 | Bloco | Base | Cobertura |
 |---|---|---|
-| Produção física | Instituto Aço Brasil (IBS) + IBGE/PIM-PF | 1980–2026 (mensal) |
+| Produção física (2451) | Instituto Aço Brasil (IBS) + IBGE/PIM-PF | 1980–2026 (mensal) |
+| Produção física (2452) | ABAL — alumínio primário | 1993–2024 (mensal) |
 | Financeiro | IBGE — PIA-Empresa (Metalurgia 24 e Fundição 24.5) | 2007–2023 (anual) |
 | Emprego formal | RAIS | 2006–2025 (anual) |
 | CAGED | CAGED (saldo, salário, tipo de movimentação) | calculada dinamicamente a partir da base (ver painel) |

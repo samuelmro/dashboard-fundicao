@@ -45,9 +45,12 @@ troca-se o código do CNAE (e a cesta de NCM correspondente, no caso de
 Comex Stat) e o mesmo processo funciona para qualquer setor novo que o
 SIFESP queira adicionar ao painel.
 
-A exceção é o bloco **Produção física**, que usa dados do Instituto Aço
-Brasil — uma fonte específica de siderurgia/fundição, sem equivalente para
-outros setores. Um CNAE fora desse escopo não teria esse indicador.
+A exceção é o bloco **Produção física**: hoje usa Instituto Aço Brasil pro
+2451 (aço) e ABAL pro 2452 (alumínio primário), cada fonte específica do
+seu metal. Adicionar um setor novo exige achar uma fonte física
+equivalente pro metal/produto dele (nem toda associação setorial publica
+série mensal); se não existir, o indicador simplesmente fica de fora
+daquele setor, como já acontece com DECOM pro 2452 hoje.
 
 Ao adicionar um setor fora do escopo atual do SIFESP, trocar a logo da
 barra lateral de `assets/logos/logo-sifesp.png` para
