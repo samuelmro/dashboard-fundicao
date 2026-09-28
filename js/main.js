@@ -2058,28 +2058,13 @@
       }),
     ];
 
-    // Energia não varia por segmento (a fonte não abre por CNAE) — fica
-    // numa grade à parte, sempre visível, pra não parecer que o filtro de
-    // segmento "não funcionou" quando o número não muda ao trocar de
-    // Ferro/Aço pra Não Ferrosos (feedback do Albino). Produção agora tem
-    // fonte própria por segmento (aço x alumínio primário), então saiu
-    // dessa grade e voltou pra grade normal, acima.
-    const tilesGeral = [
-      kpiTile({
-        id: 'exec-kpi-energia', label: 'Custo de energia',
-        value: '…', sub: 'Carregando…',
-      }),
-    ];
-
+    // Custo de energia saiu do Painel Executivo (pedido do usuário) — já
+    // tem seção própria (Energia Industrial, no menu de navegação). Fica só
+    // no gráfico 4 (margem/produtividade não inclui energia, ver abaixo) e
+    // no detalhamento completo daquela seção.
     const grid = $('#exec-kpi-grid');
     grid.innerHTML = tiles.join('');
     grid.querySelectorAll('.kpi-tile[data-sector]').forEach(btn => {
-      btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target));
-    });
-
-    const gridGeral = $('#exec-kpi-grid-geral');
-    gridGeral.innerHTML = tilesGeral.join('');
-    gridGeral.querySelectorAll('.kpi-tile[data-sector]').forEach(btn => {
       btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target));
     });
 
@@ -2090,32 +2075,6 @@
     renderCaptionMeta($('#exec-kpi-exportacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
     renderCaptionMeta($('#exec-kpi-importacao [data-caption]'), { fonte: 'MDIC/Comex Stat' });
     renderCaptionMeta($('#exec-kpi-saldo [data-caption]'), { fonte: 'MDIC/Comex Stat' });
-
-    // Energia é carregada à parte (mesmo arquivo lazy que a aba Energia
-    // Industrial e o case de PD&I usam) — não bloqueia o resto do painel.
-    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
-      const sp = obj['SP'] || [];
-      if (!sp.length) return;
-      const porAno = {};
-      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
-      const anos = Object.keys(porAno).map(Number).sort((a, b) => a - b);
-      const mediaAno = a => porAno[a].reduce((s, v) => s + v, 0) / porAno[a].length;
-      // 2026 vem parcial (cobertura só até abril) — compara o último ano
-      // fechado, senão a variação fica artificial.
-      let idxUltimo = anos.length - 1;
-      if (anos[idxUltimo] === CURRENT_YEAR && idxUltimo > 0) idxUltimo -= 1;
-      const ultimoAno = anos[idxUltimo];
-      const anteriorAno = anos[idxUltimo - 1];
-      const media = mediaAno(ultimoAno);
-      const tile = $('#exec-kpi-energia');
-      if (!tile) return;
-      tile.querySelector('.kpi-value').innerHTML = fmt.brl(media) + '<span class="kpi-unit">/MWh</span>';
-      tile.querySelector('.kpi-sub').textContent = `Custo médio real em ${ultimoAno}, SP`;
-      if (anteriorAno) {
-        tile.querySelector('.kpi-sub').insertAdjacentHTML('afterend', trendHtml(media, mediaAno(anteriorAno)));
-      }
-      renderCaptionMeta(tile.querySelector('[data-caption]'), { fonte: 'MME/ANEEL + EPE' });
-    }).catch(() => {});
 
     renderExecCharts(execSector);
     renderExecNavMenu(execSector);
@@ -2202,7 +2161,7 @@
       categories: finComp.map(r => r.ano), height: 260,
       seriesLeft: { label: 'Margem operacional (%)', color: 'var(--series-8)', values: finComp.map(r => r.margem) },
       seriesRight: { label: 'Produtividade (R$/trabalhador)', color: 'var(--series-2)', values: finComp.map(r => r.produtividade) },
-      formatYLeft: n => fmt.pct(n), formatYRight: n => fmt.brl(n),
+      formatYLeft: n => fmt.pct(n), formatYRight: n => fmt.brl(n), plainAxis: true,
     });
   }
 

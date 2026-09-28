@@ -556,7 +556,7 @@
   // ---------------------------------------------------------------------
   function dualAxisLineChart(container, opts) {
     container.innerHTML = '';
-    const { seriesLeft, seriesRight, categories, formatYLeft = fmt.compact, formatYRight = fmt.compact, formatX = (s => s), height = 220 } = opts;
+    const { seriesLeft, seriesRight, categories, formatYLeft = fmt.compact, formatYRight = fmt.compact, formatX = (s => s), height = 220, plainAxis = false } = opts;
     const n = categories.length;
     if (!n || (!seriesLeft.values.some(v => v != null) && !seriesRight.values.some(v => v != null))) {
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis para o período selecionado.</div>';
@@ -585,13 +585,17 @@
     ticksL.forEach(t => {
       const y = yScaleL(t);
       svg.appendChild(svgEl('line', { x1: margin.left, x2: width - margin.right, y1: y, y2: y, class: t === 0 ? 'baseline' : 'gridline' }));
-      const lbl = svgEl('text', { x: margin.left - 6, y: y + 3, 'text-anchor': 'end', class: 'axis-label', style: 'fill:' + seriesLeft.color });
+      const lbl = svgEl('text', plainAxis
+        ? { x: margin.left - 6, y: y + 3, 'text-anchor': 'end', class: 'axis-label' }
+        : { x: margin.left - 6, y: y + 3, 'text-anchor': 'end', class: 'axis-label', style: 'fill:' + seriesLeft.color });
       lbl.textContent = formatYLeft(t);
       svg.appendChild(lbl);
     });
     ticksR.forEach(t => {
       const y = yScaleR(t);
-      const lbl = svgEl('text', { x: width - margin.right + 6, y: y + 3, 'text-anchor': 'start', class: 'axis-label', style: 'fill:' + seriesRight.color });
+      const lbl = svgEl('text', plainAxis
+        ? { x: width - margin.right + 6, y: y + 3, 'text-anchor': 'start', class: 'axis-label' }
+        : { x: width - margin.right + 6, y: y + 3, 'text-anchor': 'start', class: 'axis-label', style: 'fill:' + seriesRight.color });
       lbl.textContent = formatYRight(t);
       svg.appendChild(lbl);
     });
