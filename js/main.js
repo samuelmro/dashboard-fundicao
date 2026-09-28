@@ -1968,14 +1968,6 @@
         sector: execSector, target: 'block-emprego',
       }),
       kpiTile({
-        id: 'exec-kpi-producao', label: 'Produção',
-        value: fmt.compact(producaoSoma),
-        sub: 'Toneladas de aço bruto, últimos 12 meses',
-        trendHtml: trendHtml(producaoSoma, producaoSomaAnterior, 'em relação aos 12 meses anteriores'),
-        note: 'Mesmo valor para os dois segmentos — a fonte não abre por CNAE',
-        sector: execSector, target: 'block-producao',
-      }),
-      kpiTile({
         id: 'exec-kpi-exportacao', label: 'Exportações',
         value: comexAtual ? fmt.usd(comexAtual.exportacao_usd) : '-',
         sub: comexAtual ? `US$ FOB em ${comexAtual.ano}` : '',
@@ -1996,16 +1988,35 @@
         trendHtml: saldoAtualUsd != null && saldoAnteriorUsd != null ? trendHtml(saldoAtualUsd, saldoAnteriorUsd) : '',
         sector: execSector, target: 'block-comex',
       }),
+    ];
+
+    // Produção e energia não variam por segmento (a fonte não abre por
+    // CNAE) — ficam numa grade à parte, sempre visível, pra não parecer
+    // que o filtro de segmento "não funcionou" quando o número não muda
+    // ao trocar de Ferro/Aço pra Não Ferrosos (feedback do Albino).
+    const tilesGeral = [
+      kpiTile({
+        id: 'exec-kpi-producao', label: 'Produção',
+        value: fmt.compact(producaoSoma),
+        sub: 'Toneladas de aço bruto, últimos 12 meses, setor inteiro',
+        trendHtml: trendHtml(producaoSoma, producaoSomaAnterior, 'em relação aos 12 meses anteriores'),
+        sector: execSector, target: 'block-producao',
+      }),
       kpiTile({
         id: 'exec-kpi-energia', label: 'Custo de energia',
         value: '…', sub: 'Carregando…',
-        note: 'Metalurgia em SP (CNAE 24) — não abre por segmento',
       }),
     ];
 
     const grid = $('#exec-kpi-grid');
     grid.innerHTML = tiles.join('');
     grid.querySelectorAll('.kpi-tile[data-sector]').forEach(btn => {
+      btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target));
+    });
+
+    const gridGeral = $('#exec-kpi-grid-geral');
+    gridGeral.innerHTML = tilesGeral.join('');
+    gridGeral.querySelectorAll('.kpi-tile[data-sector]').forEach(btn => {
       btn.addEventListener('click', () => goToBlock(btn.dataset.sector, btn.dataset.target));
     });
 
