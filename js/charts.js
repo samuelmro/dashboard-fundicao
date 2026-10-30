@@ -773,6 +773,133 @@
   }
 
   // ---------------------------------------------------------------------
+  // Sankey de três colunas (fornecedores -> elo central -> clientes) — Cadeia
+  // Produtiva. opts: { left:[node], right:[node], center:{label,sub},
+  // headers:{left,right}, formatV, onNodeClick(node) }
+  // node: { label, value, color, clickable?, tip?:[{label,value}] }
+  // A espessura de cada faixa é proporcional ao valor; os nós laterais têm
+  // altura mínima (MIN_SLOT) só pra o rótulo caber — a faixa continua fina.
+  // ---------------------------------------------------------------------
+  function sankeyChart(container, opts) {
+    container.innerHTML = '';
+    const { left, right, center, headers = {}, formatV = fmt.compact, onNodeClick } = opts;
+    if (!left.length || !right.length) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    const width = 960, labelW = 250, barW = 12, centerW = 26, gap = 8, MIN_SLOT = 30;
+    const top = 34, bottom = 10, alvoH = 420;
+    const soma = arr => arr.reduce((s, n) => s + Math.max(n.value, 0), 0);
+    const sumL = soma(left), sumR = soma(right);
+    const k = alvoH / Math.max(sumL, sumR);
+
+    function layout(nodes) {
+      let y = 0;
+      const out = nodes.map(n => {
+        const h = Math.max(n.value, 0) * k;
+        const slot = Math.max(h, MIN_SLOT);
+        const node = { ...n, h, slot, y0: y + (slot - h) / 2 };
+        y += slot + gap;
+        return node;
+      });
+      return { nodes: out, total: y - gap };
+    }
+    const L = layout(left), R = layout(right);
+    const colH = Math.max(L.total, R.total, Math.max(sumL, sumR) * k);
+    const height = top + colH + bottom;
+    const offL = top + (colH - L.total) / 2, offR = top + (colH - R.total) / 2;
+    L.nodes.forEach(n => { n.y0 += offL; });
+    R.nodes.forEach(n => { n.y0 += offR; });
+    const cH = Math.max(sumL, sumR) * k, cY = top + (colH - cH) / 2;
+    const xL = labelW, xC = width / 2 - centerW / 2, xR = width - labelW - barW;
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg sankey-svg', role: 'img',
+      'aria-label': `${center.label}: fornecedores à esquerda, clientes à direita` });
+
+    function faixa(x0, y0, x1, y1, h) {
+      const xm = (x0 + x1) / 2;
+      return `M${x0},${y0} C${xm},${y0} ${xm},${y1} ${x1},${y1} L${x1},${y1 + h} C${xm},${y1 + h} ${xm},${y0 + h} ${x0},${y0 + h} Z`;
+    }
+    function tip(ev, n) {
+      showTooltip(ev.clientX, ev.clientY, n.label, [{ label: 'Valor', value: formatV(n.value) }, ...(n.tip || [])]);
+    }
+
+    const defs = svgEl('defs', {}), gFaixas = svgEl('g', {}), gNos = svgEl('g', {});
+    svg.appendChild(defs); svg.appendChild(gFaixas); svg.appendChild(gNos);
+    const uid = 'sk' + Math.random().toString(36).slice(2, 8);
+
+    // Cada faixa sai na cor do nó e chega no vermelho do elo central.
+    function degrade(id, cor, x1, x2, corDestino) {
+      const g = svgEl('linearGradient', { id, gradientUnits: 'userSpaceOnUse', x1, x2, y1: 0, y2: 0 });
+      [[0, cor], [1, corDestino]].forEach(([o, c]) => {
+        const s = svgEl('stop', { offset: o });
+        s.style.stopColor = c;
+        g.appendChild(s);
+      });
+      defs.appendChild(g);
+      return `url(#${id})`;
+    }
+
+    let nLink = 0;
+    function desenharColuna(nodes, lado) {
+      let acc = cY + (cH - (lado === 'L' ? sumL : sumR) * k) / 2;
+      nodes.forEach(n => {
+        const xBar = lado === 'L' ? xL - barW : xR;
+        const path = lado === 'L'
+          ? faixa(xL, n.y0, xC, acc, n.h)
+          : faixa(xC + centerW, acc, xR, n.y0, n.h);
+        acc += n.h;
+        const fill = lado === 'L'
+          ? degrade(`${uid}-${nLink}`, n.color, xL, xC, 'var(--accent)')
+          : degrade(`${uid}-${nLink}`, 'var(--accent)', xC + centerW, xR, n.color);
+        const p = svgEl('path', { d: path, fill, class: 'sankey-link' });
+        p.style.animationDelay = `${nLink++ * 40}ms`;
+        const bar = svgEl('rect', { x: xBar, y: n.y0, width: barW, height: Math.max(n.h, 1.5), fill: n.color, rx: 2 });
+        const tx = lado === 'L' ? xBar - 8 : xBar + barW + 8;
+        const ty = n.y0 + n.h / 2;
+        const txt = svgEl('text', { x: tx, y: ty - 2, 'text-anchor': lado === 'L' ? 'end' : 'start', class: 'sankey-label' });
+        txt.textContent = n.label;
+        const val = svgEl('text', { x: tx, y: ty + 12, 'text-anchor': lado === 'L' ? 'end' : 'start', class: 'sankey-value' });
+        val.textContent = formatV(n.value) + (n.extra ? ` · ${n.extra}` : '');
+        const g = svgEl('g', { class: 'sankey-node' + (n.clickable ? ' clickable' : '') });
+        [bar, txt, val].forEach(e => g.appendChild(e));
+        [p, g].forEach(el => {
+          el.addEventListener('mousemove', ev => { tip(ev, n); p.classList.add('hover'); });
+          el.addEventListener('mouseleave', () => { hideTooltip(); p.classList.remove('hover'); });
+        });
+        if (n.clickable && onNodeClick) {
+          g.setAttribute('tabindex', '0');
+          g.setAttribute('role', 'button');
+          g.setAttribute('aria-label', `Centralizar a cadeia em ${n.label}`);
+          const go = () => { hideTooltip(); onNodeClick(n); };
+          [p, g].forEach(el => el.addEventListener('click', go));
+          p.classList.add('clickable');
+          g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } });
+        }
+        gFaixas.appendChild(p);
+        gNos.appendChild(g);
+      });
+    }
+    desenharColuna(L.nodes, 'L');
+    desenharColuna(R.nodes, 'R');
+
+    gNos.appendChild(svgEl('rect', { x: xC, y: cY, width: centerW, height: cH, fill: 'var(--accent)', rx: 3 }));
+    const cl = svgEl('text', { x: width / 2, y: cY - 22, 'text-anchor': 'middle', class: 'sankey-center-label' });
+    cl.textContent = center.label;
+    const cs = svgEl('text', { x: width / 2, y: cY - 8, 'text-anchor': 'middle', class: 'sankey-value' });
+    cs.textContent = center.sub || '';
+    gNos.appendChild(cl); gNos.appendChild(cs);
+
+    [[headers.left, xL - barW, 'start'], [headers.right, xR + barW, 'end']].forEach(([t, x, anchor]) => {
+      if (!t) return;
+      const h = svgEl('text', { x, y: 12, 'text-anchor': anchor, class: 'sankey-header' });
+      h.textContent = t;
+      svg.appendChild(h);
+    });
+    container.appendChild(svg);
+  }
+
+  // ---------------------------------------------------------------------
   // Tabela genérica (HTML), com ordenação por coluna — BNDES, DECOM
   // opts: { columns:[{key,label,align,format}], rows:[{...}], pageSize? }
   // Com pageSize, mostra só as N primeiras linhas (da ordenação atual) e um
@@ -881,5 +1008,5 @@
     container.appendChild(ul);
   }
 
-  window.Charts = { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, dataTable, rankList, fmt, hideTooltip };
+  window.Charts = { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, sankeyChart, dataTable, rankList, fmt, showTooltip, hideTooltip };
 })();

@@ -30,6 +30,7 @@ O que falta automatizar é só a etapa 1: buscar dado novo em cada fonte.
 | RAIS + CAGED histórico (até 2019) | Manual, sistema de consulta | Mensal/conforme publicação |
 | DECOM (defesa comercial) | Manual, tabela pública | Conforme publicação de resolução |
 | Energia Industrial (EPE + MME/ANEEL) | Manual, publicações oficiais | **Não precisa atualizar** (decisão do SIFESP) |
+| Cadeia Produtiva (IBGE: TRU nível 68 + MIP) | Manual: baixar os .xls do FTP do IBGE para `Setor Siderúrgico/1_Dados_Manuais_XLS/` e rodar `python extrair_cadeia.py` (endereços no topo do script) | Anual (a TRU sai com ~3 anos de defasagem); MIP a cada 5 anos |
 
 Os scripts de coleta automática e o passo a passo detalhado das fontes
 manuais (incluindo qualquer login necessário) **não ficam neste

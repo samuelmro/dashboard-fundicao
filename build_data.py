@@ -464,6 +464,46 @@ def build_energia_industrial(macro_rows):
 
 
 # ---------------------------------------------------------------------------
+# Cadeia produtiva (Contas Nacionais do IBGE: TRU 2010-2021 + MIP 2015).
+# Os CSVs saem de extrair_cadeia.py, que só roda quando o IBGE publica
+# tabelas novas.
+# ---------------------------------------------------------------------------
+def build_cadeia():
+    cod = {'dtype': {'Codigo': str, 'Origem': str, 'Destino': str, 'Produto': str, 'Atividade_Produtora': str}}
+    ativ = read_csv('Cadeia_Atividades.csv', **cod)
+    fluxos = read_csv('Cadeia_Fluxos_Atividades.csv', **cod)
+    destinos = read_csv('Cadeia_Fundidos_Destinos.csv', **cod)
+    oferta = read_csv('Cadeia_Fundidos_Oferta.csv')
+    insumos = read_csv('Cadeia_Insumos_2492.csv', **cod)
+
+    df_cols = [c for c in ativ.columns if c.startswith('DF_')]
+    atividades = [{
+        'cod': r.Codigo, 'nome': r.Nome_Curto, 'descricao': r.Descricao,
+        'vbp': to_num(r.VBP), 'va': to_num(r.Valor_Adicionado), 'ocupacoes': to_int(r.Ocupacoes),
+        'ci': to_num(r.Consumo_Intermediario), 'pct_insumos_importados': to_num(r.Pct_Insumos_Importados_2015),
+        'multiplicador': to_num(r.Multiplicador_Producao_2015),
+        'demanda_final': {c[3:].lower(): to_num(getattr(r, c)) for c in df_cols},
+    } for r in ativ.itertuples(index=False)]
+    idx = {a['cod']: i for i, a in enumerate(atividades)}
+
+    return {
+        'ano': int(ativ['Ano'].max()),
+        'atividades': atividades,
+        # [índice da atividade vendedora, índice da compradora, R$ mi] — compacto, ~4 mil pares
+        'fluxos': [[idx[r.Origem], idx[r.Destino], to_num(r.Valor)] for r in fluxos.itertuples(index=False)],
+        'fundidos': {
+            'oferta': [{'ano': int(r.Ano), 'producao': to_num(r.Producao_Nacional), 'importacao': to_num(r.Importacao),
+                        'demanda': to_num(r.Demanda_Total)} for r in oferta.itertuples(index=False)],
+            'destinos': [{'ano': int(r.Ano), 'tipo': r.Tipo, 'cod': r.Codigo, 'nome': r.Nome, 'valor': to_num(r.Valor)}
+                         for r in destinos.itertuples(index=False)],
+        },
+        'insumos_2492': [{'produto': r.Produto, 'descricao': r.Descricao, 'atividade': r.Atividade_Produtora,
+                          'valor': to_num(r.Valor), 'pct_importado': to_num(r.Pct_Importado_2015)}
+                         for r in insumos.itertuples(index=False)],
+    }
+
+
+# ---------------------------------------------------------------------------
 # Por setor (2451 / 2452)
 # ---------------------------------------------------------------------------
 def latest_breakdown(file):
@@ -997,6 +1037,7 @@ def main():
         },
         'sectors': {'2451': sector_2451, '2452': sector_2452},
         'energia_industrial': energia_industrial,
+        'cadeia': build_cadeia(),
     }
 
     OUT_DIR.mkdir(exist_ok=True)

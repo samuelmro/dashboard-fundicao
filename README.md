@@ -11,6 +11,7 @@ exterior, energia industrial (EPE/MME-ANEEL), BNDES e DECOM.
 3_Dados_Tratados_CSV/   CSVs brutos tratados (uma linha por ano/mês/UF/categoria)
 build_data.py           Lê os CSVs e gera data/data.json
 build_downloads.py      Lê os CSVs e gera data/downloads/*.xlsx (botão "Baixar dados" de cada seção)
+extrair_cadeia.py       Lê as tabelas do IBGE (TRU + MIP) e gera os CSVs Cadeia_*.csv da aba Cadeia Produtiva
 data/data.json          Dado consolidado que o dashboard consome via fetch()
 data/downloads/         Planilhas Excel formatadas, uma por seção (duas quando o dado varia por setor)
 index.html              Estrutura das seções do painel
@@ -97,6 +98,7 @@ presença de campos-chave usados pelos gráficos (ex.: `laminados`,
 | Energia Industrial | EPE (consumo) + MME/ANEEL (tarifa média faturada) | 2012–2026 (mensal, por UF e divisão CNAE) |
 | BNDES | Desembolsos por UF/porte/instrumento | 2002–2026 (anual) |
 | DECOM | Processos de defesa comercial (só 2451) | histórico |
+| Cadeia Produtiva | IBGE — Tabelas de Recursos e Usos (nível 68) + Matriz Insumo-Produto 2015 | 2010–2021 (anual) |
 
 Detalhes de cobertura e limitações metodológicas de cada fonte estão na seção
 "Pesquisa, Desenvolvimento & Inovação" no rodapé do próprio painel — ela é

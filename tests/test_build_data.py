@@ -22,7 +22,7 @@ def data():
 
 
 def test_top_level_schema(data):
-    assert set(data.keys()) == {'meta', 'shared', 'sectors', 'energia_industrial'}
+    assert set(data.keys()) == {'meta', 'shared', 'sectors', 'energia_industrial', 'cadeia'}
     assert set(data['sectors'].keys()) == {'2451', '2452'}
 
 
@@ -150,3 +150,17 @@ def test_energia_industrial_composicao_por_uf(data, uf):
     assert len(by_month) > 0
     for valores in by_month.values():
         assert len(valores) == 24
+
+
+def test_cadeia_produtiva(data):
+    c = data['cadeia']
+    cods = [a['cod'] for a in c['atividades']]
+    assert len(cods) == 68 and '2492' in cods and '2992' in cods
+    n = len(cods)
+    assert all(0 <= o < n and 0 <= d < n and v > 0 for o, d, v in c['fluxos'])
+    anos = [o['ano'] for o in c['fundidos']['oferta']]
+    assert anos == sorted(anos) and anos[-1] == c['ano']
+    ult = [d for d in c['fundidos']['destinos'] if d['ano'] == c['ano']]
+    # o que os compradores levam + demanda final fecha com a demanda total de fundidos
+    assert abs(sum(d['valor'] for d in ult) - c['fundidos']['oferta'][-1]['demanda']) < 1
+    assert c['insumos_2492']

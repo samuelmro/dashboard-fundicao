@@ -39,6 +39,7 @@
   </nav>
 
   <nav class="sidebar-nav sidebar-nav-foot" id="foot-tabs-top" role="tablist" aria-label="Outras seções">
+    <button type="button" data-view="cadeia" role="tab" aria-selected="false">Cadeia Produtiva</button>
     <button type="button" data-view="energia-industrial" role="tab" aria-selected="false">Energia Industrial</button>
     <button type="button" data-view="pdi" role="tab" aria-selected="false">PD&amp;I</button>
   </nav>
@@ -736,6 +737,63 @@
   <p class="dataview-sources">Dados consolidados de fontes públicas (IBGE, RAIS/CAGED, MDIC/Comex Stat, UN Comtrade, BNDES, DECOM/GECEX).</p>
 
 </div><!-- /#data-view -->
+
+<!-- ============ CADEIA PRODUTIVA ============ -->
+<div id="cadeia-view" hidden>
+  <div class="cadeia-hero">
+    <div class="ch-topo">
+      <div>
+        <div class="ch-kicker" id="ch-kicker">Cadeia produtiva da fundição</div>
+        <h2 class="ch-titulo">Do minério à máquina.</h2>
+      </div>
+      <div class="ch-numeros" id="ch-numeros"></div>
+    </div>
+    <div class="ch-mapa-wrap"><div id="cadeia-mapa"></div></div>
+    <div class="ch-dica">Clique num elo para abrir a cadeia a partir dele ↓</div>
+  </div>
+
+  <section class="section">
+    <div class="cadeia-toolbar">
+      <nav class="cadeia-trilha" id="cadeia-trilha" aria-label="Caminho percorrido"></nav>
+      <div class="cadeia-busca">
+        <label for="cadeia-select">Ver a cadeia de</label>
+        <select id="cadeia-select"></select>
+      </div>
+    </div>
+    <div class="exhibit-block">
+      <div class="exhibit-caption">
+        <div class="exhibit-title" id="cadeia-sankey-title">Fornecedores e clientes</div>
+        <div class="exhibit-sub" id="cadeia-sankey-sub"></div>
+      </div>
+      <div class="cadeia-sankey-wrap"><div id="cadeia-sankey"></div></div>
+    </div>
+    <div class="cadeia-ficha" id="cadeia-ficha"></div>
+    <p class="section-note cadeia-nota" id="cadeia-nota"></p>
+  </section>
+
+  <section class="section" id="cadeia-fundidos">
+    <div class="section-header">
+      <h2>Peças fundidas ao longo do tempo</h2>
+    </div>
+    <p class="pdi-note" id="cadeia-leitura"></p>
+    <div class="exhibit-grid">
+      <div class="exhibit">
+        <div id="cadeia-chart-clientes"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">Quem compra as peças fundidas</div>
+          <div class="exhibit-sub">% da demanda total de peças fundidas, por comprador, TRU/IBGE</div>
+        </div>
+      </div>
+      <div class="exhibit">
+        <div id="cadeia-chart-oferta"></div>
+        <div class="exhibit-caption">
+          <div class="exhibit-title">Produção nacional x importação</div>
+          <div class="exhibit-sub">R$ correntes, peças fundidas (produto 24922), TRU/IBGE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /#cadeia-view -->
 
 <!-- ============ ENERGIA INDUSTRIAL ============ -->
 <div id="energia-industrial-view" hidden>

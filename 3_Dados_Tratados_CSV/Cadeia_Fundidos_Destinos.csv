@@ -1,0 +1,157 @@
+﻿Ano;Tipo;Codigo;Nome;Valor;Pct_Importado_2015
+2010;atividade;0792;Minerais metálicos não ferrosos;86,0;0,05
+2010;atividade;1300;Têxteis;1,0;0,0
+2010;atividade;2491;Siderurgia (ferro-gusa e aço);197,0;0,036036036036036036
+2010;atividade;2492;Metalurgia de não ferrosos e fundição;509,0;0,05818181818181818
+2010;atividade;2700;Máquinas e equipamentos elétricos;1416,0;0,0603448275862069
+2010;atividade;2800;Máquinas e equipamentos mecânicos;955,0;0,05967741935483871
+2010;atividade;2992;Peças para veículos;3135,0;0,05939315687540349
+2010;atividade;3000;Outros equipamentos de transporte;26,0;0,04
+2010;atividade;3300;Manutenção de máquinas;1239,0;0,06032719836400818
+2010;atividade;4180;Construção;461,0;0,07653061224489796
+2010;atividade;4500;Comércio de veículos;500,0;0,057736720554272515
+2010;demanda_final;exportacao;Exportação;31,0;0,0
+2010;demanda_final;estoque;Variação de estoque;-3,0;
+2011;atividade;0792;Minerais metálicos não ferrosos;73,0;0,05
+2011;atividade;1300;Têxteis;1,0;0,0
+2011;atividade;2491;Siderurgia (ferro-gusa e aço);156,0;0,036036036036036036
+2011;atividade;2492;Metalurgia de não ferrosos e fundição;426,0;0,05818181818181818
+2011;atividade;2700;Máquinas e equipamentos elétricos;1392,0;0,0603448275862069
+2011;atividade;2800;Máquinas e equipamentos mecânicos;929,0;0,05967741935483871
+2011;atividade;2992;Peças para veículos;2966,0;0,05939315687540349
+2011;atividade;3000;Outros equipamentos de transporte;24,0;0,04
+2011;atividade;3300;Manutenção de máquinas;1208,0;0,06032719836400818
+2011;atividade;4180;Construção;402,0;0,07653061224489796
+2011;atividade;4500;Comércio de veículos;496,0;0,057736720554272515
+2011;demanda_final;exportacao;Exportação;58,0;0,0
+2011;demanda_final;estoque;Variação de estoque;-360,0;
+2012;atividade;0792;Minerais metálicos não ferrosos;68,0;0,05
+2012;atividade;1300;Têxteis;1,0;0,0
+2012;atividade;2491;Siderurgia (ferro-gusa e aço);141,0;0,036036036036036036
+2012;atividade;2492;Metalurgia de não ferrosos e fundição;460,0;0,05818181818181818
+2012;atividade;2700;Máquinas e equipamentos elétricos;1302,0;0,0603448275862069
+2012;atividade;2800;Máquinas e equipamentos mecânicos;1013,0;0,05967741935483871
+2012;atividade;2992;Peças para veículos;2671,0;0,05939315687540349
+2012;atividade;3000;Outros equipamentos de transporte;26,0;0,04
+2012;atividade;3300;Manutenção de máquinas;1290,0;0,06032719836400818
+2012;atividade;4180;Construção;429,0;0,07653061224489796
+2012;atividade;4500;Comércio de veículos;575,0;0,057736720554272515
+2012;demanda_final;exportacao;Exportação;52,0;0,0
+2012;demanda_final;estoque;Variação de estoque;-356,0;
+2013;atividade;0792;Minerais metálicos não ferrosos;101,0;0,05
+2013;atividade;1300;Têxteis;1,0;0,0
+2013;atividade;2491;Siderurgia (ferro-gusa e aço);152,0;0,036036036036036036
+2013;atividade;2492;Metalurgia de não ferrosos e fundição;521,0;0,05818181818181818
+2013;atividade;2700;Máquinas e equipamentos elétricos;1414,0;0,0603448275862069
+2013;atividade;2800;Máquinas e equipamentos mecânicos;1267,0;0,05967741935483871
+2013;atividade;2992;Peças para veículos;2909,0;0,05939315687540349
+2013;atividade;3000;Outros equipamentos de transporte;25,0;0,04
+2013;atividade;3300;Manutenção de máquinas;1345,0;0,06032719836400818
+2013;atividade;4180;Construção;427,0;0,07653061224489796
+2013;atividade;4500;Comércio de veículos;590,0;0,057736720554272515
+2013;demanda_final;exportacao;Exportação;37,0;0,0
+2013;demanda_final;estoque;Variação de estoque;-153,0;
+2014;atividade;0792;Minerais metálicos não ferrosos;100,0;0,05
+2014;atividade;1300;Têxteis;1,0;0,0
+2014;atividade;2491;Siderurgia (ferro-gusa e aço);149,0;0,036036036036036036
+2014;atividade;2492;Metalurgia de não ferrosos e fundição;522,0;0,05818181818181818
+2014;atividade;2700;Máquinas e equipamentos elétricos;1311,0;0,0603448275862069
+2014;atividade;2800;Máquinas e equipamentos mecânicos;1174,0;0,05967741935483871
+2014;atividade;2992;Peças para veículos;2634,0;0,05939315687540349
+2014;atividade;3000;Outros equipamentos de transporte;30,0;0,04
+2014;atividade;3300;Manutenção de máquinas;1367,0;0,06032719836400818
+2014;atividade;4180;Construção;444,0;0,07653061224489796
+2014;atividade;4500;Comércio de veículos;663,0;0,057736720554272515
+2014;demanda_final;exportacao;Exportação;41,0;0,0
+2014;demanda_final;estoque;Variação de estoque;-102,0;
+2015;atividade;0792;Minerais metálicos não ferrosos;113,0;0,05
+2015;atividade;1300;Têxteis;1,0;0,0
+2015;atividade;2491;Siderurgia (ferro-gusa e aço);154,0;0,036036036036036036
+2015;atividade;2492;Metalurgia de não ferrosos e fundição;380,0;0,05818181818181818
+2015;atividade;2700;Máquinas e equipamentos elétricos;1113,0;0,0603448275862069
+2015;atividade;2800;Máquinas e equipamentos mecânicos;852,0;0,05967741935483871
+2015;atividade;2992;Peças para veículos;2121,0;0,05939315687540349
+2015;atividade;3000;Outros equipamentos de transporte;34,0;0,04
+2015;atividade;3300;Manutenção de máquinas;1342,0;0,06032719836400818
+2015;atividade;4180;Construção;320,0;0,07653061224489796
+2015;atividade;4500;Comércio de veículos;614,0;0,057736720554272515
+2015;demanda_final;exportacao;Exportação;46,0;0,0
+2015;demanda_final;estoque;Variação de estoque;-105,0;
+2016;atividade;0792;Minerais metálicos não ferrosos;98,0;0,05
+2016;atividade;1300;Têxteis;1,0;0,0
+2016;atividade;2491;Siderurgia (ferro-gusa e aço);141,0;0,036036036036036036
+2016;atividade;2492;Metalurgia de não ferrosos e fundição;327,0;0,05818181818181818
+2016;atividade;2700;Máquinas e equipamentos elétricos;816,0;0,0603448275862069
+2016;atividade;2800;Máquinas e equipamentos mecânicos;855,0;0,05967741935483871
+2016;atividade;2992;Peças para veículos;1672,0;0,05939315687540349
+2016;atividade;3000;Outros equipamentos de transporte;35,0;0,04
+2016;atividade;3300;Manutenção de máquinas;1377,0;0,06032719836400818
+2016;atividade;4180;Construção;239,0;0,07653061224489796
+2016;atividade;4500;Comércio de veículos;638,0;0,057736720554272515
+2016;demanda_final;exportacao;Exportação;82,0;0,0
+2016;demanda_final;estoque;Variação de estoque;-295,0;
+2017;atividade;0792;Minerais metálicos não ferrosos;109,0;0,05
+2017;atividade;1300;Têxteis;1,0;0,0
+2017;atividade;2491;Siderurgia (ferro-gusa e aço);160,0;0,036036036036036036
+2017;atividade;2492;Metalurgia de não ferrosos e fundição;385,0;0,05818181818181818
+2017;atividade;2700;Máquinas e equipamentos elétricos;842,0;0,0603448275862069
+2017;atividade;2800;Máquinas e equipamentos mecânicos;1002,0;0,05967741935483871
+2017;atividade;2992;Peças para veículos;2165,0;0,05939315687540349
+2017;atividade;3000;Outros equipamentos de transporte;34,0;0,04
+2017;atividade;3300;Manutenção de máquinas;1596,0;0,06032719836400818
+2017;atividade;4180;Construção;234,0;0,07653061224489796
+2017;atividade;4500;Comércio de veículos;740,0;0,057736720554272515
+2017;demanda_final;exportacao;Exportação;84,0;0,0
+2017;demanda_final;estoque;Variação de estoque;478,0;
+2018;atividade;0792;Minerais metálicos não ferrosos;122,0;0,05
+2018;atividade;1300;Têxteis;1,0;0,0
+2018;atividade;2491;Siderurgia (ferro-gusa e aço);234,0;0,036036036036036036
+2018;atividade;2492;Metalurgia de não ferrosos e fundição;551,0;0,05818181818181818
+2018;atividade;2700;Máquinas e equipamentos elétricos;1077,0;0,0603448275862069
+2018;atividade;2800;Máquinas e equipamentos mecânicos;1424,0;0,05967741935483871
+2018;atividade;2992;Peças para veículos;2845,0;0,05939315687540349
+2018;atividade;3000;Outros equipamentos de transporte;44,0;0,04
+2018;atividade;3300;Manutenção de máquinas;1736,0;0,06032719836400818
+2018;atividade;4180;Construção;247,0;0,07653061224489796
+2018;atividade;4500;Comércio de veículos;766,0;0,057736720554272515
+2018;demanda_final;exportacao;Exportação;110,0;0,0
+2018;demanda_final;estoque;Variação de estoque;433,0;
+2019;atividade;0792;Minerais metálicos não ferrosos;101,0;0,05
+2019;atividade;1300;Têxteis;1,0;0,0
+2019;atividade;2491;Siderurgia (ferro-gusa e aço);181,0;0,036036036036036036
+2019;atividade;2492;Metalurgia de não ferrosos e fundição;485,0;0,05818181818181818
+2019;atividade;2700;Máquinas e equipamentos elétricos;1195,0;0,0603448275862069
+2019;atividade;2800;Máquinas e equipamentos mecânicos;1181,0;0,05967741935483871
+2019;atividade;2992;Peças para veículos;2392,0;0,05939315687540349
+2019;atividade;3000;Outros equipamentos de transporte;17,0;0,04
+2019;atividade;3300;Manutenção de máquinas;1441,0;0,06032719836400818
+2019;atividade;4180;Construção;214,0;0,07653061224489796
+2019;atividade;4500;Comércio de veículos;683,0;0,057736720554272515
+2019;demanda_final;exportacao;Exportação;148,0;0,0
+2019;demanda_final;estoque;Variação de estoque;160,0;
+2020;atividade;0792;Minerais metálicos não ferrosos;127,0;0,05
+2020;atividade;1300;Têxteis;1,0;0,0
+2020;atividade;2491;Siderurgia (ferro-gusa e aço);163,0;0,036036036036036036
+2020;atividade;2492;Metalurgia de não ferrosos e fundição;440,0;0,05818181818181818
+2020;atividade;2700;Máquinas e equipamentos elétricos;1228,0;0,0603448275862069
+2020;atividade;2800;Máquinas e equipamentos mecânicos;1091,0;0,05967741935483871
+2020;atividade;2992;Peças para veículos;1818,0;0,05939315687540349
+2020;atividade;3000;Outros equipamentos de transporte;23,0;0,04
+2020;atividade;3300;Manutenção de máquinas;1462,0;0,06032719836400818
+2020;atividade;4180;Construção;209,0;0,07653061224489796
+2020;atividade;4500;Comércio de veículos;663,0;0,057736720554272515
+2020;demanda_final;exportacao;Exportação;215,0;0,0
+2020;demanda_final;estoque;Variação de estoque;-164,0;
+2021;atividade;0792;Minerais metálicos não ferrosos;192,0;0,05
+2021;atividade;1300;Têxteis;1,0;0,0
+2021;atividade;2491;Siderurgia (ferro-gusa e aço);285,0;0,036036036036036036
+2021;atividade;2492;Metalurgia de não ferrosos e fundição;1139,0;0,05818181818181818
+2021;atividade;2700;Máquinas e equipamentos elétricos;2232,0;0,0603448275862069
+2021;atividade;2800;Máquinas e equipamentos mecânicos;2428,0;0,05967741935483871
+2021;atividade;2992;Peças para veículos;3177,0;0,05939315687540349
+2021;atividade;3000;Outros equipamentos de transporte;30,0;0,04
+2021;atividade;3300;Manutenção de máquinas;1841,0;0,06032719836400818
+2021;atividade;4180;Construção;379,0;0,07653061224489796
+2021;atividade;4500;Comércio de veículos;894,0;0,057736720554272515
+2021;demanda_final;exportacao;Exportação;238,0;0,0
+2021;demanda_final;estoque;Variação de estoque;379,0;
