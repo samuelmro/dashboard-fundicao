@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, sankeyChart, dataTable, rankList, fmt, showTooltip, hideTooltip } = window.Charts;
+  const { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, sankeyChart, shareAreaChart, dataTable, rankList, fmt, showTooltip, hideTooltip } = window.Charts;
   const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const CURRENT_YEAR = new Date().getFullYear();
   const CORES = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)',
@@ -1321,33 +1321,26 @@
   // ---------------------------------------------------------------------
   const FUNDIDOS = 'fundidos';
   const CADEIA_TOP = 7;
-  const CADEIA_CORES = {
-    fornecedor: 'var(--series-2)', va: 'var(--series-8)', importado: 'var(--series-6)', margem: 'var(--baseline)',
-    cliente: 'var(--series-4)', demandaFinal: 'var(--series-5)', outros: 'var(--baseline)',
-  };
-  // Mapa do topo da aba: do minério ao cliente, em coordenadas do viewBox 1000x400.
-  // cods = atividades somadas no nó; centro = o que o clique abre no Sankey.
-  const MAPA_NOS = [
-    { id: 'min', titulo: 'Mineração', icone: 'mina', x: 70, y: 200, r: 30, cods: ['0791', '0792'], centro: '0791' },
-    { id: 'sid', titulo: 'Siderurgia e metalurgia', icone: 'forno', x: 290, y: 200, r: 30, cods: ['2491', '2492'], centro: '2491' },
-    { id: 'fund', titulo: 'Fundição', icone: 'panela', x: 520, y: 200, r: 50, centro: FUNDIDOS },
-    { id: 'maq', titulo: 'Máquinas e equipamentos', icone: 'engrenagem', x: 760, y: 44, r: 22, cods: ['2800', '2700'], centro: '2800' },
-    { id: 'auto', titulo: 'Automotivo', icone: 'carro', x: 760, y: 122, r: 22, cods: ['2992', '2991', '4500'], centro: '2992' },
-    { id: 'man', titulo: 'Manutenção de máquinas', icone: 'chave', x: 760, y: 200, r: 22, cods: ['3300'], centro: '3300' },
-    { id: 'cons', titulo: 'Construção', icone: 'predio', x: 760, y: 278, r: 22, cods: ['4180'], centro: '4180' },
-    { id: 'exp', titulo: 'Exportação', icone: 'globo', x: 760, y: 356, r: 22, cods: ['exportacao'] },
+  // Os grupos de clientes têm a mesma cor no Sankey e no gráfico de áreas.
+  const CADEIA_GRUPOS = [
+    { label: 'Máquinas e equipamentos', cods: ['2700', '2800'], color: 'var(--series-1)' },
+    { label: 'Automotivo', cods: ['2992', '2991', '4500'], color: 'var(--series-3)' },
+    { label: 'Manutenção de máquinas', cods: ['3300'], color: 'var(--series-8)' },
+    { label: 'Metalurgia e mineração', cods: ['2491', '2492', '0792'], color: 'var(--series-2)' },
+    { label: 'Construção', cods: ['4180'], color: 'var(--series-7)' },
   ];
-  // Ícones de traço 24x24 (desenhados à mão, sem biblioteca).
-  const ICONES = {
-    mina: '<path d="M5 20 15 10"/><path d="M7.5 5.5c4-2.5 9-1.5 11.5 3-3.5-1.5-6.5-1.2-9 .8"/><path d="M3 21h6"/>',
-    forno: '<path d="M3 21V11l5 3v-3l5 3V5h3l1 5h4v11z"/><path d="M7 18h2M12 18h2"/>',
-    panela: '<path d="M3 7h13l-1.6 7.2A3 3 0 0 1 11.5 16.5h-3a3 3 0 0 1-2.9-2.3z"/><path d="m16 8 4-2"/><path d="M19.5 10.5c0 1.7 1.2 2.6 1.2 4a1.2 1.2 0 0 1-2.4 0c0-1.4 1.2-2.3 1.2-4z"/><path d="M6 20h7"/>',
-    engrenagem: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
-    carro: '<path d="M3 16.5v-3.5l2.2-5h13.6l2.2 5v3.5z"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M5.5 12.5h13"/>',
-    chave: '<path d="M14.7 5.3a4.2 4.2 0 0 0-5.3 5.3L3.5 16.5l4 4 5.9-5.9a4.2 4.2 0 0 0 5.3-5.3l-2.6 2.6-2.8-.5-.5-2.8z"/>',
-    predio: '<path d="M4 21V8l6-4v17M10 21h10V10H10"/><path d="M13 13h1M17 13h1M13 17h1M17 17h1M6.5 11h1M6.5 15h1"/>',
-    globo: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
+  const CADEIA_CORES = {
+    fornecedor: 'var(--series-2)', va: 'var(--series-5)', importado: 'var(--series-6)', margem: 'var(--baseline)',
+    cliente: 'var(--text-muted)', demandaFinal: 'var(--series-4)', outros: 'var(--baseline)',
   };
+  const corCliente = cod => (CADEIA_GRUPOS.find(g => g.cods.includes(cod)) || {}).color || CADEIA_CORES.cliente;
+  // Linha de elos acima do diagrama: o caminho do minério ao cliente, clicável.
+  const CADEIA_ELOS = [
+    [{ label: 'Mineração', centro: '0791' }],
+    [{ label: 'Siderurgia', centro: '2491' }, { label: 'Metalurgia', centro: '2492' }],
+    [{ label: 'Fundição', centro: FUNDIDOS }],
+    [{ label: 'Máquinas', centro: '2800' }, { label: 'Autopeças', centro: '2992' }, { label: 'Montadoras', centro: '2991' }, { label: 'Construção', centro: '4180' }],
+  ];
   const NOMES_DF = {
     exportacao: 'Exportação', governo: 'Consumo do governo', isflsf: 'Consumo das ISFLSF',
     familias: 'Consumo das famílias', fbcf: 'Investimento (FBCF)', estoque: 'Variação de estoque',
@@ -1363,9 +1356,12 @@
     const pct = (v, tot) => tot ? fmt.pct(100 * v / tot) : '-';
     const multOrdenado = A.map(a => a.multiplicador).sort((x, y) => y - x);
     const rankMult = m => multOrdenado.indexOf(m) + 1;
+    const mult2 = m => m.toFixed(2).replace('.', ',');
 
     const ofertaUlt = c.fundidos.oferta[c.fundidos.oferta.length - 1];
+    const ofertaPri = c.fundidos.oferta[0];
     const destUlt = c.fundidos.destinos.filter(d => d.ano === c.ano);
+    const pImp = o => 100 * o.importacao / (o.producao + o.importacao);
     let trilha = [FUNDIDOS];
 
     // Agrupa os menores em "Outros" pra o diagrama não virar uma franja ilegível.
@@ -1393,7 +1389,7 @@
     function montarFundidos() {
       const total = ofertaUlt.demanda;
       const direita = topN(destUlt.map(d => d.tipo === 'atividade'
-        ? noAtividade(idx.get(d.cod), d.valor, CADEIA_CORES.cliente, total)
+        ? noAtividade(idx.get(d.cod), d.valor, corCliente(d.cod), total)
         : { label: d.nome, value: d.valor, color: CADEIA_CORES.demandaFinal, tip: [{ label: 'Participação', value: pct(d.valor, total) }] }),
         CADEIA_TOP, 'Outros clientes');
 
@@ -1405,18 +1401,26 @@
       const margens = ofertaUlt.demanda - ofertaUlt.producao - ofertaUlt.importacao;
       const esquerda = [
         ...topN([...porAtividade].map(([cod, v]) => noAtividade(idx.get(cod), v, CADEIA_CORES.fornecedor, total)), CADEIA_TOP - 2, 'Outros insumos'),
-        { label: 'Valor adicionado (salários e lucros)', value: met.va * escala, color: CADEIA_CORES.va,
-          tip: [{ label: 'Participação', value: pct(met.va * escala, total) }] },
-        { label: 'Importação de peças fundidas', value: ofertaUlt.importacao, color: CADEIA_CORES.importado,
+        { label: 'Salários e lucros', value: met.va * escala, color: CADEIA_CORES.va,
+          tip: [{ label: 'Participação', value: pct(met.va * escala, total) }, { label: '', value: 'Valor adicionado da própria fundição' }] },
+        { label: 'Peças importadas', value: ofertaUlt.importacao, color: CADEIA_CORES.importado,
           tip: [{ label: 'Da oferta a preço básico', value: pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao) }] },
         { label: 'Margens e impostos', value: margens, color: CADEIA_CORES.margem,
           tip: [{ label: 'Participação', value: pct(margens, total) }, { label: '', value: 'Comércio, transporte e impostos sobre produtos' }] },
       ];
+      const met2492 = A[idx.get('2492')];
+      const empregos = ['2451', '2452'].map(s => last(data.sectors[s].rais.uf_yearly_total));
       return {
-        titulo: 'Fundição (peças fundidas)',
-        sub: `Peças fundidas de aço e de metais não ferrosos, ${c.ano}. Demanda total de ${brl(total)}.`,
+        titulo: 'Fundição',
+        sub: `Peças fundidas de aço e de metais não ferrosos · ${c.ano}`,
         esquerda, direita,
-        nota: 'Clientes: TRU/IBGE, produto 24922. Fornecedores: a TRU não separa os insumos por produto, então usamos a estrutura de custos da atividade 2492 (metalurgia de não ferrosos + fundição), proporcional à produção nacional de peças fundidas. Os itens em cinza fecham a conta entre produção e demanda a preço de consumidor.',
+        resumo: [
+          ['Produção nacional', brl(ofertaUlt.producao)],
+          ['Importado', pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao)],
+          ['Multiplicador', `${mult2(met2492.multiplicador)} (${rankMult(met2492.multiplicador)}º de ${A.length})`],
+          ['Empregos formais', `${fmt.compact(empregos.reduce((s, e) => s + (e ? e.vinculos : 0), 0))} em ${empregos[0] ? empregos[0].ano : ''}`, '2451', 'block-emprego'],
+        ],
+        nota: 'Clientes: IBGE, produto 24922 da TRU. Fornecedores: o IBGE não separa os insumos por produto, então o lado esquerdo usa a estrutura de custos da atividade 2492 (metalurgia de não ferrosos + fundição), proporcional à produção de peças fundidas. Multiplicador: MIP 2015.',
       };
     }
 
@@ -1425,12 +1429,12 @@
       const totalDir = vendas[i].reduce((s, [, v]) => s + v, 0)
         + Object.values(a.demanda_final).reduce((s, v) => s + Math.max(v, 0), 0);
       const direita = topN([
-        ...vendas[i].map(([j, v]) => noAtividade(j, v, CADEIA_CORES.cliente, totalDir)),
+        ...vendas[i].map(([j, v]) => noAtividade(j, v, corCliente(A[j].cod), totalDir)),
         ...nosDemandaFinal(a.demanda_final, totalDir),
       ], CADEIA_TOP, 'Outros clientes');
       const esquerda = [
         ...topN(compras[i].map(([j, v]) => noAtividade(j, v, CADEIA_CORES.fornecedor, a.vbp)), CADEIA_TOP - 1, 'Outros insumos'),
-        { label: 'Valor adicionado (salários e lucros)', value: a.va, color: CADEIA_CORES.va, tip: [{ label: 'Participação', value: pct(a.va, a.vbp) }] },
+        { label: 'Salários e lucros', value: a.va, color: CADEIA_CORES.va, tip: [{ label: 'Participação', value: pct(a.va, a.vbp) }] },
       ];
       // A produção (VBP) e o que os clientes pagam (preço de consumidor) não
       // batem: a diferença são importações, margens e impostos — ou, no
@@ -1441,65 +1445,37 @@
       else if (-dif > 0.01 * somaEsq) direita.push({ label: 'Margens embutidas em outros produtos', value: -dif, color: CADEIA_CORES.margem });
       return {
         titulo: a.nome,
-        sub: `${a.descricao}, ${c.ano}. Produção de ${brl(a.vbp)}.`,
+        sub: `${a.descricao} · ${c.ano}`,
         esquerda, direita,
-        nota: 'Fluxo entre atividades: TRU/IBGE, consumo intermediário a preço de consumidor, levado de produto para a atividade que o produz. Os insumos incluem a parte importada.',
+        resumo: [
+          ['Produção', brl(a.vbp)],
+          ['Ocupações', fmt.compact(a.ocupacoes)],
+          ['Multiplicador', `${mult2(a.multiplicador)} (${rankMult(a.multiplicador)}º de ${A.length})`],
+          ['Insumos importados', a.pct_insumos_importados != null ? fmt.pct(100 * a.pct_insumos_importados) : '-'],
+        ],
+        nota: 'Fluxo entre atividades: IBGE, TRU, consumo intermediário a preço de consumidor, levado de produto para a atividade que o produz; os insumos incluem a parte importada. Multiplicador e insumos importados: MIP 2015.',
       };
     }
 
-    function kpi(label, value, sub, extra = '') {
-      return `<div class="kpi-tile no-click"><span class="kpi-label">${label}</span><span class="kpi-value">${value}</span><span class="kpi-sub">${sub}</span>${extra}</div>`;
-    }
-    function kpiLink(label, value, sub, sector, target) {
-      return `<button type="button" class="kpi-tile" data-sector="${sector}" data-target="${target}"><span class="kpi-label">${label}</span><span class="kpi-value">${value}</span><span class="kpi-sub">${sub}</span></button>`;
-    }
-    function maiorCliente(nodes) {
-      return nodes.find(x => x.color !== CADEIA_CORES.outros) || nodes[0];
-    }
-    const mult2 = m => m.toFixed(2).replace('.', ',');
-
-    function renderFicha(centro, m) {
-      const ficha = $('#cadeia-ficha');
-      const somaDir = m.direita.reduce((s, n) => s + n.value, 0);
-      const top = maiorCliente(m.direita);
-      if (centro === FUNDIDOS) {
-        const met = A[idx.get('2492')];
-        const empregos = ['2451', '2452'].map(s => last(data.sectors[s].rais.uf_yearly_total));
-        const comex = ['2451', '2452'].map(s => ultimosDoisAnosFechados(data.sectors[s].comex.yearly).atual);
-        ficha.innerHTML = [
-          kpi('Demanda de peças fundidas', brl(ofertaUlt.demanda), `Preço de consumidor, ${c.ano}`),
-          kpi('Atendida por importados', pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao), `Da oferta a preço básico, ${c.ano}`),
-          kpi('Maior cliente', top.label, `${pct(top.value, somaDir)} da demanda`),
-          kpi('Multiplicador de produção', mult2(met.multiplicador), `Cada R$ 1 de demanda final por metalurgia e fundição movimenta R$ ${mult2(met.multiplicador)} na economia. ${rankMult(met.multiplicador)}º entre ${A.length} atividades (MIP 2015)`),
-          kpiLink('Empregos formais', fmt.compact(empregos.reduce((s, e) => s + (e ? e.vinculos : 0), 0)), `Fundição 2451 + 2452, RAIS ${empregos[0] ? empregos[0].ano : ''}. Ver no painel →`, '2451', 'block-emprego'),
-          kpiLink('Exportações', fmt.usd(comex.reduce((s, x) => s + (x ? x.exportacao_usd : 0), 0)), `Fundição 2451 + 2452, US$ FOB ${comex[0] ? comex[0].ano : ''}. Ver no painel →`, '2451', 'block-comex'),
-        ].join('');
-      } else {
-        const a = A[idx.get(centro)];
-        ficha.innerHTML = [
-          kpi('Valor da produção', brl(a.vbp), `${c.ano}`),
-          kpi('Valor adicionado', brl(a.va), `${pct(a.va, a.vbp)} da produção`),
-          kpi('Ocupações', fmt.compact(a.ocupacoes), `Formais e informais, ${c.ano}`),
-          kpi('Maior cliente', top.label, `${pct(top.value, somaDir)} das vendas`),
-          kpi('Multiplicador de produção', mult2(a.multiplicador), `${rankMult(a.multiplicador)}º entre ${A.length} atividades (MIP 2015)`),
-          kpi('Insumos importados', a.pct_insumos_importados != null ? fmt.pct(100 * a.pct_insumos_importados) : '-', 'Do total de insumos, estrutura MIP 2015'),
-        ].join('');
-      }
-      ficha.querySelectorAll('.kpi-tile[data-sector]').forEach(b =>
-        b.addEventListener('click', () => goToBlock(b.dataset.sector, b.dataset.target)));
-    }
-
-    function nomeCentro(cod) { return cod === FUNDIDOS ? 'Fundição (peças fundidas)' : A[idx.get(cod)].nome; }
+    function nomeCentro(cod) { return cod === FUNDIDOS ? 'Fundição' : A[idx.get(cod)].nome; }
 
     function renderTrilha() {
       const nav = $('#cadeia-trilha');
-      nav.innerHTML = trilha.map((cod, i) => i === trilha.length - 1
+      nav.innerHTML = trilha.length < 2 ? '' : trilha.map((cod, i) => i === trilha.length - 1
         ? `<span class="cadeia-crumb atual" aria-current="true">${nomeCentro(cod)}</span>`
         : `<button type="button" class="cadeia-crumb" data-i="${i}">${nomeCentro(cod)}</button><span class="cadeia-crumb-sep">›</span>`).join('');
       nav.querySelectorAll('button[data-i]').forEach(b => b.addEventListener('click', () => {
         trilha = trilha.slice(0, +b.dataset.i + 1);
         desenhar();
       }));
+    }
+
+    function renderResumo(m) {
+      const el = $('#cadeia-resumo');
+      el.innerHTML = m.resumo.map(([rot, val, setor, bloco]) => setor
+        ? `<button type="button" class="cad-resumo-item link" data-sector="${setor}" data-target="${bloco}">${rot} <b>${val}</b> →</button>`
+        : `<span class="cad-resumo-item">${rot} <b>${val}</b></span>`).join('');
+      el.querySelectorAll('[data-sector]').forEach(b => b.addEventListener('click', () => goToBlock(b.dataset.sector, b.dataset.target)));
     }
 
     function desenhar() {
@@ -1511,14 +1487,14 @@
       $('#cadeia-select').value = centro;
       sankeyChart($('#cadeia-sankey'), {
         left: m.esquerda, right: m.direita,
-        center: { label: m.titulo, sub: '' },
+        center: { label: m.titulo },
         headers: { left: 'DE ONDE VEM', right: 'PARA ONDE VAI' },
         formatV: brl,
         onNodeClick: n => irPara(n.cod),
       });
       renderTrilha();
-      renderFicha(centro, m);
-      document.querySelectorAll('#cadeia-mapa .cm-no').forEach(g => g.classList.toggle('active', g.dataset.centro === centro));
+      renderResumo(m);
+      document.querySelectorAll('#cad-elos .cad-elo').forEach(b => b.classList.toggle('ativo', b.dataset.centro === centro));
     }
 
     function irPara(cod) {
@@ -1534,113 +1510,30 @@
       [...A].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(a => `<option value="${a.cod}">${a.nome}</option>`).join('');
     sel.addEventListener('change', () => { trilha = [sel.value]; desenhar(); });
 
-    renderMapaCadeia({ c, A, idx, brl, destUlt, ofertaUlt, abrir: centro => {
-      trilha = centro === FUNDIDOS ? [FUNDIDOS] : [FUNDIDOS, centro];
+    $('#cad-elos').innerHTML = CADEIA_ELOS.map(grupo =>
+      `<span class="cad-elo-grupo">${grupo.map(e =>
+        `<button type="button" class="cad-elo${e.centro === FUNDIDOS ? ' fund' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('<span class="cad-elo-sep">/</span>')}</span>`
+    ).join('<span class="cad-elo-seta" aria-hidden="true">→</span>');
+    $('#cad-elos').querySelectorAll('.cad-elo').forEach(b => b.addEventListener('click', () => {
+      trilha = b.dataset.centro === FUNDIDOS ? [FUNDIDOS] : [FUNDIDOS, b.dataset.centro];
       desenhar();
-      $('#cadeia-sankey').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } });
+    }));
+
+    // Linha fina: os três números que resumem a cadeia, no meio do texto.
+    const base = destUlt.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
+    const pMaqAuto = 100 * destUlt.filter(d => [...CADEIA_GRUPOS[0].cods, ...CADEIA_GRUPOS[1].cods].includes(d.cod)).reduce((s, d) => s + d.valor, 0) / base;
+    $('#cad-chapeu').textContent = `Cadeia produtiva · IBGE, ${c.ano}`;
+    $('#cad-linha-fina').innerHTML =
+      `Em ${c.ano}, o Brasil consumiu <b>${brl(ofertaUlt.demanda)}</b> em peças fundidas. ` +
+      `<b>${Math.round(pMaqAuto)}%</b> foram parar em máquinas e veículos, e <b>${Math.round(pImp(ofertaUlt))}%</b> vieram de fora, ` +
+      `contra ${fmt.pct(pImp(ofertaPri))} em ${ofertaPri.ano}.`;
+
     desenhar();
     renderCadeiaHistorico(c, brl);
   }
 
-  // Topo da aba: números de manchete + mapa do minério ao cliente, com o
-  // "metal correndo" pelas ligações (traço tracejado animado em CSS). A
-  // largura de cada ligação segue a raiz do valor, pra o fluxo de minério
-  // (dezenas de bilhões) não esmagar o de fundidos (bilhões).
-  function renderMapaCadeia({ c, A, idx, brl, destUlt, ofertaUlt, abrir }) {
-    const compraFundidos = cods => destUlt.filter(d => cods.includes(d.cod)).reduce((s, d) => s + d.valor, 0);
-    const met = A[idx.get('2492')];
-    const escala = ofertaUlt.producao / met.vbp;
-    const insumoFundicao = cods => c.insumos_2492.filter(r => cods.includes(r.atividade)).reduce((s, r) => s + r.valor, 0) * escala;
-    const fluxoEntre = (de, para) => c.fluxos.filter(([o, d]) => de.includes(A[o].cod) && para.includes(A[d].cod)).reduce((s, f) => s + f[2], 0);
-    const somaAtiv = (cods, campo) => cods.reduce((s, cod) => s + A[idx.get(cod)][campo], 0);
-    const no = Object.fromEntries(MAPA_NOS.map(n => [n.id, n]));
-
-    const ligacoes = [
-      { de: 'min', para: 'sid', valor: fluxoEntre(no.min.cods, no.sid.cods), texto: 'Minério vendido à siderurgia e à metalurgia' },
-      { de: 'sid', para: 'fund', valor: insumoFundicao(no.sid.cods), texto: 'Metal comprado para fazer peças fundidas (estimativa)' },
-      ...MAPA_NOS.slice(3).map(n => ({ de: 'fund', para: n.id, valor: compraFundidos(n.cods), texto: `Peças fundidas: ${n.titulo}` })),
-    ];
-    const vMax = Math.max(...ligacoes.map(l => l.valor));
-    const largura = v => 3 + 22 * Math.sqrt(v / vMax);
-    const sub = n => n.id === 'fund' ? `${brl(ofertaUlt.demanda)} em peças`
-      : n.x < no.fund.x ? `${brl(somaAtiv(n.cods, 'vbp'))} de produção`
-      : `${brl(compraFundidos(n.cods))} em peças`;
-
-    let svg = `<svg viewBox="0 0 1000 400" class="chart-svg cm-svg" role="img" aria-label="Mapa da cadeia: mineração, siderurgia e metalurgia, fundição e seus clientes">
-      <defs><radialGradient id="cm-brilho"><stop offset="0" stop-color="#e30615" stop-opacity=".6"/><stop offset="1" stop-color="#e30615" stop-opacity="0"/></radialGradient></defs>`;
-    ligacoes.forEach((l, i) => {
-      const a = no[l.de], b = no[l.para];
-      const x0 = a.x + a.r * 0.85, y0 = a.y + (b.y - a.y) * (l.de === 'fund' ? 0.25 : 0); // leque saindo da fundição
-      const x1 = b.x - b.r - 4, xm = (x0 + x1) / 2;
-      const d = `M${x0},${y0} C${xm},${y0} ${xm},${b.y} ${x1},${b.y}`;
-      const w = largura(l.valor), vel = (1.7 - 0.9 * Math.sqrt(l.valor / vMax)).toFixed(2);
-      svg += `<g class="cm-lig" data-i="${i}"><path d="${d}" class="cm-trilho" stroke-width="${w}"/>` +
-        `<path d="${d}" class="cm-metal" stroke-width="${Math.max(2.5, w * 0.45)}" style="animation-duration:${vel}s"/>` +
-        (l.de !== 'fund' ? `<text x="${xm}" y="${y0 - w / 2 - 10}" class="cm-val">${brl(l.valor)}</text>` : '') + '</g>';
-    });
-    MAPA_NOS.forEach(n => {
-      const s = (n.r * 1.25) / 24, aDireita = n.x > no.fund.x;
-      const tx = aDireita ? n.x + n.r + 12 : n.x, ty = aDireita ? n.y - 1 : n.y + n.r + 22;
-      const anchor = aDireita ? 'start' : 'middle';
-      const clicavel = !!n.centro;
-      svg += `<g class="cm-no${n.id === 'fund' ? ' cm-fund' : ''}${clicavel ? ' clicavel' : ''}" data-id="${n.id}" data-centro="${n.centro || ''}"` +
-        (clicavel ? ` tabindex="0" role="button" aria-label="Abrir a cadeia de ${n.titulo}"` : '') + '>' +
-        (n.id === 'fund' ? `<circle cx="${n.x}" cy="${n.y}" r="${n.r * 2}" fill="url(#cm-brilho)" class="cm-pulso"/>` : '') +
-        `<circle cx="${n.x}" cy="${n.y}" r="${n.r}" class="cm-circ"/>` +
-        `<g transform="translate(${n.x - 12 * s},${n.y - 12 * s}) scale(${s})" class="cm-icone">${ICONES[n.icone]}</g>` +
-        `<text x="${tx}" y="${ty}" text-anchor="${anchor}" class="cm-rotulo">${n.titulo}</text>` +
-        `<text x="${tx}" y="${ty + 17}" text-anchor="${anchor}" class="cm-sub">${sub(n)}</text></g>`;
-    });
-    const mapa = $('#cadeia-mapa');
-    mapa.innerHTML = svg + '</svg>';
-
-    mapa.querySelectorAll('.cm-lig').forEach(g => {
-      const l = ligacoes[+g.dataset.i];
-      g.addEventListener('mousemove', ev => showTooltip(ev.clientX, ev.clientY, l.texto, [{ label: 'Valor', value: brl(l.valor) }, { label: 'Ano', value: String(c.ano) }]));
-      g.addEventListener('mouseleave', hideTooltip);
-    });
-    mapa.querySelectorAll('.cm-no').forEach(g => {
-      const n = no[g.dataset.id];
-      const linhas = n.cods && n.x < no.fund.x
-        ? [{ label: 'Produção', value: brl(somaAtiv(n.cods, 'vbp')) }, { label: 'Ocupações', value: fmt.compact(somaAtiv(n.cods, 'ocupacoes')) }]
-        : [{ label: n.id === 'fund' ? 'Demanda total' : 'Compra de fundidos', value: sub(n).replace(' em peças', '') }];
-      if (n.centro) linhas.push({ label: '', value: 'Clique para abrir a cadeia' });
-      g.addEventListener('mousemove', ev => showTooltip(ev.clientX, ev.clientY, n.titulo, linhas));
-      g.addEventListener('mouseleave', hideTooltip);
-      if (!n.centro) return;
-      g.addEventListener('click', () => { hideTooltip(); abrir(n.centro); });
-      g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abrir(n.centro); } });
-    });
-
-    // Números de manchete.
-    const base = destUlt.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-    const pMaqAuto = 100 * compraFundidos([...no.maq.cods, ...no.auto.cods]) / base;
-    const pImp = o => 100 * o.importacao / (o.producao + o.importacao);
-    const pri = c.fundidos.oferta[0];
-    $('#ch-kicker').textContent = `Cadeia produtiva da fundição · IBGE, ${c.ano}`;
-    $('#ch-numeros').innerHTML = [
-      [brl(ofertaUlt.demanda), `em peças fundidas consumidas no Brasil em ${c.ano}`],
-      [`${Math.round(pMaqAuto)}%`, 'viram máquina ou veículo'],
-      [`${Math.round(pImp(ofertaUlt))}%`, `já vêm de fora, contra ${fmt.pct(pImp(pri))} em ${pri.ano}`],
-    ].map(([v, t]) => `<div class="ch-num"><span class="ch-num-v">${v}</span><span class="ch-num-t">${t}</span></div>`).join('');
-  }
-
-  // Em tela estreita o mapa rola de lado: abre com a fundição no meio, não na mineração.
-  function centralizarMapaCadeia() {
-    const wrap = $('.ch-mapa-wrap');
-    if (wrap) wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
-  }
-
-  // Série 2010-ano mais recente das peças fundidas: quem compra e de onde vem.
+  // Série 2010-ano mais recente das peças fundidas: quem compra e quanto vem de fora.
   function renderCadeiaHistorico(c, brl) {
-    const GRUPOS = [
-      { label: 'Máquinas e equipamentos', cods: ['2700', '2800'], color: 'var(--series-1)' },
-      { label: 'Automotivo (peças, montadoras e comércio)', cods: ['2992', '2991', '4500'], color: 'var(--series-3)' },
-      { label: 'Manutenção de máquinas', cods: ['3300'], color: 'var(--series-8)' },
-      { label: 'Metalurgia, siderurgia e mineração', cods: ['2491', '2492', '0792'], color: 'var(--series-2)' },
-      { label: 'Construção', cods: ['4180'], color: 'var(--series-7)' },
-    ];
     const anos = c.fundidos.oferta.map(o => o.ano);
     const porAno = new Map(c.fundidos.oferta.map(o => [o.ano, o]));
     const valor = (ano, cods) => c.fundidos.destinos.filter(d => d.ano === ano && cods.includes(d.cod)).reduce((s, d) => s + d.valor, 0);
@@ -1648,32 +1541,26 @@
     // demanda total fica menor que a soma dos compradores e a pilha passaria de 100%.
     const base = new Map(anos.map(a => [a, c.fundidos.destinos.filter(d => d.ano === a && d.valor > 0).reduce((s, d) => s + d.valor, 0)]));
     const share = (ano, cods) => 100 * valor(ano, cods) / base.get(ano);
-    const todos = GRUPOS.flatMap(g => g.cods);
-    barChart($('#cadeia-chart-clientes'), {
-      categories: anos, stacked: true, height: 260, formatY: n => fmt.pct(n),
+    const todos = CADEIA_GRUPOS.flatMap(g => g.cods);
+    shareAreaChart($('#cadeia-chart-clientes'), {
+      categories: anos, height: 300,
       series: [
-        ...GRUPOS.map(g => ({ label: g.label, color: g.color, values: anos.map(a => share(a, g.cods)) })),
-        { label: 'Demais (inclui exportação)', color: 'var(--baseline)', values: anos.map(a => 100 - share(a, todos)) },
+        ...CADEIA_GRUPOS.map(g => ({ label: g.label, color: g.color, values: anos.map(a => share(a, g.cods)) })),
+        { label: 'Demais e exportação', color: 'var(--baseline)', values: anos.map(a => 100 - share(a, todos)) },
       ],
     });
-    barChart($('#cadeia-chart-oferta'), {
-      categories: anos, stacked: true, height: 260, formatY: brl,
-      series: [
-        { label: 'Produção nacional', color: 'var(--series-1)', values: anos.map(a => porAno.get(a).producao) },
-        { label: 'Importação', color: 'var(--series-6)', values: anos.map(a => porAno.get(a).importacao) },
-      ],
+    const pImp = ano => 100 * porAno.get(ano).importacao / (porAno.get(ano).producao + porAno.get(ano).importacao);
+    lineChart($('#cadeia-chart-oferta'), {
+      categories: anos, height: 260, formatY: n => fmt.pct(n), endLabels: true,
+      series: [{ label: 'Importação', color: 'var(--accent)', values: anos.map(pImp) }],
     });
 
     const ult = anos[anos.length - 1], pri = anos[0];
-    const pImp = ano => 100 * porAno.get(ano).importacao / (porAno.get(ano).producao + porAno.get(ano).importacao);
-    const exp = share(ult, ['exportacao']);
-    $('#cadeia-leitura').textContent =
-      `Em ${ult}, a demanda por peças fundidas no Brasil somou ${brl(porAno.get(ult).demanda)}. ` +
-      `${fmt.pct(share(ult, GRUPOS[0].cods))} foi para fabricantes de máquinas e equipamentos, ` +
-      `${fmt.pct(share(ult, GRUPOS[1].cods))} para o setor automotivo e ${fmt.pct(share(ult, GRUPOS[2].cods))} para manutenção de máquinas. ` +
-      `A exportação direta é pequena (${fmt.pct(exp)}). ` +
-      `Os importados atenderam ${fmt.pct(pImp(ult))} da oferta, contra ${fmt.pct(pImp(pri))} em ${pri}. ` +
-      `Valores em R$ correntes: o salto de ${ult} reflete em parte a alta de preços dos metais naquele ano.`;
+    $('#cadeia-leitura').innerHTML =
+      `Máquinas e o setor automotivo dividem a maior parte das peças fundidas desde ${pri}: em ${ult}, ` +
+      `<b>${fmt.pct(share(ult, CADEIA_GRUPOS[0].cods))}</b> foram para fabricantes de máquinas e <b>${fmt.pct(share(ult, CADEIA_GRUPOS[1].cods))}</b> para o automotivo. ` +
+      `O que mudou foi a origem: a fatia importada saiu de <b>${fmt.pct(pImp(pri))}</b> para <b>${fmt.pct(pImp(ult))}</b> da oferta. ` +
+      `A exportação direta segue pequena (${fmt.pct(share(ult, ['exportacao']))}).`;
   }
 
   // ---------------------------------------------------------------------
@@ -2204,7 +2091,6 @@
         renderAll();
       }
       applyVisibility();
-      if (state.view === 'cadeia') centralizarMapaCadeia();
     }));
 
     setupSectionNav();

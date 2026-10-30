@@ -824,23 +824,16 @@
       showTooltip(ev.clientX, ev.clientY, n.label, [{ label: 'Valor', value: formatV(n.value) }, ...(n.tip || [])]);
     }
 
-    const defs = svgEl('defs', {}), gFaixas = svgEl('g', {}), gNos = svgEl('g', {});
-    svg.appendChild(defs); svg.appendChild(gFaixas); svg.appendChild(gNos);
-    const uid = 'sk' + Math.random().toString(36).slice(2, 8);
+    const gFaixas = svgEl('g', {}), gNos = svgEl('g', {});
+    svg.appendChild(gFaixas); svg.appendChild(gNos);
 
-    // Cada faixa sai na cor do nó e chega no vermelho do elo central.
-    function degrade(id, cor, x1, x2, corDestino) {
-      const g = svgEl('linearGradient', { id, gradientUnits: 'userSpaceOnUse', x1, x2, y1: 0, y2: 0 });
-      [[0, cor], [1, corDestino]].forEach(([o, c]) => {
-        const s = svgEl('stop', { offset: o });
-        s.style.stopColor = c;
-        g.appendChild(s);
-      });
-      defs.appendChild(g);
-      return `url(#${id})`;
+    // Passar o mouse num fluxo apaga os outros: dá pra seguir um caminho só.
+    function focar(p, g, ligado) {
+      svg.classList.toggle('foco', ligado);
+      p.classList.toggle('ativo', ligado);
+      g.classList.toggle('ativo', ligado);
     }
 
-    let nLink = 0;
     function desenharColuna(nodes, lado) {
       let acc = cY + (cH - (lado === 'L' ? sumL : sumR) * k) / 2;
       nodes.forEach(n => {
@@ -849,23 +842,20 @@
           ? faixa(xL, n.y0, xC, acc, n.h)
           : faixa(xC + centerW, acc, xR, n.y0, n.h);
         acc += n.h;
-        const fill = lado === 'L'
-          ? degrade(`${uid}-${nLink}`, n.color, xL, xC, 'var(--accent)')
-          : degrade(`${uid}-${nLink}`, 'var(--accent)', xC + centerW, xR, n.color);
-        const p = svgEl('path', { d: path, fill, class: 'sankey-link' });
-        p.style.animationDelay = `${nLink++ * 40}ms`;
-        const bar = svgEl('rect', { x: xBar, y: n.y0, width: barW, height: Math.max(n.h, 1.5), fill: n.color, rx: 2 });
-        const tx = lado === 'L' ? xBar - 8 : xBar + barW + 8;
+        const p = svgEl('path', { d: path, fill: n.color, class: 'sankey-link' });
+        const bar = svgEl('rect', { x: xBar, y: n.y0, width: barW, height: Math.max(n.h, 1.5), fill: n.color });
+        const tx = lado === 'L' ? xBar - 10 : xBar + barW + 10;
         const ty = n.y0 + n.h / 2;
-        const txt = svgEl('text', { x: tx, y: ty - 2, 'text-anchor': lado === 'L' ? 'end' : 'start', class: 'sankey-label' });
+        const anchor = lado === 'L' ? 'end' : 'start';
+        const val = svgEl('text', { x: tx, y: ty - 1, 'text-anchor': anchor, class: 'sankey-value' });
+        val.textContent = formatV(n.value);
+        const txt = svgEl('text', { x: tx, y: ty + 14, 'text-anchor': anchor, class: 'sankey-label' });
         txt.textContent = n.label;
-        const val = svgEl('text', { x: tx, y: ty + 12, 'text-anchor': lado === 'L' ? 'end' : 'start', class: 'sankey-value' });
-        val.textContent = formatV(n.value) + (n.extra ? ` · ${n.extra}` : '');
         const g = svgEl('g', { class: 'sankey-node' + (n.clickable ? ' clickable' : '') });
-        [bar, txt, val].forEach(e => g.appendChild(e));
+        [bar, val, txt].forEach(e => g.appendChild(e));
         [p, g].forEach(el => {
-          el.addEventListener('mousemove', ev => { tip(ev, n); p.classList.add('hover'); });
-          el.addEventListener('mouseleave', () => { hideTooltip(); p.classList.remove('hover'); });
+          el.addEventListener('mousemove', ev => { tip(ev, n); focar(p, g, true); });
+          el.addEventListener('mouseleave', () => { hideTooltip(); focar(p, g, false); });
         });
         if (n.clickable && onNodeClick) {
           g.setAttribute('tabindex', '0');
@@ -883,12 +873,10 @@
     desenharColuna(L.nodes, 'L');
     desenharColuna(R.nodes, 'R');
 
-    gNos.appendChild(svgEl('rect', { x: xC, y: cY, width: centerW, height: cH, fill: 'var(--accent)', rx: 3 }));
-    const cl = svgEl('text', { x: width / 2, y: cY - 22, 'text-anchor': 'middle', class: 'sankey-center-label' });
+    gNos.appendChild(svgEl('rect', { x: xC, y: cY, width: centerW, height: cH, fill: 'var(--text-primary)' }));
+    const cl = svgEl('text', { x: width / 2, y: cY - 12, 'text-anchor': 'middle', class: 'sankey-center-label' });
     cl.textContent = center.label;
-    const cs = svgEl('text', { x: width / 2, y: cY - 8, 'text-anchor': 'middle', class: 'sankey-value' });
-    cs.textContent = center.sub || '';
-    gNos.appendChild(cl); gNos.appendChild(cs);
+    gNos.appendChild(cl);
 
     [[headers.left, xL - barW, 'start'], [headers.right, xR + barW, 'end']].forEach(([t, x, anchor]) => {
       if (!t) return;
@@ -896,6 +884,79 @@
       h.textContent = t;
       svg.appendChild(h);
     });
+    container.appendChild(svg);
+  }
+
+  // ---------------------------------------------------------------------
+  // Áreas empilhadas em % (somam 100), com o nome de cada faixa escrito à
+  // direita, na altura dela — sem legenda separada. Cadeia Produtiva.
+  // opts: { categories, series:[{label,color,values}], height?, formatY? }
+  // ---------------------------------------------------------------------
+  function shareAreaChart(container, opts) {
+    container.innerHTML = '';
+    const { categories, series, height = 300, formatY = v => fmt.pct(v) } = opts;
+    const n = categories.length;
+    if (n < 2) {
+      container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
+      return;
+    }
+    const width = 600, margin = { top: 8, right: 168, bottom: 24, left: 34 };
+    const innerW = width - margin.left - margin.right, innerH = height - margin.top - margin.bottom;
+    const x = i => margin.left + (i / (n - 1)) * innerW;
+    const y = v => margin.top + innerH - (v / 100) * innerH;
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'chart-svg area-svg', role: 'img' });
+
+    [0, 50, 100].forEach(t => {
+      svg.appendChild(svgEl('line', { x1: margin.left, x2: margin.left + innerW, y1: y(t), y2: y(t), class: t === 0 ? 'baseline' : 'gridline' }));
+      const lbl = svgEl('text', { x: margin.left - 6, y: y(t) + 3, 'text-anchor': 'end', class: 'axis-label' });
+      lbl.textContent = t + '%';
+      svg.appendChild(lbl);
+    });
+    labelIndices(n, innerW).forEach(i => {
+      const lbl = svgEl('text', { x: x(i), y: height - 6, 'text-anchor': 'middle', class: 'axis-label' });
+      lbl.textContent = categories[i];
+      svg.appendChild(lbl);
+    });
+
+    // Base acumulada de cada faixa; a primeira série fica embaixo.
+    const base = categories.map(() => 0);
+    const faixas = series.map(s => {
+      const lo = base.slice();
+      const hi = lo.map((b, i) => b + (s.values[i] || 0));
+      hi.forEach((v, i) => { base[i] = v; });
+      return { s, lo, hi };
+    });
+    const gAreas = svgEl('g', {});
+    svg.appendChild(gAreas);
+    faixas.forEach(({ s, lo, hi }) => {
+      const topo = hi.map((v, i) => `${x(i)},${y(v)}`);
+      const fundo = lo.map((v, i) => `${x(i)},${y(v)}`).reverse();
+      gAreas.appendChild(svgEl('polygon', { points: [...topo, ...fundo].join(' '), fill: s.color, class: 'area-faixa' }));
+      gAreas.appendChild(svgEl('polyline', { points: topo.join(' '), fill: 'none', class: 'area-borda' }));
+      const meio = (y(lo[n - 1]) + y(hi[n - 1])) / 2;
+      if (y(lo[n - 1]) - y(hi[n - 1]) >= 11) {
+        const t = svgEl('text', { x: x(n - 1) + 8, y: meio + 4, class: 'area-rotulo' });
+        const v = svgEl('tspan', { class: 'area-rotulo-v' });
+        v.textContent = formatY(s.values[n - 1]) + ' ';
+        t.appendChild(v);
+        t.appendChild(document.createTextNode(s.label));
+        svg.appendChild(t);
+      }
+    });
+
+    const guia = svgEl('line', { y1: margin.top, y2: margin.top + innerH, class: 'area-guia', visibility: 'hidden' });
+    svg.appendChild(guia);
+    const hit = svgEl('rect', { x: margin.left, y: margin.top, width: innerW, height: innerH, fill: 'transparent' });
+    hit.addEventListener('mousemove', ev => {
+      const r = svg.getBoundingClientRect();
+      const px = (ev.clientX - r.left) * width / r.width;
+      const i = Math.max(0, Math.min(n - 1, Math.round((px - margin.left) / innerW * (n - 1))));
+      guia.setAttribute('x1', x(i)); guia.setAttribute('x2', x(i)); guia.setAttribute('visibility', 'visible');
+      showTooltip(ev.clientX, ev.clientY, String(categories[i]),
+        series.slice().reverse().map(s => ({ label: s.label, value: formatY(s.values[i]), color: s.color })));
+    });
+    hit.addEventListener('mouseleave', () => { guia.setAttribute('visibility', 'hidden'); hideTooltip(); });
+    svg.appendChild(hit);
     container.appendChild(svg);
   }
 
@@ -1008,5 +1069,5 @@
     container.appendChild(ul);
   }
 
-  window.Charts = { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, sankeyChart, dataTable, rankList, fmt, showTooltip, hideTooltip };
+  window.Charts = { lineChart, barChart, hBarChart, dualAxisLineChart, waterfallChart, donutChart, sankeyChart, shareAreaChart, dataTable, rankList, fmt, showTooltip, hideTooltip };
 })();

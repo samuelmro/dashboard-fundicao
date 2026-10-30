@@ -490,95 +490,83 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 .decom-highlight { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 16px; }
 .decom-highlight strong { color: var(--text-primary); font-size: 1.15rem; font-weight: 700; }
 
-/* ---------- Cadeia Produtiva ---------- */
-#cadeia-view { padding: 40px 0 60px; }
-#cadeia-view .section-header h2 { flex-shrink: 1; }
-#cadeia-view .pdi-note { font-size: 0.92rem; line-height: 1.75; margin-bottom: 24px; }
+/* ---------- Cadeia Produtiva ----------
+   Página aberta, sem cartões nem molduras: texto e gráfico direto no fundo,
+   separados por fios finos (linguagem de infográfico de jornal). */
+#cadeia-view { padding: 44px 0 60px; max-width: 1080px; }
 
-/* Painel-herói escuro com o mapa animado: o metal "corre" pelas ligações
-   (traço tracejado com dashoffset animado), a fundição pulsa no centro. */
-.cadeia-hero {
-  position: relative; overflow: hidden;
-  background:
-    radial-gradient(ellipse 55% 70% at 52% 62%, rgba(227, 6, 21, 0.22), transparent 70%),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 100% 32px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 32px 100%,
-    var(--navy);
-  color: #fdffff; border-radius: var(--radius);
-  padding: 34px 34px 18px; margin-bottom: 24px;
-}
-.ch-topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px 40px; flex-wrap: wrap; }
-.ch-kicker { font-size: 0.72rem; font-weight: 700; color: #ff5a63; text-transform: uppercase; letter-spacing: 0.14em; }
-.ch-titulo { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.02; margin: 8px 0 0; color: #fdffff; }
-.ch-numeros { display: flex; gap: 28px; flex-wrap: wrap; }
-.ch-num { display: flex; flex-direction: column; gap: 4px; max-width: 180px; padding-left: 12px; border-left: 2px solid var(--accent); }
-.ch-num-v { font-size: 1.75rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-.ch-num-t { font-size: 0.74rem; line-height: 1.35; color: #b5bfcb; }
-.ch-mapa-wrap { overflow-x: auto; margin: 18px -10px 0; }
-.ch-mapa-wrap > div { min-width: 680px; }
-.ch-dica { font-size: 0.72rem; color: #8d99ae; text-align: right; letter-spacing: 0.02em; }
+.cad-chapeu { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; }
+.cad-titulo { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; margin: 6px 0 12px; color: var(--text-primary); }
+.cad-linha-fina { font-size: 1.12rem; line-height: 1.6; color: var(--text-secondary); max-width: 760px; margin: 0; }
+.cad-linha-fina b, .cad-texto b { color: var(--text-primary); font-weight: 800; }
 
-.cm-trilho { fill: none; stroke: rgba(255, 255, 255, 0.09); stroke-linecap: round; transition: stroke .15s; }
-.cm-metal {
-  fill: none; stroke: #ff8a3d; stroke-linecap: round; stroke-dasharray: 0.5 17;
-  filter: drop-shadow(0 0 3px rgba(255, 120, 40, 0.85));
-  animation: cm-flui 1.2s linear infinite;
-}
-@keyframes cm-flui { to { stroke-dashoffset: -17.5; } }
-.cm-lig:hover .cm-trilho { stroke: rgba(255, 138, 61, 0.28); }
-.cm-val { fill: #ffb27a; font-size: 12.5px; font-weight: 700; text-anchor: middle; font-variant-numeric: tabular-nums; }
-.cm-circ { fill: #262d35; stroke: rgba(255, 255, 255, 0.28); stroke-width: 1.5; transition: stroke .15s; }
-.cm-fund .cm-circ { fill: var(--accent); stroke: #ff6b74; stroke-width: 2; }
-.cm-icone { fill: none; stroke: #fdffff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-.cm-rotulo { fill: #fdffff; font-size: 15px; font-weight: 700; }
-.cm-fund .cm-rotulo { font-size: 19px; }
-.cm-sub { fill: #9aa5b4; font-size: 12.5px; font-variant-numeric: tabular-nums; }
-.cm-no.clicavel { cursor: pointer; }
-.cm-no.clicavel:hover .cm-circ, .cm-no.active .cm-circ { stroke: #ff8a3d; stroke-width: 2.5; }
-.cm-no:focus { outline: none; }
-.cm-no:focus-visible .cm-circ { stroke: #fdffff; stroke-width: 3; }
-.cm-pulso { transform-box: fill-box; transform-origin: center; animation: cm-pulsa 2.6s ease-in-out infinite; }
-@keyframes cm-pulsa { 0%, 100% { transform: scale(0.82); opacity: 0.65; } 50% { transform: scale(1.08); opacity: 1; } }
-@media (max-width: 640px) {
-  .cadeia-hero { padding: 24px 18px 14px; }
-  .ch-titulo { font-size: 2rem; }
-  .ch-numeros { gap: 16px; }
-  .ch-num-v { font-size: 1.4rem; }
-  .cadeia-busca { flex-direction: column; align-items: stretch; width: 100%; }
-  .cadeia-busca select { max-width: none; width: 100%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cm-metal, .cm-pulso, .sankey-link { animation: none; }
-}
+.cad-elos { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 32px 0 0; padding: 14px 0; border-top: 2px solid var(--text-primary); border-bottom: 1px solid var(--border); }
+.cad-elo-grupo { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+.cad-elo-sep { color: var(--baseline); margin: 0 2px; }
+.cad-elo-seta { color: var(--text-muted); }
+.cad-elo { font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); background: none; border: 0; padding: 3px 2px; cursor: pointer; border-bottom: 2px solid transparent; }
+.cad-elo:hover { color: var(--text-primary); border-bottom-color: var(--baseline); }
+.cad-elo.fund { color: var(--text-primary); font-weight: 800; }
+.cad-elo.ativo { color: var(--accent); border-bottom-color: var(--accent); }
 
-.cadeia-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-.cadeia-trilha { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 0.85rem; }
-.cadeia-crumb { font: inherit; background: none; border: 0; padding: 2px 4px; color: var(--accent-dark); cursor: pointer; border-radius: var(--radius-sm); }
+.cad-bloco { padding: 28px 0 8px; }
+.cad-bloco + .cad-bloco { margin-top: 28px; border-top: 2px solid var(--text-primary); }
+.cad-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px 16px; flex-wrap: wrap; min-height: 32px; margin-bottom: 8px; }
+.cadeia-trilha { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 0.82rem; }
+.cadeia-crumb { font: inherit; background: none; border: 0; padding: 2px 4px; color: var(--accent-dark); cursor: pointer; }
 .cadeia-crumb:hover { color: var(--accent); text-decoration: underline; }
 .cadeia-crumb.atual { color: var(--text-primary); font-weight: 700; cursor: default; }
 .cadeia-crumb-sep { color: var(--text-muted); }
-.cadeia-busca { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text-muted); }
-.cadeia-busca select { font: inherit; font-size: 0.85rem; color: var(--text-primary); padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-card); max-width: 280px; }
+.cadeia-busca { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text-muted); margin-left: auto; }
+.cadeia-busca select { font: inherit; font-size: 0.85rem; color: var(--text-primary); padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-card); max-width: 280px; }
 
-.cadeia-sankey-wrap { overflow-x: auto; }
+.cad-sankey-titulo { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; color: var(--text-primary); }
+.cad-sankey-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+.cadeia-sankey-wrap { overflow-x: auto; margin-top: 8px; }
 .cadeia-sankey-wrap > div { min-width: 720px; }
-.sankey-link { opacity: 0.32; transition: opacity .12s; animation: sankey-entra .5s ease-out backwards; }
-.sankey-link.hover { opacity: 0.7; }
-@keyframes sankey-entra { from { opacity: 0; } to { opacity: 0.32; } }
+
+.sankey-link { opacity: 0.38; transition: opacity .15s; }
+.sankey-svg.foco .sankey-link { opacity: 0.1; }
+.sankey-svg.foco .sankey-link.ativo { opacity: 0.75; }
+.sankey-svg.foco .sankey-node:not(.ativo) text { opacity: 0.35; }
 .sankey-link.clickable, .sankey-node.clickable { cursor: pointer; }
 .sankey-node.clickable:hover .sankey-label, .sankey-node.clickable:focus .sankey-label { fill: var(--accent); text-decoration: underline; }
 .sankey-node:focus { outline: none; }
 .sankey-node:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
-.sankey-label { font-size: 12.5px; font-weight: 600; fill: var(--text-primary); }
-.sankey-value { font-size: 11px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
-.sankey-center-label { font-size: 14px; font-weight: 700; fill: var(--accent); }
-.sankey-header { font-size: 10.5px; font-weight: 700; fill: var(--text-muted); letter-spacing: 0.08em; }
+.sankey-value { font-size: 15px; font-weight: 800; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.sankey-label { font-size: 12px; fill: var(--text-secondary); }
+.sankey-center-label { font-size: 15px; font-weight: 800; fill: var(--text-primary); text-transform: uppercase; letter-spacing: 0.06em; }
+.sankey-header { font-size: 10.5px; font-weight: 700; fill: var(--text-muted); letter-spacing: 0.1em; }
 
-.cadeia-ficha { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
-.cadeia-ficha .kpi-value { font-size: 1.3rem; }
-@media (max-width: 900px) { .cadeia-ficha { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .cadeia-ficha { grid-template-columns: 1fr; } }
-.cadeia-nota { margin: 16px 0 0; }
+.cad-resumo { display: flex; flex-wrap: wrap; gap: 6px 0; margin: 18px 0 0; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); }
+.cad-resumo-item { padding: 0 16px; border-left: 1px solid var(--border); }
+.cad-resumo-item:first-child { padding-left: 0; border-left: 0; }
+.cad-resumo-item b { color: var(--text-primary); font-weight: 800; margin-left: 4px; }
+button.cad-resumo-item { font: inherit; background: none; border-top: 0; border-right: 0; border-bottom: 0; cursor: pointer; color: var(--accent-dark); }
+button.cad-resumo-item:hover { color: var(--accent); }
+.cad-nota { font-size: 0.72rem; color: var(--text-muted); line-height: 1.55; margin: 12px 0 0; max-width: 860px; }
+
+.cad-h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--text-primary); }
+.cad-texto { font-size: 1rem; line-height: 1.7; color: var(--text-secondary); max-width: 760px; margin: 0 0 26px; }
+.cad-graficos { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.cad-fig { margin: 0; }
+.cad-fig figcaption { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.cad-fig figcaption strong { font-size: 0.95rem; color: var(--text-primary); }
+.cad-fig figcaption span { font-size: 0.76rem; color: var(--text-muted); }
+.area-faixa { opacity: 0.9; }
+.area-borda { stroke: var(--surface-1); stroke-width: 1.2; }
+.area-rotulo { font-size: 11.5px; fill: var(--text-secondary); }
+.area-rotulo-v { font-weight: 800; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.area-guia { stroke: var(--text-primary); stroke-width: 1; stroke-dasharray: 2 3; }
+
+@media (max-width: 900px) { .cad-graficos { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .cad-titulo { font-size: 1.8rem; }
+  .cad-linha-fina { font-size: 1rem; }
+  .cadeia-busca { flex-direction: column; align-items: stretch; width: 100%; margin-left: 0; }
+  .cadeia-busca select { max-width: none; width: 100%; }
+  .cad-resumo-item { padding: 0 10px; }
+}
 
 /* ---------- PD&I / Referências (páginas de aba, não mais accordion) ---------- */
 #pdi-view, #referencias-view { padding: 40px 0 60px; }
