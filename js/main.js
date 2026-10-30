@@ -1510,9 +1510,9 @@
       [...A].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(a => `<option value="${a.cod}">${a.nome}</option>`).join('');
     sel.addEventListener('change', () => { trilha = [sel.value]; desenhar(); });
 
-    $('#cad-elos').innerHTML = CADEIA_ELOS.map(grupo =>
+    $('#cad-elos').innerHTML = '<span class="cad-elos-chamada">Veja a cadeia de:</span>' + CADEIA_ELOS.map(grupo =>
       `<span class="cad-elo-grupo">${grupo.map(e =>
-        `<button type="button" class="cad-elo${e.centro === FUNDIDOS ? ' fund' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('<span class="cad-elo-sep">/</span>')}</span>`
+        `<button type="button" class="cad-elo${e.centro === FUNDIDOS ? ' fund' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('')}</span>`
     ).join('<span class="cad-elo-seta" aria-hidden="true">→</span>');
     $('#cad-elos').querySelectorAll('.cad-elo').forEach(b => b.addEventListener('click', () => {
       trilha = b.dataset.centro === FUNDIDOS ? [FUNDIDOS] : [FUNDIDOS, b.dataset.centro];
