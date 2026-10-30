@@ -1529,38 +1529,6 @@
       `contra ${fmt.pct(pImp(ofertaPri))} em ${ofertaPri.ano}.`;
 
     desenhar();
-    renderCadeiaHistorico(c, brl);
-  }
-
-  // Série 2010-ano mais recente das peças fundidas: quem compra e quanto vem de fora.
-  function renderCadeiaHistorico(c, brl) {
-    const anos = c.fundidos.oferta.map(o => o.ano);
-    const porAno = new Map(c.fundidos.oferta.map(o => [o.ano, o]));
-    const valor = (ano, cods) => c.fundidos.destinos.filter(d => d.ano === ano && cods.includes(d.cod)).reduce((s, d) => s + d.valor, 0);
-    // Base = soma dos destinos positivos: com variação de estoque negativa, a
-    // demanda total fica menor que a soma dos compradores e a pilha passaria de 100%.
-    const base = new Map(anos.map(a => [a, c.fundidos.destinos.filter(d => d.ano === a && d.valor > 0).reduce((s, d) => s + d.valor, 0)]));
-    const share = (ano, cods) => 100 * valor(ano, cods) / base.get(ano);
-    const todos = CADEIA_GRUPOS.flatMap(g => g.cods);
-    shareAreaChart($('#cadeia-chart-clientes'), {
-      categories: anos, height: 300,
-      series: [
-        ...CADEIA_GRUPOS.map(g => ({ label: g.label, color: g.color, values: anos.map(a => share(a, g.cods)) })),
-        { label: 'Demais e exportação', color: 'var(--baseline)', values: anos.map(a => 100 - share(a, todos)) },
-      ],
-    });
-    const pImp = ano => 100 * porAno.get(ano).importacao / (porAno.get(ano).producao + porAno.get(ano).importacao);
-    lineChart($('#cadeia-chart-oferta'), {
-      categories: anos, height: 260, formatY: n => fmt.pct(n), endLabels: true,
-      series: [{ label: 'Importação', color: 'var(--accent)', values: anos.map(pImp) }],
-    });
-
-    const ult = anos[anos.length - 1], pri = anos[0];
-    $('#cadeia-leitura').innerHTML =
-      `Máquinas e o setor automotivo dividem a maior parte das peças fundidas desde ${pri}: em ${ult}, ` +
-      `<b>${fmt.pct(share(ult, CADEIA_GRUPOS[0].cods))}</b> foram para fabricantes de máquinas e <b>${fmt.pct(share(ult, CADEIA_GRUPOS[1].cods))}</b> para o automotivo. ` +
-      `O que mudou foi a origem: a fatia importada saiu de <b>${fmt.pct(pImp(pri))}</b> para <b>${fmt.pct(pImp(ult))}</b> da oferta. ` +
-      `A exportação direta segue pequena (${fmt.pct(share(ult, ['exportacao']))}).`;
   }
 
   // ---------------------------------------------------------------------

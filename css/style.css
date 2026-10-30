@@ -498,7 +498,7 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 .cad-chapeu { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; }
 .cad-titulo { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; margin: 6px 0 12px; color: var(--text-primary); }
 .cad-linha-fina { font-size: 1.12rem; line-height: 1.6; color: var(--text-secondary); max-width: 760px; margin: 0; }
-.cad-linha-fina b, .cad-texto b { color: var(--text-primary); font-weight: 800; }
+.cad-linha-fina b { color: var(--text-primary); font-weight: 800; }
 
 .cad-elos { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 32px 0 0; padding: 14px 0; border-top: 2px solid var(--text-primary); border-bottom: 1px solid var(--border); }
 .cad-elo-grupo { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px; }
@@ -546,20 +546,12 @@ button.cad-resumo-item { font: inherit; background: none; border-top: 0; border-
 button.cad-resumo-item:hover { color: var(--accent); }
 .cad-nota { font-size: 0.72rem; color: var(--text-muted); line-height: 1.55; margin: 12px 0 0; max-width: 860px; }
 
-.cad-h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--text-primary); }
-.cad-texto { font-size: 1rem; line-height: 1.7; color: var(--text-secondary); max-width: 760px; margin: 0 0 26px; }
-.cad-graficos { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.cad-fig { margin: 0; }
-.cad-fig figcaption { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
-.cad-fig figcaption strong { font-size: 0.95rem; color: var(--text-primary); }
-.cad-fig figcaption span { font-size: 0.76rem; color: var(--text-muted); }
 .area-faixa { opacity: 0.9; }
 .area-borda { stroke: var(--surface-1); stroke-width: 1.2; }
 .area-rotulo { font-size: 11.5px; fill: var(--text-secondary); }
 .area-rotulo-v { font-weight: 800; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
 .area-guia { stroke: var(--text-primary); stroke-width: 1; stroke-dasharray: 2 3; }
 
-@media (max-width: 900px) { .cad-graficos { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .cad-titulo { font-size: 1.8rem; }
   .cad-linha-fina { font-size: 1rem; }
