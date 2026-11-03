@@ -1335,11 +1335,18 @@
   };
   const corCliente = cod => (CADEIA_GRUPOS.find(g => g.cods.includes(cod)) || {}).color || CADEIA_CORES.cliente;
   // Linha de elos acima do diagrama: o caminho do minério ao cliente, clicável.
+  // Os clientes diretos são os 4 maiores compradores de peças fundidas na TRU
+  // 2021 (73% da demanda). Montadoras não compram fundido direto em nenhum
+  // ano da série: recebem a peça dentro da autopeça, por isso vêm depois.
   const CADEIA_ELOS = [
-    [{ label: 'Mineração', centro: '0791' }],
-    [{ label: 'Siderurgia', centro: '2491' }, { label: 'Metalurgia', centro: '2492' }],
-    [{ label: 'Fundição', centro: FUNDIDOS }],
-    [{ label: 'Máquinas', centro: '2800' }, { label: 'Autopeças', centro: '2992' }, { label: 'Montadoras', centro: '2991' }, { label: 'Construção', centro: '4180' }],
+    { itens: [{ label: 'Mineração', centro: '0791' }] },
+    { itens: [{ label: 'Siderurgia', centro: '2491' }, { label: 'Metalurgia', centro: '2492' }] },
+    { itens: [{ label: 'Fundição', centro: FUNDIDOS }] },
+    { rotulo: 'clientes diretos', itens: [
+      { label: 'Autopeças', centro: '2992' }, { label: 'Máquinas mecânicas', centro: '2800' },
+      { label: 'Máquinas elétricas', centro: '2700' }, { label: 'Manutenção de máquinas', centro: '3300' },
+    ] },
+    { rotulo: 'via autopeças', itens: [{ label: 'Montadoras', centro: '2991' }] },
   ];
   const NOMES_DF = {
     exportacao: 'Exportação', governo: 'Consumo do governo', isflsf: 'Consumo das ISFLSF',
@@ -1514,7 +1521,7 @@
     sel.addEventListener('change', () => { trilha = [sel.value]; desenhar(); });
 
     $('#cad-elos').innerHTML = '<span class="cad-elos-chamada">Veja a cadeia de:</span>' + CADEIA_ELOS.map(grupo =>
-      `<span class="cad-elo-grupo">${grupo.map(e =>
+      `<span class="cad-elo-grupo">${grupo.rotulo ? `<span class="cad-elo-rotulo">${grupo.rotulo}</span>` : ''}${grupo.itens.map(e =>
         `<button type="button" class="cad-elo${e.centro === FUNDIDOS ? ' fund' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('')}</span>`
     ).join('<span class="cad-elo-seta" aria-hidden="true">→</span>');
     $('#cad-elos').querySelectorAll('.cad-elo').forEach(b => b.addEventListener('click', () => {
@@ -1524,11 +1531,13 @@
 
     // Linha fina: os três números que resumem a cadeia, no meio do texto.
     const base = destUlt.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-    const pMaqAuto = 100 * destUlt.filter(d => [...CADEIA_GRUPOS[0].cods, ...CADEIA_GRUPOS[1].cods].includes(d.cod)).reduce((s, d) => s + d.valor, 0) / base;
+    // Só quem fabrica: máquinas (mecânicas e elétricas) e autopeças. Comércio e
+    // reparação de veículos fica de fora, pra frase dizer exatamente o que soma.
+    const pFabricantes = 100 * destUlt.filter(d => ['2800', '2700', '2992'].includes(d.cod)).reduce((s, d) => s + d.valor, 0) / base;
     $('#cad-chapeu').textContent = `Cadeia produtiva · IBGE, ${c.ano}`;
     $('#cad-linha-fina').innerHTML =
       `Em ${c.ano}, o Brasil consumiu <b>${brl(ofertaUlt.demanda)}</b> em peças fundidas. ` +
-      `<b>${Math.round(pMaqAuto)}%</b> foram parar em máquinas e veículos, e <b>${Math.round(pImp(ofertaUlt))}%</b> vieram de fora, ` +
+      `<b>${Math.round(pFabricantes)}%</b> foram para fabricantes de máquinas e de autopeças, e <b>${Math.round(pImp(ofertaUlt))}%</b> vieram de fora, ` +
       `contra ${fmt.pct(pImp(ofertaPri))} em ${ofertaPri.ano}.`;
 
     desenhar();

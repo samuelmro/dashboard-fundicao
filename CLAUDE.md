@@ -76,6 +76,14 @@ repositório, que é público.
 - O IBGE não separa os insumos da fundição: o lado "de onde vem" usa a
   estrutura de custos da atividade 2492 (metalurgia de não ferrosos +
   fundição), proporcional à produção de peças fundidas (produto 24922).
+- Os botões de elos (`CADEIA_ELOS` em `js/main.js`) seguem os dados: os
+  "clientes diretos" são os 4 maiores compradores de peças fundidas na TRU
+  2021 (autopeças, máquinas mecânicas, máquinas elétricas e manutenção, 73%
+  da demanda). Montadoras (2991) não compram fundido direto em nenhum ano da
+  série, por isso aparecem como "via autopeças". Construção é só ~3%.
+- Atividades do IBGE ↔ CNAE conferidas no `Tradutor_Atividade_CNAE.xls`
+  (ftp.ibge.gov.br, Contas_Nacionais/Sistema_de_Contas_Nacionais/Tradutores).
+  A fundição (2451 e 2452) fica dentro da atividade 2492.
 - A TRU de 2016 grava os códigos de produto como número (`24922.0`);
   `ler_produtos()` já trata isso.
 - A seção "Doze anos de peças fundidas" (série 2010–2021, áreas empilhadas e

@@ -504,6 +504,7 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 .cad-elos-chamada { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-right: 4px; }
 .cad-elo-grupo { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .cad-elo-seta { color: var(--text-muted); }
+.cad-elo-rotulo { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 2px; }
 /* Etiqueta com borda: precisa parecer clicável sem virar cartão. */
 .cad-elo {
   font: inherit; font-size: 0.86rem; font-weight: 600; color: var(--text-primary);
@@ -531,6 +532,8 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 .cad-sankey-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 .cadeia-sankey-wrap { overflow-x: auto; margin-top: 8px; }
 .cadeia-sankey-wrap > div { min-width: 720px; }
+/* Nunca mais alto que a tela: se passar, o SVG encolhe inteiro e centraliza. */
+.cadeia-sankey-wrap .sankey-svg { max-height: 72vh; }
 
 .sankey-link { opacity: 0.38; transition: opacity .15s; }
 .sankey-svg.foco .sankey-link { opacity: 0.1; }

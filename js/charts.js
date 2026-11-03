@@ -801,8 +801,10 @@
       container.innerHTML = '<div class="empty-note">Sem dados disponíveis.</div>';
       return;
     }
-    const width = 960, labelW = 250, barW = 12, centerW = 26, gap = 8, MIN_SLOT = 30;
-    const bottom = 10, alvoH = 420, LINHA = 18;
+    // Proporção larga (1200 x ~500): em monitor largo o SVG estica até a
+    // largura da página, e com 960 de largura ele passava da altura da tela.
+    const width = 1200, labelW = 260, barW = 12, centerW = 26, gap = 8, MIN_SLOT = 30;
+    const bottom = 10, alvoH = 400, LINHA = 18;
     // O nome do elo central fica numa faixa de cabeçalho, acima de todos os
     // fluxos (antes ficava colado na barra e, quando ela era curta, caía em
     // cima das faixas). Nome longo quebra em até 3 linhas de ~24 caracteres.
