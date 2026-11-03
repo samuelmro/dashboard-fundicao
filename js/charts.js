@@ -780,6 +780,20 @@
   // A espessura de cada faixa é proporcional ao valor; os nós laterais têm
   // altura mínima (MIN_SLOT) só pra o rótulo caber — a faixa continua fina.
   // ---------------------------------------------------------------------
+  function quebrarLinhas(texto, max, maxLinhas) {
+    const linhas = [];
+    texto.split(/\s+/).forEach(p => {
+      const atual = linhas[linhas.length - 1];
+      if (atual != null && (atual + ' ' + p).length <= max) linhas[linhas.length - 1] = atual + ' ' + p;
+      else linhas.push(p);
+    });
+    if (linhas.length > maxLinhas) {
+      linhas.length = maxLinhas;
+      linhas[maxLinhas - 1] += '…';
+    }
+    return linhas;
+  }
+
   function sankeyChart(container, opts) {
     container.innerHTML = '';
     const { left, right, center, headers = {}, formatV = fmt.compact, onNodeClick } = opts;
@@ -788,7 +802,12 @@
       return;
     }
     const width = 960, labelW = 250, barW = 12, centerW = 26, gap = 8, MIN_SLOT = 30;
-    const top = 34, bottom = 10, alvoH = 420;
+    const bottom = 10, alvoH = 420, LINHA = 18;
+    // O nome do elo central fica numa faixa de cabeçalho, acima de todos os
+    // fluxos (antes ficava colado na barra e, quando ela era curta, caía em
+    // cima das faixas). Nome longo quebra em até 3 linhas de ~24 caracteres.
+    const linhasCentro = quebrarLinhas(center.label.toUpperCase(), 24, 3);
+    const top = 12 + linhasCentro.length * LINHA + 18;
     const soma = arr => arr.reduce((s, n) => s + Math.max(n.value, 0), 0);
     const sumL = soma(left), sumR = soma(right);
     const k = alvoH / Math.max(sumL, sumR);
@@ -874,9 +893,14 @@
     desenharColuna(R.nodes, 'R');
 
     gNos.appendChild(svgEl('rect', { x: xC, y: cY, width: centerW, height: cH, fill: 'var(--text-primary)' }));
-    const cl = svgEl('text', { x: width / 2, y: cY - 12, 'text-anchor': 'middle', class: 'sankey-center-label' });
-    cl.textContent = center.label;
-    gNos.appendChild(cl);
+    linhasCentro.forEach((linha, i) => {
+      const t = svgEl('text', { x: width / 2, y: 12 + i * LINHA + 4, 'text-anchor': 'middle', class: 'sankey-center-label' });
+      t.textContent = linha;
+      gNos.appendChild(t);
+    });
+    // Fio do nome até a barra, por trás dos fluxos.
+    const yFio = 12 + (linhasCentro.length - 1) * LINHA + 12;
+    if (cY - yFio > 4) gFaixas.insertBefore(svgEl('line', { x1: width / 2, x2: width / 2, y1: yFio, y2: cY, class: 'sankey-fio' }), gFaixas.firstChild);
 
     [[headers.left, xL - barW, 'start'], [headers.right, xR + barW, 'end']].forEach(([t, x, anchor]) => {
       if (!t) return;

@@ -96,7 +96,5 @@ repositório, que é público.
 
 ## Pendências conhecidas
 
-- Aba Referências: a linha "Energia Industrial" tem 4 colunas em vez de 5 e
-  mostra "undefined" na última (`renderReferencias` em `js/main.js`).
 - Aba Relatórios ainda está "Em construção".
 - Nenhuma coleta automática está agendada (ver `ATUALIZACAO.md`).

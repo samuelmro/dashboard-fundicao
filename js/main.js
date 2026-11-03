@@ -1305,7 +1305,7 @@
       [AMBOS, 'BNDES', 'BNDES, desembolsos por UF/porte/instrumento', '2002–2026 (anual)', 'Específico por CNAE (2451/2452).'],
       ['Ferro e aço (2451)', 'DECOM', 'DECOM/GECEX, processos de defesa comercial', 'Histórico (datas variáveis)', 'Base específica de ferro e aço (2451); sem processos catalogados para 2452.'],
       [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.'],
-      ['Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, 27 estados + Brasil', '2012–2026 (mensal)', 'Consumo (MWh): nível de divisão CNAE (24 divisões, fonte EPE), não é exclusivo de 2451/2452. Custo (R$/MWh): tarifa média REAL faturada da classe Industrial, por região (5 regiões, não por estado nem por divisão CNAE) — MME/ANEEL, "Informativo Tarifário/Gestão do Setor Elétrico", Tabela 7. Anos sem edição publicada (a maioria de 2012-2016, 2018, 2020-2021, 2026) são interpolados/extrapolados a partir dos anos com dado real, ajustados pelo IPCA. Valores deflacionados a R$ do último ano completo (ver nota de deflação abaixo). Detalhe completo e citação na "Limitações gerais" abaixo.'],
+      ['Indústria de transformação (24 divisões CNAE)', 'Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, 27 estados + Brasil (EPE e MME/ANEEL)', '2012–2026 (mensal)', 'Consumo (MWh): nível de divisão CNAE (24 divisões, fonte EPE), não é exclusivo de 2451/2452. Custo (R$/MWh): tarifa média REAL faturada da classe Industrial, por região (5 regiões, não por estado nem por divisão CNAE) — MME/ANEEL, "Informativo Tarifário/Gestão do Setor Elétrico", Tabela 7. Anos sem edição publicada (a maioria de 2012-2016, 2018, 2020-2021, 2026) são interpolados/extrapolados a partir dos anos com dado real, ajustados pelo IPCA. Valores deflacionados a R$ do último ano completo (ver nota de deflação abaixo). Detalhe completo e citação na "Limitações gerais" abaixo.'],
     ];
     const anosCadeia = data.cadeia.fundidos.oferta.map(o => o.ano);
     rows.push([AMBOS, 'Cadeia Produtiva (aba própria)', 'IBGE, Tabelas de Recursos e Usos (TRU) nível 68 atividades + Matriz Insumo-Produto 2015 nível 67', `${anosCadeia[0]}–${anosCadeia[anosCadeia.length - 1]} (anual)`, 'Valores a preço de consumidor (com margens e impostos), R$ correntes. A TRU é a tabela mais recente do IBGE nesse detalhe; a MIP 2015 (a última publicada) entra só no multiplicador de produção e na parcela importada dos insumos. Os insumos da fundição são os da atividade 2492 (metalurgia de não ferrosos + fundição), proporcionais à produção de peças fundidas: a TRU não separa os insumos por produto.']);
@@ -1374,10 +1374,14 @@
         tip: [{ label: 'Inclui', value: `${resto.length} itens menores` }],
       }];
     }
+    // Um setor que compra dele mesmo (ex.: autopeças de autopeças) aparece
+    // no diagrama, mas não é clicável: já é o centro.
     function noAtividade(i, value, cor, total) {
+      const clickable = A[i].cod !== trilha[trilha.length - 1];
       return {
-        label: A[i].nome, value, color: cor, cod: A[i].cod, clickable: true,
-        tip: [{ label: 'Participação', value: pct(value, total) }, { label: '', value: 'Clique para ver a cadeia deste setor' }],
+        label: A[i].nome, value, color: cor, cod: A[i].cod, clickable,
+        tip: [{ label: 'Participação', value: pct(value, total) },
+          ...(clickable ? [{ label: '', value: 'Clique para ver a cadeia deste setor' }] : [])],
       };
     }
     function nosDemandaFinal(df, total) {
@@ -1408,7 +1412,6 @@
         { label: 'Margens e impostos', value: margens, color: CADEIA_CORES.margem,
           tip: [{ label: 'Participação', value: pct(margens, total) }, { label: '', value: 'Comércio, transporte e impostos sobre produtos' }] },
       ];
-      const met2492 = A[idx.get('2492')];
       const empregos = ['2451', '2452'].map(s => last(data.sectors[s].rais.uf_yearly_total));
       return {
         titulo: 'Fundição',
@@ -1417,7 +1420,7 @@
         resumo: [
           ['Produção nacional', brl(ofertaUlt.producao)],
           ['Importado', pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao)],
-          ['Multiplicador', `${mult2(met2492.multiplicador)} (${rankMult(met2492.multiplicador)}º de ${A.length})`],
+          ['Multiplicador', `${mult2(met.multiplicador)} (${rankMult(met.multiplicador)}º de ${A.length})`],
           ['Empregos formais', `${fmt.compact(empregos.reduce((s, e) => s + (e ? e.vinculos : 0), 0))} em ${empregos[0] ? empregos[0].ano : ''}`, '2451', 'block-emprego'],
         ],
         nota: 'Clientes: IBGE, produto 24922 da TRU. Fornecedores: o IBGE não separa os insumos por produto, então o lado esquerdo usa a estrutura de custos da atividade 2492 (metalurgia de não ferrosos + fundição), proporcional à produção de peças fundidas. Multiplicador: MIP 2015.',

@@ -106,6 +106,4 @@ Depois abra http://localhost:8791.
   perfis têm quebra de série entre 2021 e 2022.
 - **Pendências:**
   - a aba Relatórios está em construção;
-  - na aba Referências, a linha de Energia Industrial mostra "undefined" na
-    última coluna;
   - nenhuma coleta está agendada para rodar sozinha.
