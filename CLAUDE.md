@@ -41,7 +41,7 @@ Use PowerShell para rodar o Python do `.venv`. Pelo Git Bash, o acento de
 `git push` no `master` dispara `.github/workflows/build.yml`: roda os testes,
 regera `data.json` e as planilhas e publica só `index.html css js assets data`.
 O workflow tem filtro de `paths`: só dispara quando muda CSV, os scripts de build,
-`requirements.txt`, `index.html`, `css/`, `js/` ou `assets/`. Mudar só um `.md`
+`requirements.txt`, `cadeia_config.json`, `index.html`, `css/`, `js/` ou `assets/`. Mudar só um `.md`
 não republica o site.
 
 CSS, JS e `data.json` são referenciados com `?v=dev`; o workflow troca isso
@@ -65,9 +65,18 @@ repositório, que é público.
   recente nesse detalhe), mais a Matriz Insumo-Produto 2015 nível 67 (a última
   publicada). A MIP entra só no multiplicador de produção e na parcela
   importada dos insumos.
+- Tudo que é específico do setor (produto, atividade, textos, botões de elos,
+  cores, setores de RAIS) fica em `cadeia_config.json`, que vai para o
+  `data.json` em `cadeia.config`. Não ponha nada da fundição fixo no código da
+  aba: o objetivo é replicar para outro CNAE só trocando a config
+  (`COMO_REPLICAR_CADEIA.md`). `build_data.py` falha se a config citar
+  atividade inexistente; `test_cadeia_config` valida a estrutura.
 - `extrair_cadeia.py` lê os `.xls` do IBGE em `Setor Siderúrgico/1_Dados_Manuais_XLS/`
-  e gera `3_Dados_Tratados_CSV/Cadeia_*.csv`. Só precisa rodar quando o IBGE
-  publicar TRU ou MIP novas. Precisa do pacote `xlrd`.
+  e gera `3_Dados_Tratados_CSV/Cadeia_*.csv` (`Cadeia_Produto_*` e
+  `Cadeia_Insumos_Atividade` são do produto da config). Só precisa rodar
+  quando o IBGE publicar TRU ou MIP novas, ou ao trocar de setor. Precisa do
+  pacote `xlrd`. `--listar` mostra os códigos; `--sugerir <produto>` mostra
+  quem produz e quem compra, para escolher os botões pelos dados.
 - O diagrama **não é uma MIP completa**. É a matriz de fluxos setor × setor
   da TRU (produto → atividade pela matriz de participação na produção), a preço
   de consumidor, com importados e margens embutidos. Para virar MIP faltaria
@@ -76,7 +85,7 @@ repositório, que é público.
 - O IBGE não separa os insumos da fundição: o lado "de onde vem" usa a
   estrutura de custos da atividade 2492 (metalurgia de não ferrosos +
   fundição), proporcional à produção de peças fundidas (produto 24922).
-- Os botões de elos (`CADEIA_ELOS` em `js/main.js`) seguem os dados: os
+- Os botões de elos (`elos` em `cadeia_config.json`) seguem os dados: os
   "clientes diretos" são os 4 maiores compradores de peças fundidas na TRU
   2021 (autopeças, máquinas mecânicas, máquinas elétricas e manutenção, 73%
   da demanda). Montadoras (2991) não compram fundido direto em nenhum ano da

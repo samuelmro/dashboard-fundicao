@@ -12,6 +12,8 @@ exterior, energia industrial (EPE/MME-ANEEL), BNDES e DECOM.
 build_data.py           Lê os CSVs e gera data/data.json
 build_downloads.py      Lê os CSVs e gera data/downloads/*.xlsx (botão "Baixar dados" de cada seção)
 extrair_cadeia.py       Lê as tabelas do IBGE (TRU + MIP) e gera os CSVs Cadeia_*.csv da aba Cadeia Produtiva
+cadeia_config.json      O que é específico do setor na aba Cadeia Produtiva (produto, textos, botões, cores)
+COMO_REPLICAR_CADEIA.md Passo a passo para levar a aba Cadeia Produtiva para outro CNAE
 data/data.json          Dado consolidado que o dashboard consome via fetch()
 data/downloads/         Planilhas Excel formatadas, uma por seção (duas quando o dado varia por setor)
 index.html              Estrutura das seções do painel

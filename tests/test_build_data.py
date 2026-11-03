@@ -155,12 +155,23 @@ def test_energia_industrial_composicao_por_uf(data, uf):
 def test_cadeia_produtiva(data):
     c = data['cadeia']
     cods = [a['cod'] for a in c['atividades']]
-    assert len(cods) == 68 and '2492' in cods and '2992' in cods
+    assert len(cods) == 68 and c['config']['atividade'] in cods
     n = len(cods)
     assert all(0 <= o < n and 0 <= d < n and v > 0 for o, d, v in c['fluxos'])
-    anos = [o['ano'] for o in c['fundidos']['oferta']]
+    anos = [o['ano'] for o in c['produto']['oferta']]
     assert anos == sorted(anos) and anos[-1] == c['ano']
-    ult = [d for d in c['fundidos']['destinos'] if d['ano'] == c['ano']]
-    # o que os compradores levam + demanda final fecha com a demanda total de fundidos
-    assert abs(sum(d['valor'] for d in ult) - c['fundidos']['oferta'][-1]['demanda']) < 1
-    assert c['insumos_2492']
+    ult = [d for d in c['produto']['destinos'] if d['ano'] == c['ano']]
+    # o que os compradores levam + demanda final fecha com a demanda total do produto
+    assert abs(sum(d['valor'] for d in ult) - c['produto']['oferta'][-1]['demanda']) < 1
+    assert c['insumos_atividade']
+
+
+def test_cadeia_config(data):
+    cfg = data['cadeia']['config']
+    assert not any(k.startswith('_') for k in cfg), 'comentários da config não devem ir pro data.json'
+    for chave in ('produto', 'atividade', 'nome', 'nome_produto', 'titulo', 'elos', 'principais_clientes', 'grupos_cor'):
+        assert chave in cfg, chave
+    centros = [i['centro'] for e in cfg['elos'] for i in e['itens']]
+    assert 'produto' in centros, 'algum botão de elo precisa abrir o próprio produto'
+    # os setores de RAIS citados precisam existir no painel
+    assert set(cfg.get('empregos_rais', [])) <= set(data['sectors'])

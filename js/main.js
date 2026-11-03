@@ -1307,47 +1307,27 @@
       [AMBOS, 'Contexto', 'Indicadores macro (IPCA, dólar, IPP metalurgia)', '1990–2026 (mensal)', 'IPCA usado para deflacionar a remuneração real (bloco Emprego formal); demais indicadores só como pano de fundo.'],
       ['Indústria de transformação (24 divisões CNAE)', 'Energia Industrial (aba própria)', 'Consumo e custo de energia da indústria de transformação, 27 estados + Brasil (EPE e MME/ANEEL)', '2012–2026 (mensal)', 'Consumo (MWh): nível de divisão CNAE (24 divisões, fonte EPE), não é exclusivo de 2451/2452. Custo (R$/MWh): tarifa média REAL faturada da classe Industrial, por região (5 regiões, não por estado nem por divisão CNAE) — MME/ANEEL, "Informativo Tarifário/Gestão do Setor Elétrico", Tabela 7. Anos sem edição publicada (a maioria de 2012-2016, 2018, 2020-2021, 2026) são interpolados/extrapolados a partir dos anos com dado real, ajustados pelo IPCA. Valores deflacionados a R$ do último ano completo (ver nota de deflação abaixo). Detalhe completo e citação na "Limitações gerais" abaixo.'],
     ];
-    const anosCadeia = data.cadeia.fundidos.oferta.map(o => o.ano);
-    rows.push([AMBOS, 'Cadeia Produtiva (aba própria)', 'IBGE, Tabelas de Recursos e Usos (TRU) nível 68 atividades + Matriz Insumo-Produto 2015 nível 67', `${anosCadeia[0]}–${anosCadeia[anosCadeia.length - 1]} (anual)`, 'Valores a preço de consumidor (com margens e impostos), R$ correntes. A TRU é a tabela mais recente do IBGE nesse detalhe; a MIP 2015 (a última publicada) entra só no multiplicador de produção e na parcela importada dos insumos. Os insumos da fundição são os da atividade 2492 (metalurgia de não ferrosos + fundição), proporcionais à produção de peças fundidas: a TRU não separa os insumos por produto.']);
+    const anosCadeia = data.cadeia.produto.oferta.map(o => o.ano);
+    const cfgCadeia = data.cadeia.config;
+    rows.push([AMBOS, 'Cadeia Produtiva (aba própria)', 'IBGE, Tabelas de Recursos e Usos (TRU) nível 68 atividades + Matriz Insumo-Produto 2015 nível 67', `${anosCadeia[0]}–${anosCadeia[anosCadeia.length - 1]} (anual)`, `Valores a preço de consumidor (com margens e impostos), R$ correntes. A TRU é a tabela mais recente do IBGE nesse detalhe; a MIP 2015 (a última publicada) entra só no multiplicador de produção e na parcela importada dos insumos. Produto em destaque: ${cfgCadeia.produto} (${cfgCadeia.nome_produto}). ${cfgCadeia.nota_insumos}`]);
     $('#referencias-table tbody').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
   }
 
   // ---------------------------------------------------------------------
   // Cadeia Produtiva: Sankey fornecedores -> elo -> clientes, com dados das
   // Contas Nacionais (ver extrair_cadeia.py). O ponto de partida é o produto
-  // "peças fundidas" (24922); clicar num fornecedor/cliente recentraliza o
-  // diagrama naquela atividade, usando o fluxo atividade x atividade.
-  // Valores do data.json em R$ milhões.
+  // do setor; clicar num fornecedor/cliente recentraliza o diagrama naquela
+  // atividade, usando o fluxo atividade x atividade. Valores em R$ milhões.
+  // Tudo que é específico do setor (produto, atividade, textos, botões de
+  // elos, cores) vem de cadeia_config.json, via data.cadeia.config — para
+  // replicar para outro CNAE não precisa mexer aqui (COMO_REPLICAR_CADEIA.md).
   // ---------------------------------------------------------------------
-  const FUNDIDOS = 'fundidos';
+  const PRODUTO = 'produto'; // valor de "centro" que, na config, abre o próprio produto
   const CADEIA_TOP = 7;
-  // Os grupos de clientes têm a mesma cor no Sankey e no gráfico de áreas.
-  const CADEIA_GRUPOS = [
-    { label: 'Máquinas e equipamentos', cods: ['2700', '2800'], color: 'var(--series-1)' },
-    { label: 'Automotivo', cods: ['2992', '2991', '4500'], color: 'var(--series-3)' },
-    { label: 'Manutenção de máquinas', cods: ['3300'], color: 'var(--series-8)' },
-    { label: 'Metalurgia e mineração', cods: ['2491', '2492', '0792'], color: 'var(--series-2)' },
-    { label: 'Construção', cods: ['4180'], color: 'var(--series-7)' },
-  ];
   const CADEIA_CORES = {
     fornecedor: 'var(--series-2)', va: 'var(--series-5)', importado: 'var(--series-6)', margem: 'var(--baseline)',
     cliente: 'var(--text-muted)', demandaFinal: 'var(--series-4)', outros: 'var(--baseline)',
   };
-  const corCliente = cod => (CADEIA_GRUPOS.find(g => g.cods.includes(cod)) || {}).color || CADEIA_CORES.cliente;
-  // Linha de elos acima do diagrama: o caminho do minério ao cliente, clicável.
-  // Os clientes diretos são os 4 maiores compradores de peças fundidas na TRU
-  // 2021 (73% da demanda). Montadoras não compram fundido direto em nenhum
-  // ano da série: recebem a peça dentro da autopeça, por isso vêm depois.
-  const CADEIA_ELOS = [
-    { itens: [{ label: 'Mineração', centro: '0791' }] },
-    { itens: [{ label: 'Siderurgia', centro: '2491' }, { label: 'Metalurgia', centro: '2492' }] },
-    { itens: [{ label: 'Fundição', centro: FUNDIDOS }] },
-    { rotulo: 'clientes diretos', itens: [
-      { label: 'Autopeças', centro: '2992' }, { label: 'Máquinas mecânicas', centro: '2800' },
-      { label: 'Máquinas elétricas', centro: '2700' }, { label: 'Manutenção de máquinas', centro: '3300' },
-    ] },
-    { rotulo: 'via autopeças', itens: [{ label: 'Montadoras', centro: '2991' }] },
-  ];
   const NOMES_DF = {
     exportacao: 'Exportação', governo: 'Consumo do governo', isflsf: 'Consumo das ISFLSF',
     familias: 'Consumo das famílias', fbcf: 'Investimento (FBCF)', estoque: 'Variação de estoque',
@@ -1355,6 +1335,11 @@
 
   function renderCadeia(data) {
     const c = data.cadeia;
+    const cfg = c.config;
+    const corCliente = cod => {
+      const g = cfg.grupos_cor.find(x => x.cods.includes(cod));
+      return g ? `var(--${g.cor})` : CADEIA_CORES.cliente;
+    };
     const A = c.atividades;
     const idx = new Map(A.map((a, i) => [a.cod, i]));
     const vendas = A.map(() => []), compras = A.map(() => []);
@@ -1365,11 +1350,11 @@
     const rankMult = m => multOrdenado.indexOf(m) + 1;
     const mult2 = m => m.toFixed(2).replace('.', ',');
 
-    const ofertaUlt = c.fundidos.oferta[c.fundidos.oferta.length - 1];
-    const ofertaPri = c.fundidos.oferta[0];
-    const destUlt = c.fundidos.destinos.filter(d => d.ano === c.ano);
+    const ofertaUlt = c.produto.oferta[c.produto.oferta.length - 1];
+    const ofertaPri = c.produto.oferta[0];
+    const destUlt = c.produto.destinos.filter(d => d.ano === c.ano);
     const pImp = o => 100 * o.importacao / (o.producao + o.importacao);
-    let trilha = [FUNDIDOS];
+    let trilha = [PRODUTO];
 
     // Agrupa os menores em "Outros" pra o diagrama não virar uma franja ilegível.
     function topN(nodes, n, rotuloOutros) {
@@ -1397,40 +1382,41 @@
       }));
     }
 
-    function montarFundidos() {
+    function montarProduto() {
       const total = ofertaUlt.demanda;
       const direita = topN(destUlt.map(d => d.tipo === 'atividade'
         ? noAtividade(idx.get(d.cod), d.valor, corCliente(d.cod), total)
         : { label: d.nome, value: d.valor, color: CADEIA_CORES.demandaFinal, tip: [{ label: 'Participação', value: pct(d.valor, total) }] }),
         CADEIA_TOP, 'Outros clientes');
 
-      // Insumos: estrutura de custos da atividade 2492 escalada para a produção de fundidos.
-      const met = A[idx.get('2492')];
+      // Insumos: estrutura de custos da atividade do setor, escalada para a produção do produto.
+      const met = A[idx.get(cfg.atividade)];
       const escala = ofertaUlt.producao / met.vbp;
       const porAtividade = new Map();
-      c.insumos_2492.forEach(r => porAtividade.set(r.atividade, (porAtividade.get(r.atividade) || 0) + r.valor * escala));
+      c.insumos_atividade.forEach(r => porAtividade.set(r.atividade, (porAtividade.get(r.atividade) || 0) + r.valor * escala));
       const margens = ofertaUlt.demanda - ofertaUlt.producao - ofertaUlt.importacao;
       const esquerda = [
         ...topN([...porAtividade].map(([cod, v]) => noAtividade(idx.get(cod), v, CADEIA_CORES.fornecedor, total)), CADEIA_TOP - 2, 'Outros insumos'),
         { label: 'Salários e lucros', value: met.va * escala, color: CADEIA_CORES.va,
-          tip: [{ label: 'Participação', value: pct(met.va * escala, total) }, { label: '', value: 'Valor adicionado da própria fundição' }] },
-        { label: 'Peças importadas', value: ofertaUlt.importacao, color: CADEIA_CORES.importado,
+          tip: [{ label: 'Participação', value: pct(met.va * escala, total) }, { label: '', value: `Valor adicionado do próprio setor (${cfg.nome})` }] },
+        { label: `Importação de ${cfg.nome_produto}`, value: ofertaUlt.importacao, color: CADEIA_CORES.importado,
           tip: [{ label: 'Da oferta a preço básico', value: pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao) }] },
         { label: 'Margens e impostos', value: margens, color: CADEIA_CORES.margem,
           tip: [{ label: 'Participação', value: pct(margens, total) }, { label: '', value: 'Comércio, transporte e impostos sobre produtos' }] },
       ];
-      const empregos = ['2451', '2452'].map(s => last(data.sectors[s].rais.uf_yearly_total));
+      // Link para a RAIS do painel, só se a config apontar setores que existem nele.
+      const empregos = (cfg.empregos_rais || []).filter(s => data.sectors[s]).map(s => last(data.sectors[s].rais.uf_yearly_total));
       return {
-        titulo: 'Fundição',
-        sub: `Peças fundidas de aço e de metais não ferrosos · ${c.ano}`,
+        titulo: cfg.nome,
+        sub: `${cfg.descricao_produto} · ${c.ano}`,
         esquerda, direita,
         resumo: [
           ['Produção nacional', brl(ofertaUlt.producao)],
           ['Importado', pct(ofertaUlt.importacao, ofertaUlt.producao + ofertaUlt.importacao)],
           ['Multiplicador', `${mult2(met.multiplicador)} (${rankMult(met.multiplicador)}º de ${A.length})`],
-          ['Empregos formais', `${fmt.compact(empregos.reduce((s, e) => s + (e ? e.vinculos : 0), 0))} em ${empregos[0] ? empregos[0].ano : ''}`, '2451', 'block-emprego'],
+          ...(empregos.length ? [['Empregos formais', `${fmt.compact(empregos.reduce((s, e) => s + (e ? e.vinculos : 0), 0))} em ${empregos[0] ? empregos[0].ano : ''}`, cfg.empregos_rais[0], 'block-emprego']] : []),
         ],
-        nota: 'Clientes: IBGE, produto 24922 da TRU. Fornecedores: o IBGE não separa os insumos por produto, então o lado esquerdo usa a estrutura de custos da atividade 2492 (metalurgia de não ferrosos + fundição), proporcional à produção de peças fundidas. Multiplicador: MIP 2015.',
+        nota: `Clientes: IBGE, produto ${cfg.produto} da TRU. ${cfg.nota_insumos} Multiplicador: MIP 2015.`,
       };
     }
 
@@ -1467,7 +1453,7 @@
       };
     }
 
-    function nomeCentro(cod) { return cod === FUNDIDOS ? 'Fundição' : A[idx.get(cod)].nome; }
+    function nomeCentro(cod) { return cod === PRODUTO ? cfg.nome : A[idx.get(cod)].nome; }
 
     function renderTrilha() {
       const nav = $('#cadeia-trilha');
@@ -1490,7 +1476,7 @@
 
     function desenhar() {
       const centro = trilha[trilha.length - 1];
-      const m = centro === FUNDIDOS ? montarFundidos() : montarAtividade(centro);
+      const m = centro === PRODUTO ? montarProduto() : montarAtividade(centro);
       $('#cadeia-sankey-title').textContent = m.titulo;
       $('#cadeia-sankey-sub').textContent = m.sub;
       $('#cadeia-nota').textContent = m.nota;
@@ -1516,28 +1502,29 @@
 
     // Seletor com todas as atividades, pra quem quer olhar outra cadeia.
     const sel = $('#cadeia-select');
-    sel.innerHTML = `<option value="${FUNDIDOS}">Fundição (peças fundidas)</option>` +
+    sel.innerHTML = `<option value="${PRODUTO}">${cfg.nome} (${cfg.nome_produto})</option>` +
       [...A].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(a => `<option value="${a.cod}">${a.nome}</option>`).join('');
     sel.addEventListener('change', () => { trilha = [sel.value]; desenhar(); });
 
-    $('#cad-elos').innerHTML = '<span class="cad-elos-chamada">Veja a cadeia de:</span>' + CADEIA_ELOS.map(grupo =>
+    $('#cad-elos').innerHTML = '<span class="cad-elos-chamada">Veja a cadeia de:</span>' + cfg.elos.map(grupo =>
       `<span class="cad-elo-grupo">${grupo.rotulo ? `<span class="cad-elo-rotulo">${grupo.rotulo}</span>` : ''}${grupo.itens.map(e =>
-        `<button type="button" class="cad-elo${e.centro === FUNDIDOS ? ' fund' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('')}</span>`
+        `<button type="button" class="cad-elo${e.centro === PRODUTO ? ' principal' : ''}" data-centro="${e.centro}">${e.label}</button>`).join('')}</span>`
     ).join('<span class="cad-elo-seta" aria-hidden="true">→</span>');
     $('#cad-elos').querySelectorAll('.cad-elo').forEach(b => b.addEventListener('click', () => {
-      trilha = b.dataset.centro === FUNDIDOS ? [FUNDIDOS] : [FUNDIDOS, b.dataset.centro];
+      trilha = b.dataset.centro === PRODUTO ? [PRODUTO] : [PRODUTO, b.dataset.centro];
       desenhar();
     }));
 
     // Linha fina: os três números que resumem a cadeia, no meio do texto.
     const base = destUlt.filter(d => d.valor > 0).reduce((s, d) => s + d.valor, 0);
-    // Só quem fabrica: máquinas (mecânicas e elétricas) e autopeças. Comércio e
-    // reparação de veículos fica de fora, pra frase dizer exatamente o que soma.
-    const pFabricantes = 100 * destUlt.filter(d => ['2800', '2700', '2992'].includes(d.cod)).reduce((s, d) => s + d.valor, 0) / base;
+    // Principais clientes da config (para a fundição: máquinas e autopeças, sem
+    // comércio e reparação de veículos), pra frase dizer exatamente o que soma.
+    const pPrincipais = 100 * destUlt.filter(d => cfg.principais_clientes.cods.includes(d.cod)).reduce((s, d) => s + d.valor, 0) / base;
     $('#cad-chapeu').textContent = `Cadeia produtiva · IBGE, ${c.ano}`;
+    $('#cad-titulo').textContent = cfg.titulo;
     $('#cad-linha-fina').innerHTML =
-      `Em ${c.ano}, o Brasil consumiu <b>${brl(ofertaUlt.demanda)}</b> em peças fundidas. ` +
-      `<b>${Math.round(pFabricantes)}%</b> foram para fabricantes de máquinas e de autopeças, e <b>${Math.round(pImp(ofertaUlt))}%</b> vieram de fora, ` +
+      `Em ${c.ano}, o Brasil consumiu <b>${brl(ofertaUlt.demanda)}</b> em ${cfg.nome_produto}. ` +
+      `<b>${Math.round(pPrincipais)}%</b> foram para ${cfg.principais_clientes.rotulo}, e <b>${Math.round(pImp(ofertaUlt))}%</b> vieram de fora, ` +
       `contra ${fmt.pct(pImp(ofertaPri))} em ${ofertaPri.ano}.`;
 
     desenhar();

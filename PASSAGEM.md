@@ -44,6 +44,8 @@ Faça isto antes do desligamento. Depois pode não dar mais.
 | Planilhas tratadas que alimentam o painel | `3_Dados_Tratados_CSV/` |
 | Scripts que montam o arquivo de dados | `build_data.py`, `build_downloads.py` |
 | Script da aba Cadeia Produtiva (IBGE) | `extrair_cadeia.py` |
+| Setor em destaque na aba Cadeia Produtiva | `cadeia_config.json` |
+| Como levar a aba Cadeia Produtiva para outro CNAE | `COMO_REPLICAR_CADEIA.md` |
 | Scripts de coleta, planilhas brutas e acessos | `Setor Siderúrgico/` (fora do GitHub) |
 | Rotina de atualização por fonte | `ATUALIZACAO.md` |
 | Detalhes técnicos | `README.md` |

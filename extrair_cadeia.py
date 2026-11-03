@@ -4,10 +4,11 @@
 Duas fontes, cada uma usada no que tem de melhor:
 
 * Tabelas de Recursos e Usos (TRU), nível 68 atividades, 2010-2021 — a mais
-  recente nesse nível de detalhe. Dá os valores exibidos: quem compra peças
-  fundidas (produto 24922), o que a atividade 2492 compra, o fluxo entre todas
-  as atividades, VBP, valor adicionado e ocupações. Valores a preço de
-  consumidor (com margens e impostos), R$ milhões correntes.
+  recente nesse nível de detalhe. Dá os valores exibidos: quem compra o
+  produto do setor (definido em cadeia_config.json; hoje, peças fundidas,
+  24922), o que a atividade dele compra, o fluxo entre todas as atividades,
+  VBP, valor adicionado e ocupações. Valores a preço de consumidor (com
+  margens e impostos), R$ milhões correntes.
 * Matriz Insumo-Produto (MIP) 2015, nível 67 — a mais recente publicada (o
   IBGE monta a MIP a cada 5 anos). Usada só no que a TRU não tem: a parcela
   importada de cada compra e o multiplicador de produção (Leontief).
@@ -21,12 +22,22 @@ Entradas (Setor Siderúrgico/1_Dados_Manuais_XLS/, fora do git):
 Saídas (3_Dados_Tratados_CSV/):
   Cadeia_Atividades.csv          uma linha por atividade (ano mais recente da TRU)
   Cadeia_Fluxos_Atividades.csv   vendas intermediárias atividade -> atividade
-  Cadeia_Fundidos_Destinos.csv   para quem vão as peças fundidas, por ano
-  Cadeia_Fundidos_Oferta.csv     produção nacional e importação de peças fundidas, por ano
-  Cadeia_Insumos_2492.csv        o que a atividade 2492 compra, por produto
+  Cadeia_Produto_Destinos.csv    para quem vai o produto do setor, por ano
+  Cadeia_Produto_Oferta.csv      produção nacional e importação do produto, por ano
+  Cadeia_Insumos_Atividade.csv   o que a atividade do setor compra, por produto
 
-Só precisa rodar de novo quando o IBGE publicar TRU ou MIP novas."""
+Uso:
+  python extrair_cadeia.py              gera os CSVs para o setor de cadeia_config.json
+  python extrair_cadeia.py --listar     lista os códigos de produtos e atividades da TRU
+  python extrair_cadeia.py --sugerir 24922
+                                        mostra quem produz e quem compra o produto,
+                                        para preencher a config com base nos dados
 
+Para replicar para outro CNAE, ver COMO_REPLICAR_CADEIA.md. Só precisa rodar
+de novo quando o IBGE publicar TRU ou MIP novas, ou ao trocar de setor."""
+
+import argparse
+import json
 import re
 from pathlib import Path
 
@@ -39,9 +50,7 @@ MANUAIS = ROOT / 'Setor Siderúrgico' / '1_Dados_Manuais_XLS'
 TRU_DIR = MANUAIS / 'TRU_Nivel_68_2010_2021'
 MIP_XLS = MANUAIS / 'MIP_2015_Nivel_67.xls'
 OUT_DIR = ROOT / '3_Dados_Tratados_CSV'
-
-PRODUTO_FUNDIDOS = '24922'
-ATIVIDADE_FUNDICAO = '2492'
+CONFIG = ROOT / 'cadeia_config.json'
 PRIMEIRA_LINHA = 5  # dados começam na linha 6 de todas as tabelas
 # A MIP 2015 junta o comércio numa atividade só; a TRU separa em duas.
 MIP_EQUIVALENTE = {'4500': '4580', '4680': '4580'}
@@ -166,8 +175,64 @@ def ler_mip():
     return pct_imp, mult
 
 
+def anos_tru():
+    return sorted(int(m.group(1)) for f in TRU_DIR.glob('68_tab2_*.xls') if (m := re.search(r'_(\d{4})\.xls$', f.name)))
+
+
+def listar():
+    """Códigos de produtos (5 dígitos) e atividades (4 dígitos) da TRU mais recente."""
+    t = ler_tru(anos_tru()[-1])
+    print('ATIVIDADES (4 dígitos) — o CNAE de cada uma está no Tradutor_Atividade_CNAE.xls do IBGE')
+    for a, d in t['ativs']:
+        print(f'  {a}  {d}')
+    print('\nPRODUTOS (5 dígitos)')
+    for p, d in t['produtos']:
+        print(f'  {p}  {d}')
+
+
+def sugerir(produto):
+    """Quem produz e quem compra o produto (ano mais recente, e em quantos anos
+    da série cada comprador aparece): base para preencher cadeia_config.json."""
+    anos = anos_tru()
+    trus = {ano: ler_tru(ano) for ano in anos}
+    t = trus[anos[-1]]
+    cods = [a for a, _ in t['ativs']]
+    i = next((k for k, (p, _) in enumerate(t['produtos']) if p == produto), None)
+    if i is None:
+        raise SystemExit(f'Produto {produto} não existe na TRU. Rode com --listar.')
+    print(f'{produto}  {t["produtos"][i][1]}  ({anos[-1]}, R$ milhões)\n')
+    prod = t['prod'][i]
+    print('QUEM PRODUZ (a primeira costuma ser a "atividade" da config):')
+    for j in np.argsort(-prod)[:3]:
+        if prod[j]:
+            print(f'  {cods[j]}  {NOME_CURTO[cods[j]]:<40} {prod[j]:>10,.0f}  {100 * prod[j] / prod.sum():5.1f}%')
+
+    def aparece(cod):
+        # em quantos anos da série a atividade comprou o produto
+        n = 0
+        for tr in trus.values():
+            ip = [p for p, _ in tr['produtos']].index(produto)
+            ia = [a for a, _ in tr['ativs']].index(cod)
+            n += tr['ci'][ip, ia] > 0
+        return n
+
+    compras = [(c, NOME_CURTO[c], t['ci'][i, j], aparece(c)) for j, c in enumerate(cods) if t['ci'][i, j] > 0]
+    compras += [(k, nome, t['df'][i, n], None) for n, (k, nome) in enumerate(DEMANDA_FINAL) if t['df'][i, n] > 0]
+    total = sum(v for _, _, v, _ in compras)
+    print(f'\nQUEM COMPRA DIRETO ("anos" = em quantos dos {len(anos)} anos da série o comprador aparece):')
+    acum = 0
+    for cod, nome, v, n in sorted(compras, key=lambda x: -x[2]):
+        acum += v
+        anos_txt = f'anos {n}/{len(anos)}' if n is not None else 'demanda final'
+        print(f'  {cod:<11} {nome:<40} {v:>10,.0f}  {100 * v / total:5.1f}%  acum. {100 * acum / total:5.1f}%  {anos_txt}')
+    print(f'\nImportação: {t["imp"][i]:,.0f} ({100 * t["imp"][i] / (prod.sum() + t["imp"][i]):.1f}% da oferta a preço básico)')
+    print('Quem não aparece acima não compra o produto direto, mesmo que esteja na cadeia (ex.: montadoras e peças fundidas).')
+
+
 def main():
-    anos = sorted(int(m.group(1)) for f in TRU_DIR.glob('68_tab2_*.xls') if (m := re.search(r'_(\d{4})\.xls$', f.name)))
+    cfg = json.loads(CONFIG.read_text(encoding='utf-8'))
+    produto_setor, atividade_setor = cfg['produto'], cfg['atividade']
+    anos = anos_tru()
     ano_ref = anos[-1]
     trus = {ano: ler_tru(ano) for ano in anos}
     t = trus[ano_ref]
@@ -213,32 +278,41 @@ def main():
 
     destinos, oferta = [], []
     for ano, tr in trus.items():
-        i = next(k for k, (p, _) in enumerate(tr['produtos']) if p == PRODUTO_FUNDIDOS)
+        i = next(k for k, (p, _) in enumerate(tr['produtos']) if p == produto_setor)
         for j, (a, _) in enumerate(tr['ativs']):
             if tr['ci'][i, j]:
-                destinos.append((ano, 'atividade', a, NOME_CURTO[a], tr['ci'][i, j], pct_importado(PRODUTO_FUNDIDOS, a)))
+                destinos.append((ano, 'atividade', a, NOME_CURTO[a], tr['ci'][i, j], pct_importado(produto_setor, a)))
         for k, (chave, nome) in enumerate(DEMANDA_FINAL):
             if tr['df'][i, k]:
-                destinos.append((ano, 'demanda_final', chave, nome, tr['df'][i, k], pct_importado(PRODUTO_FUNDIDOS, chave)))
+                destinos.append((ano, 'demanda_final', chave, nome, tr['df'][i, k], pct_importado(produto_setor, chave)))
         oferta.append((ano, tr['prod'][i].sum(), tr['imp'][i], tr['ci'][i].sum() + tr['df'][i].sum()))
     pd.DataFrame(destinos, columns=['Ano', 'Tipo', 'Codigo', 'Nome', 'Valor', 'Pct_Importado_2015']).to_csv(
-        OUT_DIR / 'Cadeia_Fundidos_Destinos.csv', **csv_kw)
+        OUT_DIR / 'Cadeia_Produto_Destinos.csv', **csv_kw)
     pd.DataFrame(oferta, columns=['Ano', 'Producao_Nacional', 'Importacao', 'Demanda_Total']).to_csv(
-        OUT_DIR / 'Cadeia_Fundidos_Oferta.csv', **csv_kw)
+        OUT_DIR / 'Cadeia_Produto_Oferta.csv', **csv_kw)
 
-    j = cods.index(ATIVIDADE_FUNDICAO)
+    j = cods.index(atividade_setor)
     produtor = {p: cods[int(np.argmax(t['prod'][i]))] for i, (p, _) in enumerate(t['produtos'])}
-    insumos = [(ano_ref, p, d, produtor[p], t['ci'][i, j], pct_importado(p, ATIVIDADE_FUNDICAO))
+    insumos = [(ano_ref, p, d, produtor[p], t['ci'][i, j], pct_importado(p, atividade_setor))
                for i, (p, d) in enumerate(t['produtos']) if t['ci'][i, j]]
     pd.DataFrame(insumos, columns=['Ano', 'Produto', 'Descricao', 'Atividade_Produtora', 'Valor', 'Pct_Importado_2015']).to_csv(
-        OUT_DIR / 'Cadeia_Insumos_2492.csv', **csv_kw)
+        OUT_DIR / 'Cadeia_Insumos_Atividade.csv', **csv_kw)
 
     # Conferência: vendas intermediárias + demanda final de cada atividade ~ oferta dos seus produtos.
     oferta_ativ = D @ (t['ci'].sum(axis=1) + t['df'].sum(axis=1))
     desvio = np.abs((fluxo.sum(axis=1) + df_ativ.sum(axis=1)) / oferta_ativ - 1).max()
     print(f'OK: TRU {anos[0]}-{ano_ref}, {n} atividades, {len(fl)} fluxos, desvio máx. = {desvio:.2%}')
-    print(f'Fundidos {ano_ref}: produção {oferta[-1][1]:.0f}, importação {oferta[-1][2]:.0f}, demanda {oferta[-1][3]:.0f} (R$ mi)')
+    print(f'Produto {produto_setor} ({cfg["nome_produto"]}) {ano_ref}: produção {oferta[-1][1]:.0f}, importação {oferta[-1][2]:.0f}, demanda {oferta[-1][3]:.0f} (R$ mi)')
 
 
 if __name__ == '__main__':
-    main()
+    ap = argparse.ArgumentParser(description='Extrai das Contas Nacionais do IBGE os CSVs da aba Cadeia Produtiva.')
+    ap.add_argument('--listar', action='store_true', help='lista os códigos de produtos e atividades da TRU')
+    ap.add_argument('--sugerir', metavar='PRODUTO', help='mostra quem produz e quem compra o produto')
+    args = ap.parse_args()
+    if args.listar:
+        listar()
+    elif args.sugerir:
+        sugerir(args.sugerir)
+    else:
+        main()
