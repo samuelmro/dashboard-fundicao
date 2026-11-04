@@ -15,3 +15,6 @@ desktop.ini
 # Pasta de preparação de dados (scripts R, planilhas brutas, chaves de API e
 # login de consulta) — nunca deve subir pro repositório público do site.
 Setor Siderúrgico/
+
+# Pacotes .zip de passagem do projeto (gerados localmente, não vão pro repositório)
+*.zip
