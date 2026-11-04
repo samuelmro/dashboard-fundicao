@@ -493,7 +493,8 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 /* ---------- Cadeia Produtiva ----------
    Página aberta, sem cartões nem molduras: texto e gráfico direto no fundo,
    separados por fios finos (linguagem de infográfico de jornal). */
-#cadeia-view { padding: 44px 0 60px; max-width: 1080px; margin: 0 auto; }
+/* Usado também pela aba PD&I (mesmo layout de página aberta). */
+#cadeia-view, #pdi-view { padding: 44px 0 60px; max-width: 1080px; margin: 0 auto; }
 
 .cad-chapeu { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; }
 .cad-titulo { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; margin: 6px 0 12px; color: var(--text-primary); }
@@ -556,6 +557,17 @@ table.data-table tbody tr:hover { background: var(--surface-2); }
 button.cad-resumo-item { font: inherit; background: none; border-top: 0; border-right: 0; border-bottom: 0; cursor: pointer; color: var(--accent-dark); }
 button.cad-resumo-item:hover { color: var(--accent); }
 .cad-nota { font-size: 0.72rem; color: var(--text-muted); line-height: 1.55; margin: 12px 0 0; max-width: 860px; }
+.cad-h3 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--text-primary); }
+.cad-texto { font-size: 1rem; line-height: 1.7; color: var(--text-secondary); max-width: 760px; margin: 0 0 22px; }
+.cad-texto b, .cad-lista b { color: var(--text-primary); font-weight: 800; }
+.cad-graficos { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 40px; align-items: start; }
+.cad-fig { margin: 0; min-width: 0; }
+.cad-fig figcaption { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.cad-fig figcaption strong { font-size: 0.95rem; color: var(--text-primary); }
+.cad-fig figcaption span { font-size: 0.76rem; color: var(--text-muted); }
+.cad-lista { margin: 0 0 20px; padding-left: 22px; max-width: 760px; font-size: 1rem; line-height: 1.7; color: var(--text-secondary); }
+.cad-lista li { margin-bottom: 10px; padding-left: 4px; }
+@media (max-width: 900px) { .cad-graficos { grid-template-columns: 1fr; } }
 
 .area-faixa { opacity: 0.9; }
 .area-borda { stroke: var(--surface-1); stroke-width: 1.2; }
@@ -572,9 +584,9 @@ button.cad-resumo-item:hover { color: var(--accent); }
 }
 
 /* ---------- PD&I / Referências (páginas de aba, não mais accordion) ---------- */
-#pdi-view, #referencias-view { padding: 40px 0 60px; }
+#referencias-view { padding: 40px 0 60px; }
 .pdi-intro { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.65; }
-#pdi-view h4, #referencias-view h4 {
+#referencias-view h4 {
   font-size: 0.75rem; margin: 24px 0 12px; color: var(--text-primary);
   text-transform: uppercase; letter-spacing: 0.06em;
 }
@@ -586,11 +598,6 @@ button.cad-resumo-item:hover { color: var(--accent); }
 /* PD&I (case de fundição): texto corrido pra ler, não rodapé/legenda como em
    Referências, que usa as mesmas classes — por isso o aumento é escopado
    aqui, não na regra genérica acima. */
-#pdi-view .pdi-intro { font-size: 0.95rem; line-height: 1.75; }
-#pdi-fundicao .section-note { font-size: 0.88rem; line-height: 1.7; }
-#pdi-view .pdi-note { font-size: 0.92rem; line-height: 1.75; margin-bottom: 18px; }
-#pdi-view .pdi-list { font-size: 0.92rem; line-height: 1.75; margin-bottom: 20px; }
-#pdi-view .pdi-list li { margin-bottom: 10px; }
 .pdi-cta {
   margin: 32px 0 8px;
   padding: 20px 24px;
@@ -600,7 +607,6 @@ button.cad-resumo-item:hover { color: var(--accent); }
 }
 .pdi-cta h4 { margin-top: 0; }
 .pdi-cta .pdi-note { margin-bottom: 0; }
-#pdi-fundicao .exhibit-grid { margin-bottom: 28px; }
 .pdi-table-wrap { overflow-x: auto; }
 table.pdi-table {
   border-collapse: collapse;

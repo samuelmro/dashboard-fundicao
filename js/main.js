@@ -1536,79 +1536,115 @@
   // dashboard exploratório). Combina os dois CNAEs onde faz sentido tratar
   // "fundição" como um setor só (escolaridade, saldo de contratações,
   // BNDES); mantém 2451 e 2452 separados onde a diferença entre os dois é
-  // o próprio ponto (comércio exterior).
+  // o próprio ponto (comércio exterior). Todo número citado no texto sai
+  // do mesmo cálculo do gráfico ao lado: texto escrito à mão ficava
+  // desatualizado a cada carga nova de dados (já tinha errado o saldo do
+  // CAGED e a faixa da margem).
   // ---------------------------------------------------------------------
   function renderPdi(data) {
     const s1 = data.sectors['2451'], s2 = data.sectors['2452'];
+    const pct = v => fmt.pct(v);
+    const b = v => `<b>${v}</b>`;
+    // Último ano fechado: o ano corrente é parcial no Comex e distorce comparação.
+    const fechados = rows => rows.filter(r => r.ano < CURRENT_YEAR);
 
-    // Importação vinda da China, % do total, por CNAE.
+    // ---- 1. A concorrência de fora ------------------------------------------
+    // Fatia importada das peças fundidas (TRU/IBGE, mesma base da aba Cadeia
+    // Produtiva). Só quando a Cadeia está configurada para peças fundidas: se
+    // alguém trocar o produto da cadeia_config.json, esse gráfico deixaria de
+    // ser sobre fundição.
+    const cad = data.cadeia;
+    const temImportados = cad && cad.config.produto === '24922';
+    const ofertaTru = temImportados ? cad.produto.oferta : [];
+    const pImp = o => 100 * o.importacao / (o.producao + o.importacao);
+    if (temImportados) {
+      lineChart($('#pdi-chart-importados'), {
+        categories: ofertaTru.map(o => o.ano), formatY: pct, height: 240, endLabels: true,
+        series: [{ label: 'Importadas', color: 'var(--accent)', values: ofertaTru.map(pImp) }],
+      });
+    } else {
+      $('#pdi-chart-importados').closest('figure').hidden = true;
+    }
+
+    // Importação vinda da China, % do total, por CNAE (2016 em diante: é a
+    // partir daí que o 2451 tem dado de comex).
     const rowsChina1 = s1.comex.importacao_china_resto_yearly;
     const rowsChina2 = s2.comex.importacao_china_resto_yearly;
-    // 2016 em diante: é a partir daí que o 2451 tem dado de comex, então é a
-    // janela onde a comparação entre os dois CNAEs realmente existe.
     const catChina = annualCategories([rowsChina1, rowsChina2]).filter(ano => ano >= 2016);
-    const pctChina = (rows) => catChina.map(ano => {
+    const pctChinaAno = (rows, ano) => {
       const r = rows.find(x => x.ano === ano);
-      if (!r) return null;
-      const total = r.china_usd + r.resto_usd;
+      const total = r ? r.china_usd + r.resto_usd : 0;
       return total ? (r.china_usd / total) * 100 : null;
-    });
+    };
     lineChart($('#pdi-chart-china'), {
-      categories: catChina, formatY: n => fmt.pct(n), height: 260,
+      categories: catChina, formatY: pct, height: 240,
       series: [
-        { label: 'Ferro e aço (2451)', color: 'var(--series-6)', values: pctChina(rowsChina1) },
-        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: pctChina(rowsChina2) },
+        { label: 'Ferro e aço (2451)', color: 'var(--series-6)', values: catChina.map(a => pctChinaAno(rowsChina1, a)) },
+        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: catChina.map(a => pctChinaAno(rowsChina2, a)) },
       ],
     });
 
-    // Exportação: ferro/aço x não ferrosos.
     const catExp = annualCategories([s1.comex.yearly, s2.comex.yearly]).filter(ano => ano >= 2016);
     lineChart($('#pdi-chart-exportacao'), {
-      categories: catExp, formatY: fmt.usd, height: 260,
+      categories: catExp, formatY: fmt.usd, height: 240,
       series: [
         { label: 'Ferro e aço (2451)', color: 'var(--series-1)', values: seriesAnnual(s1.comex.yearly, 'exportacao_usd', catExp) },
         { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: seriesAnnual(s2.comex.yearly, 'exportacao_usd', catExp) },
       ],
     });
 
-    // Participação do Brasil no comércio mundial (Comtrade), por CNAE.
     function participacaoMundial(sec, cat) {
       const br = new Map(sec.comtrade.brazil_yearly.map(r => [r.ano, r.export_usd]));
       const wd = new Map(sec.comtrade.world_yearly.map(r => [r.ano, r.export_usd]));
       return cat.map(ano => {
-        const b = br.get(ano), w = wd.get(ano);
-        return (b != null && w) ? (b / w) * 100 : null;
+        const v = br.get(ano), w = wd.get(ano);
+        return (v != null && w) ? (v / w) * 100 : null;
       });
     }
     const catMundial = annualCategories([s1.comtrade.brazil_yearly, s2.comtrade.brazil_yearly]);
+    const mundial1 = participacaoMundial(s1, catMundial), mundial2 = participacaoMundial(s2, catMundial);
     lineChart($('#pdi-chart-mundial'), {
-      categories: catMundial, formatY: n => fmt.pct(n), height: 260,
+      categories: catMundial, formatY: pct, height: 240,
       series: [
-        { label: 'Ferro e aço (2451)', color: 'var(--series-1)', values: participacaoMundial(s1, catMundial) },
-        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: participacaoMundial(s2, catMundial) },
+        { label: 'Ferro e aço (2451)', color: 'var(--series-1)', values: mundial1 },
+        { label: 'Não ferrosos (2452)', color: 'var(--series-4)', values: mundial2 },
       ],
     });
 
-    // Custo da energia na metalurgia (CNAE 24) em SP, média anual, em R$
-    // constantes (deflacionado por IPCA) — em nominal, 14 anos de série
-    // mistura inflação com variação real de custo. Reaproveita o mesmo
-    // arquivo lazy da aba Energia Industrial (fetch avulso, sem filtro nem
-    // cache compartilhado, é a única vez que essa página usa).
-    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
-      const sp = obj['SP'] || [];
-      const porAno = {};
-      sp.forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
-      const anos = Object.keys(porAno).map(Number).sort((a, b) => a - b);
-      const vals = anos.map(a => porAno[a].reduce((x, y) => x + y, 0) / porAno[a].length);
-      const anoBase = data.energia_industrial.ano_base_deflacao;
-      $('#pdi-chart-energia-sub').textContent = `R$/MWh a preços de ${anoBase} (deflacionado por IPCA), média anual, Energia Industrial`;
-      lineChart($('#pdi-chart-energia'), {
-        categories: anos, formatY: n => fmt.brl(n) + '/MWh', height: 260,
-        series: [{ label: 'Custo médio (real)', color: 'var(--series-8)', values: vals, area: true }],
-      });
-    });
+    const anoChinaUlt = Math.max(...catChina.filter(a => a < CURRENT_YEAR));
+    const exp1 = fechados(s1.comex.yearly).filter(r => r.ano >= 2016), exp2 = fechados(s2.comex.yearly).filter(r => r.ano >= 2016);
+    const pico1 = exp1.reduce((m, r) => r.exportacao_usd > m.exportacao_usd ? r : m, exp1[0]);
+    const ult1 = last(exp1), pri2 = exp2[0], ult2 = last(exp2);
+    const anoMundial = last(catMundial);
+    $('#pdi-texto-fora').innerHTML =
+      (temImportados ? `As peças fundidas importadas já são ${b(pct(pImp(last(ofertaTru))))} da oferta no Brasil (${last(ofertaTru).ano}), contra ${pct(pImp(ofertaTru[0]))} em ${ofertaTru[0].ano}. ` : '') +
+      `No ferro e aço, a China passou de ${pct(pctChinaAno(rowsChina1, 2016))} para ${b(pct(pctChinaAno(rowsChina1, anoChinaUlt)))} do que o Brasil importa (2016 a ${anoChinaUlt}); no não ferroso ela pesa menos, ${pct(pctChinaAno(rowsChina2, anoChinaUlt))}. ` +
+      `A exportação do ferro e aço teve o pico em ${pico1.ano} (${fmt.usd(pico1.exportacao_usd)}) e fechou ${ult1.ano} em ${fmt.usd(ult1.exportacao_usd)}; a do não ferroso foi de ${fmt.usd(pri2.exportacao_usd)} em ${pri2.ano} para ${fmt.usd(ult2.exportacao_usd)} em ${ult2.ano}. ` +
+      `A fatia do Brasil no comércio mundial de fundidos é pequena: ${pct(last(mundial1))} no ferro e aço e ${pct(last(mundial2))} no não ferroso em ${anoMundial}.`;
 
-    // Escolaridade combinada (2451+2452), agrupada em 3 faixas, % dos vínculos por ano.
+    // ---- 2. A pressão por dentro --------------------------------------------
+    const finF = data.shared.financeiro.fundicao_24_5;
+    const margens = finF.map(r => ({ ano: r.ano, v: (r.receita_liquida_total && r.custos_despesas_totais != null)
+      ? ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100 : null })).filter(m => m.v != null);
+    lineChart($('#pdi-chart-margem'), {
+      categories: margens.map(m => m.ano), formatY: pct, height: 240,
+      series: [{ label: 'Margem operacional', color: 'var(--series-3)', area: true, values: margens.map(m => m.v) }],
+    });
+    const mUlt = last(margens), decada = margens.filter(m => m.ano > mUlt.ano - 10);
+    const mMin = decada.reduce((a, m) => m.v < a.v ? m : a), mMax = decada.reduce((a, m) => m.v > a.v ? m : a);
+
+    const saldoPorAno = {};
+    [s1, s2].forEach(sec => sec.caged.tipo_movimentacao_monthly.forEach(r => {
+      saldoPorAno[r.ano] = (saldoPorAno[r.ano] || 0) + (r.admissoes || 0) - (r.desligamentos || 0);
+    }));
+    const anosSaldo = Object.keys(saldoPorAno).map(Number).sort((x, y) => x - y);
+    barChart($('#pdi-chart-saldo'), {
+      categories: anosSaldo, formatY: fmt.full, height: 240,
+      series: [{ label: 'Saldo de contratações', color: 'var(--series-2)', values: anosSaldo.map(a => saldoPorAno[a]) }],
+    });
+    const comSinal = v => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt.full(Math.abs(v));
+    const saldoRecente = anosSaldo.slice(-4).map(a => `${comSinal(saldoPorAno[a])} em ${a}`);
+
     function baldeEscolaridade(categoria) {
       if (/analfabeto|fundamental|5[ºª]/i.test(categoria)) return 'Fundamental ou menos';
       if (/m[ée]dio/i.test(categoria)) return 'Médio';
@@ -1622,68 +1658,78 @@
       escPorAno[r.ano] = escPorAno[r.ano] || {};
       escPorAno[r.ano][balde] = (escPorAno[r.ano][balde] || 0) + r.frequencia;
     }));
-    const anosEsc = Object.keys(escPorAno).map(Number).sort((a, b) => a - b);
+    const anosEsc = Object.keys(escPorAno).map(Number).sort((x, y) => x - y);
     const BALDES = ['Fundamental ou menos', 'Médio', 'Superior'];
     const CORES_BALDE = { 'Fundamental ou menos': 'var(--series-6)', 'Médio': 'var(--series-8)', 'Superior': 'var(--series-4)' };
+    const pctBalde = (a, balde) => {
+      const total = BALDES.reduce((acc, bb) => acc + (escPorAno[a][bb] || 0), 0);
+      return total ? ((escPorAno[a][balde] || 0) / total) * 100 : 0;
+    };
     lineChart($('#pdi-chart-escolaridade'), {
-      categories: anosEsc, formatY: n => fmt.pct(n), height: 260, stacked: true,
-      series: BALDES.map(b => ({
-        label: b, color: CORES_BALDE[b],
-        values: anosEsc.map(a => {
-          const total = BALDES.reduce((acc, bb) => acc + (escPorAno[a][bb] || 0), 0);
-          return total ? ((escPorAno[a][b] || 0) / total) * 100 : 0;
-        }),
-      })),
+      categories: anosEsc, formatY: pct, height: 240, stacked: true,
+      series: BALDES.map(balde => ({ label: balde, color: CORES_BALDE[balde], values: anosEsc.map(a => pctBalde(a, balde)) })),
+    });
+    const anoEsc = last(anosEsc);
+
+    const textoDentro = energia => {
+      $('#pdi-texto-dentro').innerHTML =
+        `A margem operacional da fundição foi de ${b(pct(mUlt.v))} em ${mUlt.ano}. Nos últimos dez anos ela foi de ${pct(mMin.v)} (${mMin.ano}) a ${pct(mMax.v)} (${mMax.ano}): sobra pouco para investir. ` +
+        (energia ? `O custo real da energia na metalurgia paulista subiu ${b(pct(energia.alta))} entre ${energia.de} e ${energia.ate}, já descontada a inflação. ` : '') +
+        `O saldo de contratações oscila perto de zero (${saldoRecente.join(', ')}), e ${b(pct(pctBalde(anoEsc, 'Fundamental ou menos')))} dos vínculos ainda têm no máximo o ensino fundamental (${anoEsc}), o que limita a adoção de processos mais técnicos.`;
+    };
+    textoDentro(null);
+
+    // Custo da energia na metalurgia (CNAE 24) em SP, média anual em R$ reais.
+    // A comparação no texto usa só anos com tarifa ANEEL publicada: os demais
+    // são interpolados ou extrapolados pelo IPCA (ver aba Referências).
+    fetch('data/energia/serie-cnae-24.json').then(r => r.json()).then(obj => {
+      const porAno = {};
+      (obj['SP'] || []).forEach(([ano, , , , , custoReal]) => { if (custoReal != null) (porAno[ano] = porAno[ano] || []).push(custoReal); });
+      const anos = Object.keys(porAno).map(Number).sort((x, y) => x - y);
+      const media = a => porAno[a].reduce((x, y) => x + y, 0) / porAno[a].length;
+      const ei = data.energia_industrial;
+      $('#pdi-chart-energia-sub').textContent = `R$/MWh a preços de ${ei.ano_base_deflacao}, média anual. Tarifa publicada pela ANEEL em ${ei.anos_tarifa_publicada.join(', ')}; demais anos estimados`;
+      lineChart($('#pdi-chart-energia'), {
+        categories: anos, formatY: n => fmt.brl(n) + '/MWh', height: 240,
+        series: [{ label: 'Custo médio (real)', color: 'var(--series-8)', values: anos.map(media), area: true }],
+      });
+      const publicados = ei.anos_tarifa_publicada.filter(a => porAno[a]);
+      if (publicados.length >= 2) {
+        const de = publicados[0], ate = last(publicados);
+        textoDentro({ de, ate, alta: 100 * (media(ate) / media(de) - 1) });
+      }
     });
 
-    // Saldo de contratações (admissões menos desligamentos) por ano, fundição combinada.
-    const saldoPorAno = {};
-    [s1, s2].forEach(sec => sec.caged.tipo_movimentacao_monthly.forEach(r => {
-      saldoPorAno[r.ano] = (saldoPorAno[r.ano] || 0) + (r.admissoes || 0) - (r.desligamentos || 0);
-    }));
-    const anosSaldo = Object.keys(saldoPorAno).map(Number).sort((a, b) => a - b);
-    barChart($('#pdi-chart-saldo'), {
-      categories: anosSaldo, formatY: fmt.full, height: 260,
-      series: [{ label: 'Saldo de contratações', color: 'var(--series-2)', values: anosSaldo.map(a => saldoPorAno[a]) }],
-    });
-
-    // Margem operacional da Fundição 24.5 (já combina 2451+2452 na fonte).
-    const finF = data.shared.financeiro.fundicao_24_5;
-    lineChart($('#pdi-chart-margem'), {
-      categories: finF.map(r => r.ano), formatY: n => fmt.pct(n), height: 260,
-      series: [{
-        label: 'Margem operacional', color: 'var(--series-3)', area: true,
-        values: finF.map(r => (r.receita_liquida_total && r.custos_despesas_totais != null)
-          ? ((r.receita_liquida_total - r.custos_despesas_totais) / r.receita_liquida_total) * 100 : null),
-      }],
-    });
-
-    // BNDES por porte, concentração combinada (2451+2452), histórico completo.
-    const portePorTotal = {};
-    [s1, s2].forEach(sec => sec.bndes.porte_total.forEach(p => {
-      portePorTotal[p.porte] = (portePorTotal[p.porte] || 0) + p.valor_desembolsado;
-    }));
+    // ---- 3. Crédito ----------------------------------------------------------
+    const somaPor = (campo, chave) => {
+      const acc = {};
+      [s1, s2].forEach(sec => sec.bndes[campo].forEach(p => { acc[p[chave]] = (acc[p[chave]] || 0) + p.valor_desembolsado; }));
+      return acc;
+    };
+    const porPorte = somaPor('porte_total', 'porte'), porUf = somaPor('uf_total', 'uf');
+    const totalBndes = Object.values(porPorte).reduce((x, y) => x + y, 0);
+    const ufsOrd = Object.entries(porUf).sort((x, y) => y[1] - x[1]);
+    const top3 = ufsOrd.slice(0, 3), pTop3 = 100 * top3.reduce((x, [, v]) => x + v, 0) / totalBndes;
+    const anosBndes = [s1, s2].flatMap(sec => sec.bndes.yearly.map(r => r.ano));
+    const anoB0 = Math.min(...anosBndes), anoB1 = Math.max(...anosBndes);
+    $('#pdi-chart-bndes-sub').textContent = `Acumulado ${anoB0}–${anoB1}, fundição (2451+2452)`;
     donutChart($('#pdi-chart-bndes'), {
       formatVal: fmt.brl, size: 190,
-      items: PORTES_ORDEM.filter(p => portePorTotal[p]).map(p => ({ label: titleCasePt(p), value: portePorTotal[p], color: CORES_PORTE[p] })),
+      items: PORTES_ORDEM.filter(p => porPorte[p]).map(p => ({ label: titleCasePt(p), value: porPorte[p], color: CORES_PORTE[p] })),
     });
+    $('#pdi-texto-credito').innerHTML =
+      `De ${anoB0} a ${anoB1}, o BNDES desembolsou ${b(fmt.brl(totalBndes))} para a fundição. ` +
+      `${b(pct(100 * (porPorte.GRANDE || 0) / totalBndes))} foram para empresas de grande porte, e ${top3.map(([uf]) => ufName(uf)).join(', ').replace(/, ([^,]+)$/, ' e $1')} ficaram com ${pct(pTop3)} do total. ` +
+      `Micro e pequenas empresas, que são a maioria das fundições, receberam ${pct(100 * ((porPorte.MICRO || 0) + (porPorte.PEQUENA || 0)) / totalBndes)}.`;
 
-    // Funil ilustrativo: não é dado real de nenhuma empresa, é um modelo pra
-    // ancorar a conversa (a legenda no HTML já deixa isso explícito).
-    waterfallChart($('#pdi-chart-funil'), {
-      formatY: n => fmt.pct(n), height: 260,
-      items: [
-        { label: 'Margem atual (referência baixa do setor)', value: 5 },
-        { label: 'Eficiência energética', value: 2 },
-        { label: 'Redução de refugo', value: 2 },
-        { label: 'Ligas / produtos especiais', value: 4 },
-        { label: 'Margem com projeto de PD&I', value: 13, isTotal: true },
-      ],
-    });
+    // ---- Linha fina: os três números que resumem o caso ---------------------
+    $('#pdi-linha-fina').innerHTML =
+      (temImportados ? `${b(pct(pImp(last(ofertaTru))))} das peças fundidas usadas no Brasil já vêm de fora (${last(ofertaTru).ano}). ` : '') +
+      `A China responde por ${b(pct(pctChinaAno(rowsChina1, anoChinaUlt)))} do que o país importa em fundidos de ferro e aço, ` +
+      `e a margem operacional do setor foi de ${b(pct(mUlt.v))} em ${mUlt.ano}.`;
 
-    // Índice de setores de PD&I: vive na barra lateral (#pdi-section-nav),
-    // igual ao "Nesta seção" que já existe pra dentro de um setor. Hoje só
-    // Fundição; cada setor novo vira mais um botão ali.
+    // Índice de setores de PD&I: vive na barra lateral (#pdi-section-nav).
+    // Hoje só Fundição; cada setor novo vira mais um botão ali.
     $('#pdi-section-nav').querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => scrollToBlock(btn.dataset.target));
     });

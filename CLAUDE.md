@@ -99,6 +99,23 @@ repositório, que é público.
   fatia importada) foi tirada a pedido do usuário. O código está no commit
   `1596944`, se for voltar.
 
+## Aba PD&I
+
+- Mesmo layout editorial da Cadeia Produtiva (classes `cad-*`). Roteiro de
+  conversa com o dono de uma fundição em 4 blocos: concorrência de fora,
+  pressão por dentro, crédito, por onde começar.
+- **Todo número do texto é calculado em `renderPdi()`** a partir dos mesmos
+  dados do gráfico ao lado. Não escreva número à mão no HTML: a versão antiga
+  fazia isso e ficou errada (dizia saldo do CAGED negativo em 2023–2025, mas
+  2024 foi positivo; e margem "entre 4% e 13%" quando foi de −2,4% a 13,1%).
+- Energia: comparação no tempo só entre anos com tarifa ANEEL publicada
+  (`energia_industrial.anos_tarifa_publicada`); os demais são estimados.
+- O gráfico "peças fundidas importadas" usa a TRU da aba Cadeia e só aparece
+  se `cadeia_config.json` estiver no produto 24922.
+- Foi retirado um gráfico de cascata com números inventados ("modelo
+  ilustrativo" de ganho de margem). Não reintroduzir número sem fonte.
+- As três frentes de projeto vêm de `PDI/Fundicao/Pitch_PDI_Fundicao.md`.
+
 ## Preferências de visual (feedback do usuário)
 
 - Visual sóbrio de relatório ou infográfico de jornal: fundo branco, texto

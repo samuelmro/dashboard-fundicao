@@ -460,6 +460,9 @@ def build_energia_industrial(macro_rows):
         'divisoes': divisoes,
         'serie_campos': ['ano', 'mes', 'consumo_mwh', 'custo_rs_mwh', 'participacao_pct', 'custo_real_rs_mwh'],
         'ano_base_deflacao': ano_base_energia,
+        # Anos com tarifa ANEEL publicada; os demais são interpolados ou
+        # extrapolados. Comparação de custo no tempo deve usar só estes.
+        'anos_tarifa_publicada': _ANOS_TARIFA_REAL,
     }
 
 

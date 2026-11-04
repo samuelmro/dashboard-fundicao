@@ -843,107 +843,84 @@
 
 <!-- ============ PD&I ============ -->
 <div id="pdi-view" hidden>
-  <div class="section-header">
-    <h2>Pesquisa, Desenvolvimento &amp; Inovação</h2>
-  </div>
-  <p class="pdi-intro">Casos setoriais construídos em cima dos dados já tratados neste painel, para apoiar conversas de venda de projetos de PD&amp;I com empresas do setor. Hoje cobre fundição (CNAE 2451 e 2452); a estrutura fica pronta para receber outros setores conforme o painel crescer.</p>
+  <header class="cad-cabeca" id="pdi-fundicao">
+    <div class="cad-chapeu">PD&amp;I · Fundição (CNAE 2451 e 2452)</div>
+    <h2 class="cad-titulo">Por que a fundição precisa de PD&amp;I</h2>
+    <p class="cad-linha-fina" id="pdi-linha-fina"></p>
+  </header>
+  <p class="cad-nota">Roteiro para conversar com o dono de uma fundição, montado com as mesmas bases do resto do painel (Comex Stat, Comtrade, IBGE, RAIS, CAGED, BNDES e Energia Industrial). Mostra o setor, não a empresa dele.</p>
 
-  <section class="section" id="pdi-fundicao">
-    <div class="section-header">
-      <span class="section-num">01</span>
-      <h2>Fundição · CNAE 2451 e 2452</h2>
-    </div>
-    <p class="section-note">Os números abaixo vêm das mesmas bases usadas no restante do painel (Comex Stat, Comtrade, RAIS, CAGED, PIA/IBGE, BNDES e Energia Industrial). É um roteiro para conversar com o dono de uma fundição, não um relatório definitivo sobre a empresa dele.</p>
-
-    <h4>O que está mudando lá fora</h4>
-    <p class="pdi-note">Ferro e aço (2451) e não ferrosos (2452) estão vivendo momentos diferentes. O 2451 cresceu na exportação até 2022 e desde então perdeu força; é também o mais exposto à concorrência chinesa, que responde por 30% a 40% do que o Brasil importa nessa categoria. Já o 2452 vem de uma recuperação lenta e constante desde 2016, com a China pesando bem menos nas importações (entre 14% e 15%). Nos dois casos, a fatia do Brasil no comércio mundial de peças fundidas é pequena, e no não ferroso ela vem caindo ano após ano.</p>
-    <div class="exhibit-grid">
-      <div class="exhibit">
+  <div class="cad-bloco">
+    <h3 class="cad-h3">1. A concorrência de fora</h3>
+    <p class="cad-texto" id="pdi-texto-fora"></p>
+    <div class="cad-graficos">
+      <figure class="cad-fig">
+        <figcaption><strong>Peças fundidas importadas</strong><span>% da oferta de peças fundidas no Brasil, IBGE (TRU)</span></figcaption>
+        <div id="pdi-chart-importados"></div>
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Importação vinda da China</strong><span>% do total importado, por CNAE, Comex Stat</span></figcaption>
         <div id="pdi-chart-china"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Importação vinda da China</div>
-          <div class="exhibit-sub">% do total importado, por CNAE, Comex Stat</div>
-        </div>
-      </div>
-      <div class="exhibit">
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Exportação</strong><span>US$ FOB por ano, Comex Stat (ano corrente é parcial)</span></figcaption>
         <div id="pdi-chart-exportacao"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Exportação: ferro e aço x não ferrosos</div>
-          <div class="exhibit-sub">US$ FOB por ano, Comex Stat (2026 é ano parcial)</div>
-        </div>
-      </div>
-      <div class="exhibit">
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Participação do Brasil no comércio mundial</strong><span>% das exportações mundiais de fundidos, Comtrade</span></figcaption>
         <div id="pdi-chart-mundial"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Participação do Brasil no comércio mundial</div>
-          <div class="exhibit-sub">% das exportações mundiais de fundidos, Comtrade</div>
-        </div>
-      </div>
+      </figure>
     </div>
+  </div>
 
-    <h4>Onde a pressão aperta por dentro</h4>
-    <p class="pdi-note">Quatro sinais internos merecem atenção de quem toca uma fundição hoje. O custo da energia na metalurgia paulista (tarifa média real da classe Industrial na região Sudeste) subiu cerca de 19% em termos reais (já descontada a inflação) entre o ponto mais baixo, em 2014, e a média de 2023 a 2025 — bem menos dramático do que os mais de 100% de alta nominal do período, que é em boa parte efeito de inflação acumulada. A escolaridade da mão de obra segue concentrada no ensino médio, com quase 30% dos vínculos ainda no fundamental, o que limita a velocidade de adoção de processos mais técnicos. O saldo de contratações do setor, que ainda era positivo em 2022, passou a ser negativo nos três anos seguintes, ou seja, o setor está fechando mais vagas do que abrindo. E a margem operacional da fundição, embora tenha melhorado em 2023, segue oscilando entre 4% e 13% ao longo da década, um sinal de fragilidade estrutural mais do que de folga.</p>
-    <div class="exhibit-grid">
-      <div class="exhibit">
-        <div id="pdi-chart-energia"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Custo da energia na metalurgia (SP)</div>
-          <div class="exhibit-sub" id="pdi-chart-energia-sub">R$/MWh, média anual, Energia Industrial</div>
-        </div>
-      </div>
-      <div class="exhibit">
-        <div id="pdi-chart-escolaridade"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Escolaridade da mão de obra</div>
-          <div class="exhibit-sub">% dos vínculos, fundição (2451+2452), RAIS</div>
-        </div>
-      </div>
-      <div class="exhibit">
-        <div id="pdi-chart-saldo"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Saldo de contratações por ano</div>
-          <div class="exhibit-sub">Admissões menos desligamentos, fundição (2451+2452), CAGED</div>
-        </div>
-      </div>
-      <div class="exhibit">
+  <div class="cad-bloco">
+    <h3 class="cad-h3">2. A pressão por dentro</h3>
+    <p class="cad-texto" id="pdi-texto-dentro"></p>
+    <div class="cad-graficos">
+      <figure class="cad-fig">
+        <figcaption><strong>Margem operacional</strong><span>% da receita líquida, Fundição 24.5, PIA/IBGE</span></figcaption>
         <div id="pdi-chart-margem"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Margem operacional</div>
-          <div class="exhibit-sub">% da receita líquida, Fundição 24.5, PIA/IBGE</div>
-        </div>
-      </div>
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Custo da energia na metalurgia (SP)</strong><span id="pdi-chart-energia-sub">R$/MWh, valores reais, média anual</span></figcaption>
+        <div id="pdi-chart-energia"></div>
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Saldo de contratações</strong><span>Admissões menos desligamentos, fundição (2451+2452), CAGED</span></figcaption>
+        <div id="pdi-chart-saldo"></div>
+      </figure>
+      <figure class="cad-fig">
+        <figcaption><strong>Escolaridade da mão de obra</strong><span>% dos vínculos, fundição (2451+2452), RAIS</span></figcaption>
+        <div id="pdi-chart-escolaridade"></div>
+      </figure>
     </div>
+  </div>
 
-    <h4>O caminho de quem cresce</h4>
-    <p class="pdi-note">Existe crédito disponível e relativamente barato para inovação (Nova Indústria Brasil, FINEP, EMBRAPII, além do próprio BNDES), mas ele está concentrado em poucas mãos: a maior parte do desembolso do BNDES para o setor vai para empresas de grande porte, e um pequeno grupo de estados concentra a maior parte do total. O gargalo não costuma ser falta de linha de crédito, e sim não ter um projeto técnico maduro o suficiente para captar esse recurso. É exatamente esse projeto que o CIESP ajuda a desenhar.</p>
-    <div class="exhibit-grid">
-      <div class="exhibit">
+  <div class="cad-bloco">
+    <h3 class="cad-h3">3. O dinheiro para inovar existe, mas é para poucos</h3>
+    <div class="cad-graficos">
+      <div>
+        <p class="cad-texto" id="pdi-texto-credito"></p>
+        <p class="cad-texto">Além do BNDES, há linhas para inovação na Nova Indústria Brasil, na FINEP e na EMBRAPII. O gargalo costuma ser outro: ter um projeto técnico maduro o bastante para captar o recurso. É esse projeto que o CIESP ajuda a desenhar.</p>
+      </div>
+      <figure class="cad-fig">
+        <figcaption><strong>Desembolso do BNDES por porte da empresa</strong><span id="pdi-chart-bndes-sub">Acumulado, fundição (2451+2452)</span></figcaption>
         <div id="pdi-chart-bndes"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Desembolso do BNDES por porte</div>
-          <div class="exhibit-sub">Acumulado 2002-2026, fundição (2451+2452)</div>
-        </div>
-      </div>
-      <div class="exhibit">
-        <div id="pdi-chart-funil"></div>
-        <div class="exhibit-caption">
-          <div class="exhibit-title">Onde um projeto de PD&amp;I costuma gerar ganho</div>
-          <div class="exhibit-sub">Modelo ilustrativo, não é a projeção de nenhuma empresa específica</div>
-        </div>
-      </div>
+      </figure>
     </div>
+  </div>
 
-    <div class="pdi-cta">
-      <h4>Como o CIESP entra</h4>
-      <p class="pdi-note">Três frentes de projeto tendem a se pagar mais rápido e mostrar resultado mais cedo no caixa da fundição.</p>
-      <ul class="pdi-list">
-        <li>Eficiência energética nos fornos elétricos e a indução, medindo consumo e ajustando o processo.</li>
-        <li>Redução de refugo e do tempo de try-out de moldes novos, incluindo impressão 3D de areia para lotes pequenos, que tira semanas do ciclo de desenvolvimento.</li>
-        <li>Qualificação técnica para operar processos mais automatizados, reduzindo a dependência do operador que só ele sabe ajustar o forno.</li>
-      </ul>
-      <p class="pdi-note">Nos três casos, quem convence o dono da fundição é o número da própria empresa dele comparado ao setor, não um discurso genérico sobre inovação.</p>
-    </div>
-  </section>
+  <div class="cad-bloco">
+    <h3 class="cad-h3">4. Por onde começar</h3>
+    <p class="cad-texto">Três frentes costumam dar resultado mais cedo no caixa de uma fundição:</p>
+    <ol class="cad-lista">
+      <li><b>Energia nos fornos.</b> Medir o consumo dos fornos elétricos e de indução e ajustar o processo. É o custo que mais subiu (bloco 2).</li>
+      <li><b>Refugo e moldes.</b> Reduzir peças descartadas e o tempo de try-out de moldes novos, incluindo impressão 3D de areia para lotes pequenos, que tira semanas do desenvolvimento.</li>
+      <li><b>Gente e automação.</b> Qualificar a equipe para processos mais automatizados e tirar a dependência do operador que é o único que sabe ajustar o forno.</li>
+    </ol>
+    <p class="cad-texto">Nas três, quem convence o dono da fundição é o número da própria empresa comparado ao setor, e os números do setor estão neste painel.</p>
+    <p class="cad-nota">As frentes vêm do roteiro de PD&amp;I para fundição (pasta <code>PDI/Fundicao</code>), com base em tendências apontadas pela American Foundry Society e pela Deloitte.</p>
+  </div>
 </div><!-- /#pdi-view -->
 
 <!-- ============ RELATÓRIOS ============ -->
