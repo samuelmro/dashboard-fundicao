@@ -17,7 +17,11 @@ feito para o SIFESP em parceria com FIESP e CIESP.
 
 ## Colocar para rodar no seu computador
 
-No PowerShell, dentro desta pasta:
+Extraia o zip numa pasta de caminho curto, por exemplo `C:\Projetos`. Em
+pastas muito fundas o Windows passa do limite de 260 caracteres por caminho e
+alguns arquivos não são extraídos.
+
+Depois, no PowerShell, dentro desta pasta:
 
 ```powershell
 python -m venv .venv
